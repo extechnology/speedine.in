@@ -200,25 +200,38 @@ const FilterPage = () => {
           </div>
 
           {/* Filter Section - Mobile */}
-          {mobileFilterOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden">
-              <div className="absolute right-0 top-0 h-full w-80 bg-white shadow-xl overflow-y-auto">
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold text-gray-900">Filters</h2>
-                    <button
-                      title="mobile filter"
-                      onClick={() => setMobileFilterOpen(false)}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                    >
-                      <X className="w-6 h-6" />
-                    </button>
-                  </div>
-                  <FilterSection />
+          <div
+            className={`fixed inset-0 backdrop-blur-lg bg-black/40 z-50 md:hidden
+    transition-opacity duration-500
+    ${
+      mobileFilterOpen
+        ? "opacity-100 pointer-events-auto"
+        : "opacity-0 pointer-events-none"
+    }
+  `}
+          >
+            <div
+              className={`absolute right-0 top-0 h-full w-80 bg-white shadow-xl overflow-y-auto
+      transform transition-transform duration-500 ease-out
+      ${mobileFilterOpen ? "translate-x-0" : "translate-x-full"}
+    `}
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-bold text-gray-900">Filters</h2>
+                  <button
+                    title="mobile filter"
+                    onClick={() => setMobileFilterOpen(false)}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
                 </div>
+
+                <FilterSection />
               </div>
             </div>
-          )}
+          </div>
 
           {/* Product Section */}
           <div className="flex-1">
