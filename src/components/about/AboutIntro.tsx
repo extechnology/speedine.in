@@ -16,7 +16,7 @@ const AboutIntro = () => {
             </div>
           </div>
           <div>
-            <h2 className="text-3xl font-bold text-amber-900 mb-6">
+            <h2 className="text-4xl font-extrabold text-center md:text-start text-amber-900 mb-6">
               Who We Are
             </h2>
             <p className="text-neutral-900 mb-4 text-justify leading-relaxed">

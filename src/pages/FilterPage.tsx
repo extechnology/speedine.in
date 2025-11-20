@@ -171,13 +171,13 @@ const FilterPage = () => {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-orange-50 via-white to-red-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto md:px-4 px-2 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-amber-900 mb-2">
+          <h1 className="md:text-4xl text-2xl font-extrabold text-amber-900 mb-2">
             Our Products
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm text-gray-600">
             Discover premium quality spices for your kitchen
           </p>
         </div>
@@ -224,8 +224,8 @@ const FilterPage = () => {
           <div className="flex-1">
             {/* Sort Bar */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <p className="text-gray-600">
-                <span className="font-semibold text-gray-900">
+              <p className="text-gray-600 text-sm">
+                <span className="font-semibold text-sm text-gray-900">
                   {filteredProducts.length}
                 </span>{" "}
                 products found
@@ -244,7 +244,7 @@ const FilterPage = () => {
             </div>
 
             {/* Product Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2  lg:grid-cols-3 md:gap-6 gap-2">
               {filteredProducts.map((product) => (
                 <div
                   key={product.id}
@@ -284,12 +284,12 @@ const FilterPage = () => {
                         ({product.rating})
                       </span>
                     </div>
-                    <h3 className="text-lg font-semibold text-amber-900 mb-2 group-hover:text-amber-600 transition-colors">
+                    <h3 className="md:text-lg text-sm truncate font-semibold text-amber-900 mb-2 group-hover:text-amber-600 transition-colors">
                       {product.name}
                     </h3>
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="text-2xl font-bold text-gray-900">
+                        <span className="md:text-2xl text-sm font-bold text-gray-900">
                           ₹{product.price}
                         </span>
                         <span className="text-sm text-gray-400 line-through ml-2">
@@ -297,7 +297,7 @@ const FilterPage = () => {
                         </span>
                       </div>
                     </div>
-                    <button className="w-full mt-4 bg-linear-to-r from-amber-700 to-amber-900 text-white py-2.5 rounded-lg hover:from-amber-900 hover:to-amber-700 transition-all font-medium shadow-md hover:shadow-lg">
+                    <button className="w-full text-xs md:text-md mt-4 bg-linear-to-r from-amber-700 to-amber-900 text-white md:py-2.5 py-1.5 rounded-lg hover:from-amber-900 hover:to-amber-700 transition-all font-medium shadow-md hover:shadow-lg">
                       Add to Cart
                     </button>
                   </div>

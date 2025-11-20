@@ -2,12 +2,12 @@ import { Link } from "react-router-dom";
 
 const StepTellsStory = () => {
   return (
-    <div className="py-16 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-slate-50 to-slate-100">
+    <div className="md:py-16 py-8 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-slate-50 to-slate-100">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
           {/* Text Content */}
           <div className="w-full lg:w-1/2 space-y-6">
-            <h1 className="text-2xl  lg:text-4xl font-bold text-slate-900 leading-tight">
+            <h1 className="text-2xl lg:text-4xl font-bold text-slate-900 leading-tight">
               Every Step Tells a{" "}
               <span className="text-transparent bg-clip-text bg-linear-to-r from-amber-600 to-red-700">
                 Story

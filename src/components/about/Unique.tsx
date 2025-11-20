@@ -59,7 +59,7 @@ const Unique = () => {
       <h1 className="text-4xl font-extrabold text-amber-900 mb-10 text-center">
         What Makes Us Unique
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 ">
+      <div className="grid grid-cols-1 md:grid-cols-3 md:gap-8 gap-4 ">
         {UniqueData.map((data) => (
           <div
             key={data.id}

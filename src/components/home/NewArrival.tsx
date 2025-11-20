@@ -26,14 +26,14 @@ const NewArrival = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4 pb-14 pt-8">
       {/* Header Section */}
-      <div className="text-center mb-12">
+      <div className="text-center md:mb-12 mb-5">
         <span className="inline-block px-4 py-1 text-amber-900 bg-[#D1A837] rounded-full text-sm font-semibold mb-4">
           Fresh Collection
         </span>
         <h2 className="text-2xl md:text-4xl font-bold text-amber-900 mb-4">
           Fast Moving Products
         </h2>
-        <p className="text-gray-600 text-md max-w-2xl mx-auto">
+        <p className="text-gray-600 md:text-md text-sm max-w-2xl mx-auto">
           Discover our latest collection of premium spices, handpicked for
           authentic flavor and exceptional quality
         </p>
@@ -73,7 +73,7 @@ const NewArrival = () => {
               <h3 className="text-xl font-bold text-amber-900 mb-2 group-hover:text-[#7A0E0E] transition-colors">
                 {product.title}
               </h3>
-              <p className="text-gray-600 mb-4">{product.description}</p>
+              <p className="text-gray-600 mb-2">{product.description}</p>
 
               {/* Price and Action */}
               <div className="flex items-center justify-between">
@@ -125,7 +125,7 @@ const NewArrival = () => {
 
       {/* View All Button */}
       <div className="text-center mt-12">
-        <button className="bg-[#660000] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#7A0E0E] transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-500">
+        <button className="bg-[#660000] text-white md:px-8 md:py-3 px-4 py-2 text-xs md:text-md rounded-full font-semibold hover:bg-[#7A0E0E] transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-500">
           View All Products
         </button>
       </div>
