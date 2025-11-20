@@ -6,12 +6,14 @@ const NavItems = [
   { name: "Home", href: "/" },
   { name: "About", href: "/about" },
   { name: "Products", href: "/products" },
+  { name: "Find Recipes", href: "/products" },
+  { name: "Order Now", href: "/products" },
   { name: "Contact", href: "/contact" },
 ];
 
 const Navbar = () => {
   return (
-    <nav className="py-1 border-b border-dashed border-gray-400 bg-white/60 backdrop-blur-md sticky top-0 z-50">
+    <nav className="py-1 shadow-md border-gray-400 bg-white/60 backdrop-blur-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4">
         {/* Logo */}
         <Link to="/" className="text-2xl font-bold tracking-wide text-gray-800">
@@ -19,7 +21,7 @@ const Navbar = () => {
         </Link>
 
         {/* Navigation Items */}
-        <ul className="hidden md:flex gap-8 text-gray-700 font-medium">
+        <ul className="hidden md:flex gap-8 text-gray-700 font-bold">
           {NavItems.map((item) => (
             <li key={item.name}>
               <Link
@@ -51,6 +53,7 @@ const Navbar = () => {
           >
             <ShoppingBag
               size={22}
+              strokeWidth={3}
               className="text-gray-700 hover:text-gray-100"
             />
           </Link>
@@ -59,7 +62,11 @@ const Navbar = () => {
             to="/account"
             className="p-2 hover:bg-[#D1A837]  rounded-full transition-colors"
           >
-            <User size={22} className="text-gray-700 hover:text-gray-100" />
+            <User
+              strokeWidth={3}
+              size={22}
+              className="text-gray-700 hover:text-gray-100"
+            />
           </Link>
         </div>
       </div>

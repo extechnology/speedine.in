@@ -2,7 +2,7 @@ import React from "react";
 import { memo } from "react";
 import AboutBanner from "../components/about/AboutBanner";
 import AboutIntro from "../components/about/AboutIntro";
-import WhoWeAre from "../components/about/WhoWeAre";
+import WhoWeAre from "../components/about/Unique";
 import Testimonials from "../components/about/Testimonials";
 
 const AboutPage: React.FC = () => {

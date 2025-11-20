@@ -1,11 +1,13 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { Instagram, Youtube, Facebook, Linkedin } from "lucide-react";
+import { Instagram, Facebook, Linkedin } from "lucide-react";
+import { PiPinterestLogo } from "react-icons/pi";
+import { FaXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
   return (
     <footer className="relative bg-[url('/footer-background.jpg')]  text-white">
-      <div className="absolute inset-0 bg-amber-900/60"></div>
+      <div className="absolute inset-0 bg-amber-900/70"></div>
       <div className="max-w-7xl mx-auto px-6 py-12 relative z-10">
         {/* TOP CONTENT */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
@@ -56,9 +58,8 @@ const Footer = () => {
             <div className="space-y-2">
               <p className="text-white font-medium">SpeeDine</p>
               <p className="leading-relaxed">
-                Malappuram,  <br />
-                Kerala 673633
-                India
+                Malappuram, <br />
+                Kerala 673633 India
               </p>
               <p>+91 9991707787</p>
               <p>speedine.in@gmail.com</p>
@@ -69,30 +70,41 @@ const Footer = () => {
           <div>
             <h2 className="text-lg font-semibold mb-4 text-white">Follow Us</h2>
             <div className="flex gap-4">
-              <Link
-                to="#"
+              <a
+                title="instagram"
+                href="https://www.instagram.com/speedine.in/"
                 className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
               >
                 <Instagram size={20} />
-              </Link>
-              <Link
-                to="#"
+              </a>
+              <a
+                title="facebook"
+                href="https://www.facebook.com/speedine.in/"
                 className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
               >
                 <Facebook size={20} />
-              </Link>
-              <Link
-                to="#"
+              </a>
+              <a
+                title="twitter"
+                href="https://x.com/speedinein"
                 className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
               >
-                <Youtube size={20} />
-              </Link>
-              <Link
-                to="#"
+                <FaXTwitter size={20} />
+              </a>
+              <a
+                title="pinterest"
+                href="https://www.linkedin.com/company/speedine/"
+                className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
+              >
+                <PiPinterestLogo size={20} />
+              </a>
+              <a
+                title="linkedin"
+                href="https://in.pinterest.com/speedinein/"
                 className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
               >
                 <Linkedin size={20} />
-              </Link>
+              </a>
             </div>
           </div>
         </div>
