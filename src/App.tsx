@@ -4,6 +4,7 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/common/Navbar";
 import Footer from "./components/common/Footer";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 
 const Home = lazy(() => import("./pages/Home"));
@@ -18,6 +19,7 @@ function App() {
     <>
       <BrowserRouter>
         <Navbar />
+        <ScrollToTop />
         <Suspense>
           <Routes>
             <Route path="/" element={<Home />} />

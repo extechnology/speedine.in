@@ -173,7 +173,7 @@ const FilterPage = () => {
     <div className="min-h-screen bg-linear-to-br from-orange-50 via-white to-red-50">
       <div className="max-w-7xl mx-auto md:px-4 px-2 py-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="md:mb-8 mb-4">
           <h1 className="md:text-4xl text-2xl font-extrabold text-amber-900 mb-2">
             Our Products
           </h1>
@@ -223,7 +223,7 @@ const FilterPage = () => {
           {/* Product Section */}
           <div className="flex-1">
             {/* Sort Bar */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="bg-white px-2 rounded-xl shadow-sm border border-gray-100 p-4 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <p className="text-gray-600 text-sm">
                 <span className="font-semibold text-sm text-gray-900">
                   {filteredProducts.length}

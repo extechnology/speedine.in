@@ -24,7 +24,7 @@ const NewArrival = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4 pb-14 pt-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4 md:pb-14 pb-6 pt-8">
       {/* Header Section */}
       <div className="text-center md:mb-12 mb-5">
         <span className="inline-block px-4 py-1 text-amber-900 bg-[#D1A837] rounded-full text-sm font-semibold mb-4">
@@ -124,7 +124,7 @@ const NewArrival = () => {
       </div>
 
       {/* View All Button */}
-      <div className="text-center mt-12">
+      <div className="text-center md:mt-12 mt-5">
         <button className="bg-[#660000] text-white md:px-8 md:py-3 px-4 py-2 text-xs md:text-md rounded-full font-semibold hover:bg-[#7A0E0E] transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-500">
           View All Products
         </button>
