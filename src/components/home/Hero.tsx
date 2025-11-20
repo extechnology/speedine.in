@@ -30,10 +30,12 @@ const Hero = () => {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
+    <div className="max-w-7xl mx-auto px-4 md:py-12 pt-6 pb-5">
       <div className="flex flex-col md:flex-row gap-6">
         {/* LEFT BIG SLIDER */}
-        <div className="md:w-1/2 w-full overflow-hidden rounded-3xl shadow-lg relative">
+        <div
+          className="md:w-1/2 w-full overflow-hidden rounded-3xl shadow-lg relative h-[300px] sm:h-[380px] md:h-auto"
+        >
           {/* FADE ANIMATION WRAPPER */}
           <div className="relative w-full h-full">
             {slides.map((slide, i) => (
@@ -64,7 +66,7 @@ const Hero = () => {
         </div>
 
         {/* RIGHT GRID */}
-        <div className="grid grid-cols-2 gap-6 md:w-1/2 w-full">
+        <div className="grid grid-cols-2 md:gap-6 gap-4 md:w-1/2 w-full">
           {/* GRID ITEM WITH TEXT */}
           <div className="relative overflow-hidden rounded-3xl shadow-md group">
             <img

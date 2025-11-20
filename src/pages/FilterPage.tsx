@@ -174,7 +174,7 @@ const FilterPage = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold text-amber-900 mb-2">
             Our Products
           </h1>
           <p className="text-gray-600">
@@ -284,7 +284,7 @@ const FilterPage = () => {
                         ({product.rating})
                       </span>
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-red-600 transition-colors">
+                    <h3 className="text-lg font-semibold text-amber-900 mb-2 group-hover:text-amber-600 transition-colors">
                       {product.name}
                     </h3>
                     <div className="flex items-center justify-between">
@@ -297,7 +297,7 @@ const FilterPage = () => {
                         </span>
                       </div>
                     </div>
-                    <button className="w-full mt-4 bg-linear-to-r from-red-600 to-orange-600 text-white py-2.5 rounded-lg hover:from-red-700 hover:to-orange-700 transition-all font-medium shadow-md hover:shadow-lg">
+                    <button className="w-full mt-4 bg-linear-to-r from-amber-700 to-amber-900 text-white py-2.5 rounded-lg hover:from-amber-900 hover:to-amber-700 transition-all font-medium shadow-md hover:shadow-lg">
                       Add to Cart
                     </button>
                   </div>

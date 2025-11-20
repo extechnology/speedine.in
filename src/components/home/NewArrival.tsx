@@ -27,7 +27,7 @@ const NewArrival = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4 pb-14 pt-8">
       {/* Header Section */}
       <div className="text-center mb-12">
-        <span className="inline-block px-4 py-1 text-[#7A0E0E] bg-[#D1A837] rounded-full text-sm font-semibold mb-4">
+        <span className="inline-block px-4 py-1 text-amber-900 bg-[#D1A837] rounded-full text-sm font-semibold mb-4">
           Fresh Collection
         </span>
         <h2 className="text-2xl md:text-4xl font-bold text-amber-900 mb-4">
@@ -78,7 +78,7 @@ const NewArrival = () => {
               {/* Price and Action */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl font-bold text-[#7A0E0E]">
+                  <span className="text-2xl font-bold text-amber-900">
                     ₹129
                   </span>
                   <span className="text-sm text-gray-400 line-through">
@@ -87,7 +87,7 @@ const NewArrival = () => {
                 </div>
                 <button
                   title="view products"
-                  className="bg-[#7A0E0E] text-white p-2 rounded-lg hover:bg-[#7A0E0E] transition-colors"
+                  className="bg-amber-900 text-white p-2 rounded-lg hover:bg-[#7A0E0E] transition-colors"
                 >
                   <svg
                     className="w-5 h-5"

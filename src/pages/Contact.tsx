@@ -1,11 +1,11 @@
 import { memo } from "react";
+import { MapPin, Phone, Mail } from "lucide-react";
 
 const Contact = () => {
   return (
-    <div className="w-full bg-linear-to-b from-gray-50 to-slate-50">
+    <div className="w-full bg-linear-to-b from-gray-50 to-slate-100">
       {/* HERO BANNER */}
       <div className="relative bg-[url('/spices.jpg')] bg-cover bg-center h-[280px] md:h-[350px] flex items-center justify-center">
-        {/* Overlay */}
         <div className="absolute inset-0 bg-black/40"></div>
 
         <div className="relative text-center text-white">
@@ -17,64 +17,80 @@ const Contact = () => {
       </div>
 
       {/* CONTENT SECTION */}
-      <div className="max-w-6xl  mx-auto px-5 md:px-8 py-12 grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div className="max-w-6xl mx-auto px-5 md:px-8 py-14 grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* ADDRESS SECTION */}
-        <div>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Our Address</h2>
-          <div className="space-y-2 text-gray-700">
-            <p className="text-lg font-medium">SpeeDine</p>
-            <p>Malappuram,</p>
-            <p>Kerala,673633</p>
-            <p>India</p>
+        <div className="p-6">
+          <h2 className="text-2xl font-bold mb-6 text-amber-800">
+            Our Address
+          </h2>
+
+          {/* ADDRESS */}
+          <div className="flex items-start gap-4 mb-6">
+            <div className="p-3 bg-amber-100 rounded-lg">
+              <MapPin className="h-6 w-6 text-amber-800" />
+            </div>
+            <div className="text-neutral-700 leading-relaxed">
+              <p className="text-lg font-semibold">SpeeDine</p>
+              <p>Malappuram, Kerala - 673633</p>
+              <p>India</p>
+            </div>
           </div>
 
-          <div className="mt-6">
-            <h3 className="text-xl font-semibold mb-2 text-gray-800">
-              Call Us
-            </h3>
-            <p className="text-gray-700">+91 8891707787</p>
+          {/* PHONE */}
+          <div className="flex items-start gap-4 mb-6">
+            <div className="p-3 bg-amber-100 rounded-lg">
+              <Phone className="h-6 w-6 text-amber-800" />
+            </div>
+            <p className="text-neutral-700 text-lg font-medium">
+              +91 8891707787
+            </p>
           </div>
 
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold mb-2 text-gray-800">Email</h3>
-            <p className="text-gray-700">speedine.in@gmail.com</p>
+          {/* EMAIL */}
+          <div className="flex items-start gap-4">
+            <div className="p-3 bg-amber-100 rounded-lg">
+              <Mail className="h-6 w-6 text-amber-800" />
+            </div>
+            <p className="text-neutral-700 text-lg font-medium">
+              speedine.in@gmail.com
+            </p>
           </div>
         </div>
 
         {/* CONTACT FORM */}
-        <div>
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">
+        <div className="p-6 rounded-xl  border border-amber-100">
+          <h2 className="text-2xl font-bold mb-6 text-amber-800">
             Get In Touch
           </h2>
 
-          <form className="space-y-4">
+          <form className="space-y-5">
             <input
               type="text"
               placeholder="Name"
-              className="w-full p-3 border border-gray-300 rounded-md bg-gray-50 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-300 outline-none transition"
+              className="w-full p-3 border border-amber-200 rounded-md bg-amber-50 focus:border-amber-600 focus:ring-1 focus:ring-amber-400 outline-none transition"
             />
 
             <input
               type="email"
               placeholder="Email"
-              className="w-full p-3 border border-gray-300 rounded-md bg-gray-50 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-300 outline-none transition"
+              className="w-full p-3 border border-amber-200 rounded-md bg-amber-50 focus:border-amber-600 focus:ring-1 focus:ring-amber-400 outline-none transition"
             />
 
             <input
               type="text"
               placeholder="Subject"
-              className="w-full p-3 border border-gray-300 rounded-md bg-gray-50 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-300 outline-none transition"
+              className="w-full p-3 border border-amber-200 rounded-md bg-amber-50 focus:border-amber-600 focus:ring-1 focus:ring-amber-400 outline-none transition"
             />
 
             <textarea
               rows={5}
               placeholder="Message"
-              className="w-full p-3 border border-gray-300 rounded-md bg-gray-50 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-300 outline-none transition"
-            ></textarea>
+              className="w-full p-3 border border-amber-200 rounded-md bg-amber-50 focus:border-amber-600 focus:ring-1 focus:ring-amber-400 outline-none transition"
+            />
 
             <button
               type="submit"
-              className="w-full py-3 bg-linear-to-r from-gray-700 to-slate-800 text-white rounded-md font-medium hover:bg-indigo-700 transition shadow-md"
+              className="w-full py-3 rounded-md bg-linear-to-r from-amber-700 to-amber-900 text-white font-semibold shadow-md hover:from-amber-800 hover:to-amber-900 transition"
             >
               Send Message
             </button>

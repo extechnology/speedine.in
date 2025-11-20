@@ -1,6 +1,6 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingBag, Search, User } from "lucide-react";
+import { ShoppingBag, Search, User, Menu, X } from "lucide-react";
 
 const NavItems = [
   { name: "Home", href: "/" },
@@ -12,6 +12,9 @@ const NavItems = [
 ];
 
 const Navbar = () => {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <nav className="py-1 shadow-md border-gray-400 bg-white/60 backdrop-blur-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4">
@@ -35,21 +38,58 @@ const Navbar = () => {
         </ul>
 
         {/* Search + Icons */}
-        <div className="flex items-center gap-4">
-          {/* Search Bar */}
-          <div className="hidden md:flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-xl bg-white shadow-sm focus-within:border-[#D1A837] transition-all">
-            <Search size={18} className="text-gray-500" />
-            <input
-              type="text"
-              placeholder="Search products..."
-              className="outline-none text-sm bg-transparent"
-            />
+        <div className="flex items-center gap-2 md:gap-4">
+          {/* Search Bar for Desktop */}
+          <div className="hidden md:block">
+            {isSearchOpen ? (
+              <div className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-xl bg-white shadow-sm focus-within:border-[#D1A837] transition-all animate-[slideIn_0.3s_ease-out]">
+                <Search size={18} strokeWidth={3} className="text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  className="outline-none text-sm bg-transparent w-48"
+                  autoFocus
+                />
+                <button
+                  title="Close search"
+                  onClick={() => setIsSearchOpen(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            ) : (
+              <button
+                title="open search"
+                onClick={() => setIsSearchOpen(true)}
+                className="p-2 hover:bg-[#D1A837] rounded-full transition-colors"
+              >
+                <Search
+                  size={22}
+                  strokeWidth={3}
+                  className="text-gray-700 hover:text-gray-100"
+                />
+              </button>
+            )}
           </div>
+
+          {/* Search Icon for Mobile */}
+          <button
+            title="open search"
+            onClick={() => setIsSearchOpen(!isSearchOpen)}
+            className="md:hidden p-2 hover:bg-[#D1A837] rounded-full transition-colors"
+          >
+            <Search
+              size={22}
+              strokeWidth={3}
+              className="text-gray-700 hover:text-gray-100"
+            />
+          </button>
 
           {/* Icons */}
           <Link
             to="/cart"
-            className="p-2 hover:bg-[#D1A837]  rounded-full transition-colors"
+            className="p-2 hover:bg-[#D1A837] rounded-full transition-colors"
           >
             <ShoppingBag
               size={22}
@@ -60,7 +100,7 @@ const Navbar = () => {
 
           <Link
             to="/account"
-            className="p-2 hover:bg-[#D1A837]  rounded-full transition-colors"
+            className="hidden md:block p-2 hover:bg-[#D1A837] rounded-full transition-colors"
           >
             <User
               strokeWidth={3}
@@ -68,19 +108,83 @@ const Navbar = () => {
               className="text-gray-700 hover:text-gray-100"
             />
           </Link>
+
+          {/* Hamburger Menu */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 hover:bg-[#D1A837] rounded-full transition-colors"
+          >
+            {isMobileMenuOpen ? (
+              <X size={24} strokeWidth={3} className="text-gray-700 hover:text-gray-100" />
+            ) : (
+              <Menu size={24}  strokeWidth={3} className="text-gray-700 hover:text-gray-100" />
+            )}
+          </button>
         </div>
       </div>
 
-      {/* Mobile Nav */}
-      <div className="md:hidden mt-4 px-4">
-        <div className="flex items-center gap-3 px-3 py-2 border border-gray-300 rounded-xl bg-white shadow-sm">
-          <Search size={18} className="text-gray-500" />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="outline-none text-sm bg-transparent w-full"
-          />
+      {/* Mobile Search Bar */}
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          isSearchOpen ? "max-h-20 opacity-100 mt-4" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="px-4">
+          <div className="flex items-center gap-3 px-3 py-2 border border-gray-300 rounded-xl bg-white shadow-sm">
+            <Search size={18} className="text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search products..."
+              className="outline-none text-sm bg-transparent w-full"
+            />
+          </div>
         </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <ul className="px-4 py-4 space-y-3 bg-white/80 backdrop-blur-sm">
+          {NavItems.map((item, index) => (
+            <li
+              key={item.name}
+              className="transform transition-all duration-300 ease-out"
+              style={{
+                animation: isMobileMenuOpen
+                  ? `slideDown 0.3s ease-out ${index * 0.05}s both`
+                  : "none",
+              }}
+            >
+              <Link
+                to={item.href}
+                className="block py-2 px-4 text-gray-700 font-bold hover:bg-[#D1A837]/10 hover:text-[#D1A837] rounded-lg transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {item.name}
+              </Link>
+            </li>
+          ))}
+          <li
+            className="transform transition-all duration-300 ease-out"
+            style={{
+              animation: isMobileMenuOpen
+                ? `slideDown 0.3s ease-out ${NavItems.length * 0.05}s both`
+                : "none",
+            }}
+          >
+            <Link
+              to="/account"
+              className="flex items-center gap-2 py-2 px-4 text-gray-700 font-bold hover:bg-[#D1A837]/10 hover:text-[#D1A837] rounded-lg transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <User size={20} strokeWidth={3} />
+              Account
+            </Link>
+          </li>
+        </ul>
       </div>
     </nav>
   );

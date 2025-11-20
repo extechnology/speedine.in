@@ -22,7 +22,7 @@ const StepTellsStory = () => {
               rem repudiandae ad quis minus amet quibusdam dicta hic.
             </p>
             <Link to="/about">
-              <button className="mt-4 px-8 py-3 bg-linear-to-r from-amber-700 to-red-800 text-white font-semibold rounded-full hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
+              <button className="mt-2 md:px-8 md:py-3 px-4 py-2 md:text-sm text-xs bg-linear-to-r from-amber-700 to-red-800 text-white font-semibold rounded-full hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
                 Learn More
               </button>
             </Link>
