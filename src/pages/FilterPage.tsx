@@ -173,7 +173,7 @@ const FilterPage = () => {
     <div className="min-h-screen bg-linear-to-br from-orange-50 via-white to-red-50">
       <div className="max-w-7xl mx-auto md:px-4 px-2 py-8">
         {/* Header */}
-        <div className="md:mb-8 mb-4">
+        <div className="md:mb-8 mb-4 pl-2">
           <h1 className="md:text-4xl text-2xl font-extrabold text-amber-900 mb-2">
             Our Products
           </h1>
