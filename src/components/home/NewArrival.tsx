@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 const NewArrival = () => {
+  const navigate = useNavigate();
   const products = [
     {
       id: 1,
@@ -63,7 +66,12 @@ const NewArrival = () => {
               <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
               {/* Quick View Button */}
-              <button className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-gray-900 px-6 py-2 rounded-full font-semibold opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-[#640000] hover:text-white">
+
+              <button
+                title="Quick View"
+                onClick={() => navigate(`/detail`)}
+                className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-gray-900 px-6 py-2 rounded-full font-semibold opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-[#640000] hover:text-white"
+              >
                 Quick View
               </button>
             </div>
@@ -108,7 +116,7 @@ const NewArrival = () => {
 
             {/* Rating Stars */}
             <div className="px-6 pb-6 flex items-center gap-1">
-              {[...Array(5)].map((_, i) => (
+              {Array.from({ length: 5 }).map((_, i) => (
                 <svg
                   key={i}
                   className="w-4 h-4 text-yellow-400 fill-current"
@@ -125,7 +133,11 @@ const NewArrival = () => {
 
       {/* View All Button */}
       <div className="text-center md:mt-12 mt-5">
-        <button className="bg-[#660000] text-white md:px-8 md:py-3 px-4 py-2 text-xs md:text-md rounded-full font-semibold hover:bg-[#640000] transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-500">
+        <button
+          onClick={() => navigate(`/Products`)}
+          title="View All Products"
+          className="bg-[#660000] text-white md:px-8 md:py-3 px-4 py-2 text-xs md:text-md rounded-full font-semibold hover:bg-[#640000] transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-500"
+        >
           View All Products
         </button>
       </div>

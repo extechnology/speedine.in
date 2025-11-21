@@ -17,7 +17,7 @@ const NavItems = [
       { label: "Spices & Masalas", href: "/products?category=beverages" },
     ],
   },
-  { name: "Find Recipes", href: "/products" },
+  { name: "Find Recipes", href: "/recipe" },
   { name: "Order Now", href: "/products" },
   { name: "Contact", href: "/contact" },
 ];
@@ -27,7 +27,6 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-  
   return (
     <nav className="py-1 shadow-md border-gray-400 bg-white/60 backdrop-blur-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4">
@@ -37,7 +36,7 @@ const Navbar = () => {
         </Link>
 
         {/* Navigation Items */}
-        <ul className="hidden md:flex gap-8 text-gray-700 font-medium">
+        <ul className="hidden md:flex gap-8 text-gray-600 font-medium">
           {NavItems.map((item) => (
             <li key={item.name} className="relative group">
               {/* Main link */}
@@ -114,7 +113,7 @@ const Navbar = () => {
                 <Search
                   size={22}
                   strokeWidth={2}
-                  className="text-gray-700 hover:text-gray-100"
+                  className="text-gray-600 hover:text-gray-100"
                 />
               </button>
             )}
@@ -129,7 +128,7 @@ const Navbar = () => {
             <Search
               size={22}
               strokeWidth={2}
-              className="text-gray-700 hover:text-gray-100"
+              className="text-gray-600 hover:text-gray-100"
             />
           </button>
 
@@ -141,7 +140,7 @@ const Navbar = () => {
             <ShoppingBag
               size={22}
               strokeWidth={2}
-              className="text-gray-700 hover:text-gray-100"
+              className="text-gray-600 hover:text-gray-100"
             />
           </Link>
 
@@ -206,15 +205,7 @@ const Navbar = () => {
           {NavItems.map((item, index) => (
             <li key={item.name} className="transition-all">
               {/* Normal item without dropdown */}
-              {!item.dropdown ? (
-                <Link
-                  to={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-2 px-4 text-gray-700 font-bold hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg"
-                >
-                  {item.name}
-                </Link>
-              ) : (
+              {item.dropdown ? (
                 <>
                   {/* Dropdown parent */}
                   <button
@@ -247,6 +238,16 @@ const Navbar = () => {
                     ))}
                   </div>
                 </>
+              ) : (
+                <div>
+                  <Link
+                    to={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block py-2 px-4 text-gray-700 font-bold hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg"
+                  >
+                    {item.name}
+                  </Link>
+                </div>
               )}
             </li>
           ))}

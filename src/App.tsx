@@ -13,10 +13,13 @@ const About = lazy(() => import("./pages/AboutUs"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Detail = lazy(() => import("./pages/DetailPage"));
 const Products = lazy(() => import("./pages/FilterPage"));
+const Authentication = lazy(() => import("./pages/Authentication"));
+const Verify = lazy(() => import("./pages/VerifyOtp"));
+const Recipe = lazy(() => import("./pages/RecipePage"));
 
 function App() {
   return (
-    <>
+    <div>
       <BrowserRouter>
         <Navbar />
         <ScrollToTop />
@@ -28,11 +31,14 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/detail" element={<Detail />} />
             <Route path="/Products" element={<Products />} />
+            <Route path="/auth" element={<Authentication />} />
+            <Route path="/verify" element={<Verify />} />
+            <Route path="/recipe" element={<Recipe />} />
           </Routes>
         </Suspense>
         <Footer />
       </BrowserRouter>
-    </>
+    </div>
   );
 }
 

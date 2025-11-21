@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Product {
   id: number;
@@ -41,7 +42,7 @@ const ProductData: Product[] = [
     price: 90,
     image: "/chillie2.jpg",
     category: "Spices",
-    rating: 4.0,
+    rating: 4.1,
   },
   {
     id: 5,
@@ -62,6 +63,7 @@ const ProductData: Product[] = [
 ];
 
 const FilterPage = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [priceRange, setPriceRange] = useState([0, 200]);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
@@ -165,7 +167,9 @@ const FilterPage = () => {
             min="0"
             max="200"
             value={priceRange[1]}
-            onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
+            onChange={(e) =>
+              setPriceRange([0, Number.parseInt(e.target.value)])
+            }
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#D1A837]"
           />
           <div className="flex justify-between text-sm text-gray-600 font-medium">
@@ -287,15 +291,21 @@ const FilterPage = () => {
                   className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer"
                 >
                   <div className="relative overflow-hidden bg-linear-to-br from-red-50 to-orange-50">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
-                      onError={(e) => {
-                        e.currentTarget.src =
-                          "https://images.unsplash.com/photo-1599639957043-f3aa5c986398?w=400&h=400&fit=crop";
-                      }}
-                    />
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/detail`)}
+                      className="block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#DBB737]"
+                    >
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
+                        onError={(e) => {
+                          e.currentTarget.src =
+                            "https://images.unsplash.com/photo-1599639957043-f3aa5c986398?w=400&h=400&fit=crop";
+                        }}
+                      />
+                    </button>
                     <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full shadow-md">
                       <span className="text-sm font-semibold text-red-600">
                         -20%
