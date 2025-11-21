@@ -9,6 +9,8 @@
   display: none;
 }
 
+
+
 body {
   /* font-family: "Lora", serif; */
   /* font-family: "Afacad", sans-serif; */
@@ -25,3 +27,14 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out;
+}
+

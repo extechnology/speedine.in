@@ -67,6 +67,14 @@ const FilterPage = () => {
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState("featured");
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedWeight, setSelectedWeight] = useState("");
+
+  const toggleCategory = (cat: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+    );
+  };
 
   const filteredProducts = ProductData.filter((product) => {
     const matchesSearch = product.name
@@ -86,20 +94,62 @@ const FilterPage = () => {
   });
 
   const FilterSection = () => (
-    <div className="space-y-6">
+    <div className="space-y-8  p-2 rounded-2xl  border-gray-200">
       {/* Search */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-gray-800">Search</h3>
+        <h3 className="text-lg font-semibold mb-3 text-gray-800 flex items-center gap-2">
+          <Search className="w-4 h-4" /> Search
+        </h3>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="text"
             placeholder="Search products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D1A837] bg-gray-50 hover:bg-white transition"
           />
         </div>
+      </div>
+
+      {/* Category Filter */}
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-gray-800">Category</h3>
+        <div className="space-y-2">
+          {["Spices", "Snacks", "Beverages", "Dry Fruits"].map((category) => (
+            <label
+              key={category}
+              className="flex items-center gap-3 cursor-pointer group"
+            >
+              <input
+                type="checkbox"
+                checked={selectedCategories.includes(category)}
+                onChange={() => toggleCategory(category)}
+                className="w-4 h-4 accent-[#D1A837] cursor-pointer"
+              />
+              <span className="text-gray-700 group-hover:text-[#D1A837] transition">
+                {category}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Weight Filter */}
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-gray-800">Weight</h3>
+        <select
+          title="select weight"
+          value={selectedWeight}
+          onChange={(e) => setSelectedWeight(e.target.value)}
+          className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 bg-gray-50 hover:bg-white focus:ring-2 focus:ring-[#D1A837] transition"
+        >
+          <option value="">All</option>
+          <option value="100g">100g</option>
+          <option value="250g">250g</option>
+          <option value="500g">500g</option>
+          <option value="1kg">1kg</option>
+        </select>
       </div>
 
       {/* Price Range */}
@@ -116,43 +166,16 @@ const FilterPage = () => {
             max="200"
             value={priceRange[1]}
             onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-red-600"
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#D1A837]"
           />
-          <div className="flex justify-between text-sm text-gray-600">
+          <div className="flex justify-between text-sm text-gray-600 font-medium">
             <span>₹{priceRange[0]}</span>
             <span>₹{priceRange[1]}</span>
           </div>
         </div>
       </div>
 
-      {/* Rating Filter */}
-      <div>
-        <h3 className="text-lg font-semibold mb-3 text-gray-800">Rating</h3>
-        <div className="space-y-2">
-          {[4, 3, 2, 1].map((rating) => (
-            <label
-              key={rating}
-              className="flex items-center space-x-2 cursor-pointer group"
-            >
-              <input
-                type="radio"
-                name="rating"
-                checked={selectedRating === rating}
-                onChange={() => setSelectedRating(rating)}
-                className="w-4 h-4 text-red-600 focus:ring-red-500"
-              />
-              <span className="flex items-center text-gray-700 group-hover:text-red-600">
-                {Array.from({ length: rating }).map((_, i) => (
-                  <span key={i} className="text-yellow-400">
-                    ★
-                  </span>
-                ))}
-                <span className="ml-1">& Up</span>
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
+      
 
       {/* Clear Filters */}
       <button
@@ -161,8 +184,10 @@ const FilterPage = () => {
           setPriceRange([0, 200]);
           setSelectedRating(null);
           setSortBy("featured");
+          setSelectedCategories([]);
+          setSelectedWeight("");
         }}
-        className="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors font-medium"
+        className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl transition font-semibold"
       >
         Clear All Filters
       </button>
@@ -237,7 +262,7 @@ const FilterPage = () => {
           <div className="flex-1">
             {/* Sort Bar */}
             <div className="bg-white px-2 rounded-xl shadow-sm border border-gray-100 p-4 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-sm pl-5">
                 <span className="font-semibold text-sm text-gray-900">
                   {filteredProducts.length}
                 </span>{" "}
@@ -247,7 +272,7 @@ const FilterPage = () => {
                 title="sort by"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-white"
+                className="px-4 mr-2 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-white"
               >
                 <option value="featured">Featured</option>
                 <option value="price-low">Price: Low to High</option>
@@ -297,7 +322,7 @@ const FilterPage = () => {
                         ({product.rating})
                       </span>
                     </div>
-                    <h3 className="md:text-lg text-sm truncate font-semibold text-amber-900 mb-2 group-hover:text-amber-600 transition-colors">
+                    <h3 className="md:text-lg text-sm truncate font-medium text-amber-900 mb-2 group-hover:text-amber-600 transition-colors">
                       {product.name}
                     </h3>
                     <div className="flex items-center justify-between">

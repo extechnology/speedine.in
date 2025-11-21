@@ -5,7 +5,18 @@ import { ShoppingBag, Search, User, Menu, X } from "lucide-react";
 const NavItems = [
   { name: "Home", href: "/" },
   { name: "About", href: "/about" },
-  { name: "Products", href: "/products" },
+  {
+    name: "Products",
+    href: "/products",
+    dropdown: [
+      { label: "All Products", href: "/products" },
+      { label: "Instant Veg Recipe", href: "/products?category=spices" },
+      { label: "Instant Chicken Recipe", href: "/products?category=snacks" },
+      { label: "Instant Fish Recipe", href: "/products?category=beverages" },
+      { label: "Instant Meat Recipe", href: "/products?category=beverages" },
+      { label: "Spices & Masalas", href: "/products?category=beverages" },
+    ],
+  },
   { name: "Find Recipes", href: "/products" },
   { name: "Order Now", href: "/products" },
   { name: "Contact", href: "/contact" },
@@ -14,7 +25,9 @@ const NavItems = [
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
+  
   return (
     <nav className="py-1 shadow-md border-gray-400 bg-white/60 backdrop-blur-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4">
@@ -26,13 +39,47 @@ const Navbar = () => {
         {/* Navigation Items */}
         <ul className="hidden md:flex gap-8 text-gray-700 font-medium">
           {NavItems.map((item) => (
-            <li key={item.name}>
+            <li key={item.name} className="relative group">
+              {/* Main link */}
               <Link
                 to={item.href}
-                className="hover:text-[#D1A837] transition-colors"
+                className="hover:text-[#D1A837] transition-colors flex items-center gap-1"
               >
                 {item.name}
               </Link>
+
+              {/* Desktop dropdown on hover */}
+              {item.dropdown && (
+                <div
+                  className="
+    absolute left-0 top-full mt-2 w-64
+    bg-linear-to-br from-white via-[#fff7e7] to-white
+    shadow-xl rounded-xl border border-gray-100
+    opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-1
+    transition-all duration-300 ring-1 ring-[#d1a837]/10 z-20
+  "
+                >
+                  {item.dropdown.map((d, idx) => (
+                    <Link
+                      key={d.label}
+                      to={d.href}
+                      className={`
+          flex items-center gap-3 px-5 py-3 
+          text-gray-700 transition 
+          hover:bg-[#D1A837]/20 hover:text-[#D1A837] hover:pl-7
+          rounded-lg group
+          ${idx > 0 ? "border-t border-gray-100" : ""}
+        `}
+                    >
+                      {/* Optional: Placeholder for a left-side icon */}
+                      {/* <IconComponent className="h-5 w-5 text-gray-300 group-hover:text-[#D1A837]" /> */}
+                      <span className="font-medium tracking-wide">
+                        {d.label}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </li>
           ))}
         </ul>
@@ -115,9 +162,17 @@ const Navbar = () => {
             className="md:hidden p-2 hover:bg-[#D1A837] rounded-full transition-colors"
           >
             {isMobileMenuOpen ? (
-              <X size={24} strokeWidth={2} className="text-gray-700 hover:text-gray-100" />
+              <X
+                size={24}
+                strokeWidth={2}
+                className="text-gray-700 hover:text-gray-100"
+              />
             ) : (
-              <Menu size={24}  strokeWidth={2} className="text-gray-700 hover:text-gray-100" />
+              <Menu
+                size={24}
+                strokeWidth={2}
+                className="text-gray-700 hover:text-gray-100"
+              />
             )}
           </button>
         </div>
@@ -149,24 +204,53 @@ const Navbar = () => {
       >
         <ul className="px-4 py-4 space-y-3 bg-white/80 backdrop-blur-sm">
           {NavItems.map((item, index) => (
-            <li
-              key={item.name}
-              className="transform transition-all duration-300 ease-out"
-              style={{
-                animation: isMobileMenuOpen
-                  ? `slideDown 0.3s ease-out ${index * 0.05}s both`
-                  : "none",
-              }}
-            >
-              <Link
-                to={item.href}
-                className="block py-2 px-4 text-gray-700 font-bold hover:bg-[#D1A837]/10 hover:text-[#D1A837] rounded-lg transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
+            <li key={item.name} className="transition-all">
+              {/* Normal item without dropdown */}
+              {!item.dropdown ? (
+                <Link
+                  to={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block py-2 px-4 text-gray-700 font-bold hover:bg-[#D1A837]/10 hover:text-[#D1A837] rounded-lg"
+                >
+                  {item.name}
+                </Link>
+              ) : (
+                <>
+                  {/* Dropdown parent */}
+                  <button
+                    onClick={() =>
+                      setOpenDropdown(
+                        openDropdown === item.name ? null : item.name
+                      )
+                    }
+                    className="w-full flex justify-between items-center py-2 px-4 text-gray-700 font-bold hover:bg-[#D1A837]/10 hover:text-[#D1A837] rounded-lg"
+                  >
+                    {item.name}
+                    <span>{openDropdown === item.name ? "▲" : "▼"}</span>
+                  </button>
+
+                  {/* Dropdown content */}
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ${
+                      openDropdown === item.name ? "max-h-40" : "max-h-0"
+                    }`}
+                  >
+                    {item.dropdown.map((d) => (
+                      <Link
+                        key={d.label}
+                        to={d.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block ml-6 py-2 px-3 text-gray-600 hover:text-[#D1A837]"
+                      >
+                        {d.label}
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
             </li>
           ))}
+
           <li
             className="transform transition-all duration-300 ease-out"
             style={{
