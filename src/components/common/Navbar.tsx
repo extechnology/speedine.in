@@ -202,7 +202,7 @@ const Navbar = () => {
         }`}
       >
         <ul className="px-4 py-4 space-y-3 bg-white/80 backdrop-blur-sm">
-          {NavItems.map((item, index) => (
+          {NavItems.map((item) => (
             <li key={item.name} className="transition-all">
               {/* Normal item without dropdown */}
               {item.dropdown ? (
