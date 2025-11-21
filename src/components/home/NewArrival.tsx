@@ -27,10 +27,10 @@ const NewArrival = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4 md:pb-14 pb-6 pt-8">
       {/* Header Section */}
       <div className="text-center md:mb-12 mb-5">
-        <span className="inline-block px-4 py-1 text-amber-900 bg-[#D1A837] rounded-full text-sm font-semibold mb-4">
+        <span className="inline-block px-4 py-1 text-[#640000] bg-[#DBB737] rounded-full text-sm font-semibold mb-4">
           Fresh Collection
         </span>
-        <h2 className="text-2xl md:text-4xl font-bold text-amber-900 mb-4">
+        <h2 className="text-2xl md:text-4xl font-bold text-[#640000] mb-4">
           Fast Moving Products
         </h2>
         <p className="text-gray-600 md:text-md text-sm max-w-2xl mx-auto">
@@ -48,7 +48,7 @@ const NewArrival = () => {
           >
             {/* Badge */}
             <div className="absolute top-4 left-4 z-10">
-              <span className="bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+              <span className="bg-[#DBB737] text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
                 {product.badge}
               </span>
             </div>
@@ -63,14 +63,14 @@ const NewArrival = () => {
               <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
               {/* Quick View Button */}
-              <button className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-gray-900 px-6 py-2 rounded-full font-semibold opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-[#7A0E0E] hover:text-white">
+              <button className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-gray-900 px-6 py-2 rounded-full font-semibold opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-[#640000] hover:text-white">
                 Quick View
               </button>
             </div>
 
             {/* Content */}
             <div className="p-6">
-              <h3 className="text-xl font-bold text-amber-900 mb-2 group-hover:text-[#7A0E0E] transition-colors">
+              <h3 className="text-xl font-bold text-[#640000] mb-2 group-hover:text-[#640000] transition-colors">
                 {product.title}
               </h3>
               <p className="text-gray-600 mb-2">{product.description}</p>
@@ -78,7 +78,7 @@ const NewArrival = () => {
               {/* Price and Action */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl font-bold text-amber-900">
+                  <span className="text-2xl font-bold text-[#640000]">
                     ₹129
                   </span>
                   <span className="text-sm text-gray-400 line-through">
@@ -87,7 +87,7 @@ const NewArrival = () => {
                 </div>
                 <button
                   title="view products"
-                  className="bg-amber-900 text-white p-2 rounded-lg hover:bg-[#7A0E0E] transition-colors"
+                  className="bg-[#640000] text-white p-2 rounded-lg hover:bg-[#640000] transition-colors"
                 >
                   <svg
                     className="w-5 h-5"
@@ -125,7 +125,7 @@ const NewArrival = () => {
 
       {/* View All Button */}
       <div className="text-center md:mt-12 mt-5">
-        <button className="bg-[#660000] text-white md:px-8 md:py-3 px-4 py-2 text-xs md:text-md rounded-full font-semibold hover:bg-[#7A0E0E] transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-500">
+        <button className="bg-[#660000] text-white md:px-8 md:py-3 px-4 py-2 text-xs md:text-md rounded-full font-semibold hover:bg-[#640000] transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-500">
           View All Products
         </button>
       </div>

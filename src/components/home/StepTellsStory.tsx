@@ -9,7 +9,7 @@ const StepTellsStory = () => {
           <div className="w-full lg:w-1/2 space-y-6">
             <h1 className="text-2xl lg:text-4xl font-bold text-slate-900 leading-tight">
               Every Step Tells a{" "}
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-amber-600 to-red-700">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-amber-700 to-[#640000]">
                 Story
               </span>
             </h1>
@@ -22,7 +22,7 @@ const StepTellsStory = () => {
               rem repudiandae ad quis minus amet quibusdam dicta hic.
             </p>
             <Link to="/about">
-              <button className="mt-2 md:px-8 md:py-3 px-4 py-2 md:text-sm text-xs bg-linear-to-r from-amber-700 to-red-800 text-white font-semibold rounded-full hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
+              <button className="mt-2 md:px-8 md:py-3 px-4 py-2 md:text-sm text-xs bg-linear-to-r from-amber-700 to-[#640000] text-white font-semibold rounded-full hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
                 Learn More
               </button>
             </Link>

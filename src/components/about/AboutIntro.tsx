@@ -16,7 +16,7 @@ const AboutIntro = () => {
             </div>
           </div>
           <div>
-            <h2 className="text-3xl font-semibold text-center md:text-start text-amber-900 mb-3">
+            <h2 className="text-3xl font-semibold text-center md:text-start text-[#640000] mb-3">
               Who We Are
             </h2>
             <p className="text-neutral-900 mb-4 text-justify leading-relaxed">
@@ -32,7 +32,7 @@ const AboutIntro = () => {
               meals in minutes without compromising on freshness or
               authenticity.
             </p>
-            <p className="text-neutral-900 text-justify leading-relaxed border-b border-dashed border-amber-900 pb-5">
+            <p className="text-neutral-900 text-justify leading-relaxed border-b border-dashed border-[#640000] pb-5">
               From classing Kerala flavours to specialty regional blends, we are
               committed to offering products that make cooking faster, easier
               and more enjoyable for today's busy busy households.
@@ -41,35 +41,35 @@ const AboutIntro = () => {
               <a
                 href="https://www.instagram.com/speedine.in/"
                 title="Instagram"
-                className="p-2 rounded-full bg-amber-900 hover:bg-indigo-500 transition-colors"
+                className="p-2 rounded-full bg-[#640000] hover:bg-indigo-500 transition-colors"
               >
                 <Instagram size={20} />
               </a>
               <a
                 href="https://www.facebook.com/speedine.in/"
                 title="Facebook"
-                className="p-2 rounded-full bg-amber-900 hover:bg-indigo-500 transition-colors"
+                className="p-2 rounded-full bg-[#640000] hover:bg-indigo-500 transition-colors"
               >
                 <Facebook size={20} />
               </a>
               <a
                 href="https://x.com/speedinein"
                 title="Twitter"
-                className="p-2 rounded-full bg-amber-900 hover:bg-indigo-500 transition-colors"
+                className="p-2 rounded-full bg-[#640000] hover:bg-indigo-500 transition-colors"
               >
                 <FaXTwitter size={20} />
               </a>
               <a
                 href="https://in.pinterest.com/speedinein/"
                 title="YouTube"
-                className="p-2 rounded-full bg-amber-900 hover:bg-indigo-500 transition-colors"
+                className="p-2 rounded-full bg-[#640000] hover:bg-indigo-500 transition-colors"
               >
                 <PiPinterestLogo size={20} />
               </a>
               <a
                 href="https://www.linkedin.com/company/speedine/"
                 title="Linkedin"
-                className="p-2 rounded-full bg-amber-900 hover:bg-indigo-500 transition-colors"
+                className="p-2 rounded-full bg-[#640000] hover:bg-indigo-500 transition-colors"
               >
                 <Linkedin size={20} />
               </a>

@@ -32,7 +32,7 @@ const Thumbnail = () => {
           </p>
 
           <button
-            className="mt-4 px-5 py-2 rounded-md bg-gradient-to-r from-amber-700 to-amber-900 
+            className="mt-4 px-5 py-2 rounded-md bg-linear-to-r from-amber-800 to-[#640000] 
                        text-white font-semibold shadow-md hover:shadow-lg transition-all"
           >
             Explore Now

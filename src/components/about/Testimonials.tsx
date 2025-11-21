@@ -43,7 +43,7 @@ const Testimonials = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 md:py-16 py-8">
       {/* Section Heading */}
-      <h1 className="text-3xl font-semibold md:mb-8 mb-5 text-center bg-clip-text text-transparent bg-linear-to-r from-amber-700 to-amber-900">
+      <h1 className="text-3xl font-semibold md:mb-8 mb-5 text-center bg-clip-text text-transparent bg-linear-to-r from-amber-700 to-[#640000]">
         What Our Customers Say
       </h1>
 
@@ -54,7 +54,7 @@ const Testimonials = () => {
             key={data.id}
             className="p-6 rounded-2xl shadow-lg bg-white border border-amber-100 hover:shadow-2xl hover:border-amber-300 transition-all duration-300"
           >
-            <h2 className="text-xl font-semibold text-amber-900 mb-3">
+            <h2 className="text-xl font-semibold text-[#640000] mb-3">
               {data.name}
             </h2>
             <p className="text-gray-700 leading-relaxed">“{data.comment}”</p>

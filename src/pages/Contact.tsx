@@ -20,14 +20,14 @@ const Contact = () => {
       <div className="max-w-6xl mx-auto px-5 md:px-8 py-14 grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* ADDRESS SECTION */}
         <div className="p-6">
-          <h2 className="text-2xl font-medium mb-6 text-amber-800">
+          <h2 className="text-2xl font-medium mb-6 text-[#640000]">
             Our Address
           </h2>
 
           {/* ADDRESS */}
           <div className="flex items-start gap-4 mb-6">
             <div className="p-3 bg-amber-100 rounded-lg">
-              <MapPin className="h-6 w-6 text-amber-800" />
+              <MapPin className="h-6 w-6 text-[#640000]" />
             </div>
             <div className="text-neutral-700 leading-relaxed">
               <p className="text-lg font-semibold">SpeeDine</p>
@@ -39,17 +39,19 @@ const Contact = () => {
           {/* PHONE */}
           <div className="flex items-start gap-4 mb-6">
             <div className="p-3 bg-amber-100 rounded-lg">
-              <Phone className="h-6 w-6 text-amber-800" />
+              <Phone className="h-6 w-6 text-[#640000]" />
             </div>
-            <p className="text-neutral-700 text-lg font-medium">
-              +91 8891707787
-            </p>
+            <div className="content-center">
+              <p className="text-neutral-700 text-lg font-medium">
+                +91 8891707787
+              </p>
+            </div>
           </div>
 
           {/* EMAIL */}
           <div className="flex items-start gap-4 content-center">
             <div className="p-3 bg-amber-100 rounded-lg">
-              <Mail className="h-6 w-6 text-amber-800" />
+              <Mail className="h-6 w-6 text-[#640000]" />
             </div>
             <p className="text-neutral-700 text-lg content-center font-medium">
               speedine.in@gmail.com
@@ -59,7 +61,7 @@ const Contact = () => {
 
         {/* CONTACT FORM */}
         <div className="p-6 rounded-xl  border border-amber-100">
-          <h2 className="text-2xl font-medium mb-6 text-amber-800">
+          <h2 className="text-2xl font-medium mb-6 text-[#640000]">
             Get In Touch
           </h2>
 
@@ -90,7 +92,7 @@ const Contact = () => {
 
             <button
               type="submit"
-              className="w-full py-3 rounded-md bg-linear-to-r from-amber-700 to-amber-900 text-white font-semibold shadow-md hover:from-amber-800 hover:to-amber-900 transition"
+              className="w-full py-3 rounded-md bg-linear-to-r from-amber-800 to-[#640000] text-white font-semibold shadow-md hover:from-[#640000] hover:to-amber-900 transition"
             >
               Send Message
             </button>

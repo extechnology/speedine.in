@@ -97,7 +97,7 @@ const FilterPage = () => {
     <div className="space-y-8  p-2 rounded-2xl  border-gray-200">
       {/* Search */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-gray-800 flex items-center gap-2">
+        <h3 className="text-lg font-semibold mb-3 text-[#640000] flex items-center gap-2">
           <Search className="w-4 h-4" /> Search
         </h3>
         <div className="relative">
@@ -107,14 +107,14 @@ const FilterPage = () => {
             placeholder="Search products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D1A837] bg-gray-50 hover:bg-white transition"
+            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#DBB737] bg-gray-50 hover:bg-white transition"
           />
         </div>
       </div>
 
       {/* Category Filter */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-gray-800">Category</h3>
+        <h3 className="text-lg font-semibold mb-3 text-[#640000]">Category</h3>
         <div className="space-y-2">
           {["Spices", "Snacks", "Beverages", "Dry Fruits"].map((category) => (
             <label
@@ -125,9 +125,9 @@ const FilterPage = () => {
                 type="checkbox"
                 checked={selectedCategories.includes(category)}
                 onChange={() => toggleCategory(category)}
-                className="w-4 h-4 accent-[#D1A837] cursor-pointer"
+                className="w-4 h-4 accent-[#DBB737] cursor-pointer"
               />
-              <span className="text-gray-700 group-hover:text-[#D1A837] transition">
+              <span className="text-gray-700 group-hover:text-[#DBB737] transition">
                 {category}
               </span>
             </label>
@@ -137,12 +137,12 @@ const FilterPage = () => {
 
       {/* Weight Filter */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-gray-800">Weight</h3>
+        <h3 className="text-lg font-semibold mb-3 text-[#640000]">Weight</h3>
         <select
           title="select weight"
           value={selectedWeight}
           onChange={(e) => setSelectedWeight(e.target.value)}
-          className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 bg-gray-50 hover:bg-white focus:ring-2 focus:ring-[#D1A837] transition"
+          className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 bg-gray-50 hover:bg-white focus:ring-2 focus:ring-[#DBB737] transition"
         >
           <option value="">All</option>
           <option value="100g">100g</option>
@@ -154,7 +154,7 @@ const FilterPage = () => {
 
       {/* Price Range */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-gray-800">
+        <h3 className="text-lg font-semibold mb-3 text-[#640000]">
           Price Range
         </h3>
 
@@ -175,8 +175,6 @@ const FilterPage = () => {
         </div>
       </div>
 
-      
-
       {/* Clear Filters */}
       <button
         onClick={() => {
@@ -187,7 +185,7 @@ const FilterPage = () => {
           setSelectedCategories([]);
           setSelectedWeight("");
         }}
-        className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl transition font-semibold"
+        className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-[#640000] rounded-xl transition font-semibold"
       >
         Clear All Filters
       </button>
@@ -199,7 +197,7 @@ const FilterPage = () => {
       <div className="max-w-7xl mx-auto md:px-4 px-2 py-8">
         {/* Header */}
         <div className="md:mb-8 mb-4 pl-2">
-          <h1 className="md:text-4xl text-2xl font-medium text-amber-900 mb-2">
+          <h1 className="md:text-4xl text-2xl font-medium text-[#640000] mb-2">
             Our Products
           </h1>
           <p className="text-sm text-gray-600">
@@ -272,7 +270,7 @@ const FilterPage = () => {
                 title="sort by"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 mr-2 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-white"
+                className="px-4 mr-2 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DBB737] bg-white"
               >
                 <option value="featured">Featured</option>
                 <option value="price-low">Price: Low to High</option>
@@ -322,7 +320,7 @@ const FilterPage = () => {
                         ({product.rating})
                       </span>
                     </div>
-                    <h3 className="md:text-lg text-sm truncate font-medium text-amber-900 mb-2 group-hover:text-amber-600 transition-colors">
+                    <h3 className="md:text-lg text-sm truncate font-medium text-[#640000] mb-2 group-hover:text-amber-600 transition-colors">
                       {product.name}
                     </h3>
                     <div className="flex items-center justify-between">
@@ -335,7 +333,7 @@ const FilterPage = () => {
                         </span>
                       </div>
                     </div>
-                    <button className="w-full text-xs md:text-md mt-4 bg-linear-to-r from-amber-700 to-amber-900 text-white md:py-2.5 py-1.5 rounded-lg hover:from-amber-900 hover:to-amber-700 transition-all font-medium shadow-md hover:shadow-lg">
+                    <button className="w-full text-xs md:text-md mt-4 bg-linear-to-r from-amber-700 to-[#640000] text-white md:py-2.5 py-1.5 rounded-lg hover:from-[#640000] hover:to-amber-700 transition-all font-medium shadow-md hover:shadow-lg">
                       Add to Cart
                     </button>
                   </div>

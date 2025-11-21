@@ -43,7 +43,7 @@ const Navbar = () => {
               {/* Main link */}
               <Link
                 to={item.href}
-                className="hover:text-[#D1A837] transition-colors flex items-center gap-1"
+                className="hover:text-[#DBB737] transition-colors flex items-center gap-1"
               >
                 {item.name}
               </Link>
@@ -56,7 +56,7 @@ const Navbar = () => {
     bg-linear-to-br from-white via-[#fff7e7] to-white
     shadow-xl rounded-xl border border-gray-100
     opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-1
-    transition-all duration-300 ring-1 ring-[#d1a837]/10 z-20
+    transition-all duration-300 ring-1 ring-[#DBB737]/10 z-20
   "
                 >
                   {item.dropdown.map((d, idx) => (
@@ -66,7 +66,7 @@ const Navbar = () => {
                       className={`
           flex items-center gap-3 px-5 py-3 
           text-gray-700 transition 
-          hover:bg-[#D1A837]/20 hover:text-[#D1A837] hover:pl-7
+          hover:bg-[#DBB737]/20 hover:text-[#DBB737] hover:pl-7
           rounded-lg group
           ${idx > 0 ? "border-t border-gray-100" : ""}
         `}
@@ -109,7 +109,7 @@ const Navbar = () => {
               <button
                 title="open search"
                 onClick={() => setIsSearchOpen(true)}
-                className="p-2 hover:bg-[#D1A837] rounded-full transition-colors"
+                className="p-2 hover:bg-[#DBB737] rounded-full transition-colors"
               >
                 <Search
                   size={22}
@@ -124,7 +124,7 @@ const Navbar = () => {
           <button
             title="open search"
             onClick={() => setIsSearchOpen(!isSearchOpen)}
-            className="md:hidden p-2 hover:bg-[#D1A837] rounded-full transition-colors"
+            className="md:hidden p-2 hover:bg-[#DBB737] rounded-full transition-colors"
           >
             <Search
               size={22}
@@ -136,7 +136,7 @@ const Navbar = () => {
           {/* Icons */}
           <Link
             to="/cart"
-            className="p-2 hover:bg-[#D1A837] rounded-full transition-colors"
+            className="p-2 hover:bg-[#DBB737] rounded-full transition-colors"
           >
             <ShoppingBag
               size={22}
@@ -147,7 +147,7 @@ const Navbar = () => {
 
           <Link
             to="/account"
-            className="hidden md:block p-2 hover:bg-[#D1A837] rounded-full transition-colors"
+            className="hidden md:block p-2 hover:bg-[#DBB737] rounded-full transition-colors"
           >
             <User
               strokeWidth={2}
@@ -159,7 +159,7 @@ const Navbar = () => {
           {/* Hamburger Menu */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 hover:bg-[#D1A837] rounded-full transition-colors"
+            className="md:hidden p-2 hover:bg-[#DBB737] rounded-full transition-colors"
           >
             {isMobileMenuOpen ? (
               <X
@@ -210,7 +210,7 @@ const Navbar = () => {
                 <Link
                   to={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-2 px-4 text-gray-700 font-bold hover:bg-[#D1A837]/10 hover:text-[#D1A837] rounded-lg"
+                  className="block py-2 px-4 text-gray-700 font-bold hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg"
                 >
                   {item.name}
                 </Link>
@@ -223,7 +223,7 @@ const Navbar = () => {
                         openDropdown === item.name ? null : item.name
                       )
                     }
-                    className="w-full flex justify-between items-center py-2 px-4 text-gray-700 font-bold hover:bg-[#D1A837]/10 hover:text-[#D1A837] rounded-lg"
+                    className="w-full flex justify-between items-center py-2 px-4 text-gray-700 font-bold hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg"
                   >
                     {item.name}
                     <span>{openDropdown === item.name ? "▲" : "▼"}</span>
@@ -240,7 +240,7 @@ const Navbar = () => {
                         key={d.label}
                         to={d.href}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="block ml-6 py-2 px-3 text-gray-600 hover:text-[#D1A837]"
+                        className="block ml-6 py-2 px-3 text-gray-600 hover:text-[#DBB737]"
                       >
                         {d.label}
                       </Link>
@@ -261,7 +261,7 @@ const Navbar = () => {
           >
             <Link
               to="/account"
-              className="flex items-center gap-2 py-2 px-4 text-gray-700 font-bold hover:bg-[#D1A837]/10 hover:text-[#D1A837] rounded-lg transition-colors"
+              className="flex items-center gap-2 py-2 px-4 text-gray-700 font-bold hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               <User size={20} strokeWidth={2} />
