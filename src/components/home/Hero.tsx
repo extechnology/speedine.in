@@ -55,11 +55,7 @@ const Hero = () => {
                 <div className="absolute inset-0 bg-black/20"></div>
 
                 {/* Label */}
-                <div className="absolute bottom-5 left-5 px-4 py-2 backdrop-blur-md bg-white/30 rounded-xl shadow-md">
-                  <h2 className="text-white text-xl font-semibold tracking-wide">
-                    {slide.title}
-                  </h2>
-                </div>
+                
               </div>
             ))}
           </div>

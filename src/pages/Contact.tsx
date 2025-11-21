@@ -9,7 +9,7 @@ const Contact = () => {
         <div className="absolute inset-0 bg-black/40"></div>
 
         <div className="relative text-center text-white">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-wide drop-shadow-lg">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-wide drop-shadow-lg">
             Contact Us
           </h1>
           <p className="mt-3 text-lg opacity-90">We’d love to hear from you</p>
@@ -20,7 +20,7 @@ const Contact = () => {
       <div className="max-w-6xl mx-auto px-5 md:px-8 py-14 grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* ADDRESS SECTION */}
         <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6 text-amber-800">
+          <h2 className="text-2xl font-medium mb-6 text-amber-800">
             Our Address
           </h2>
 
@@ -47,11 +47,11 @@ const Contact = () => {
           </div>
 
           {/* EMAIL */}
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-4 content-center">
             <div className="p-3 bg-amber-100 rounded-lg">
               <Mail className="h-6 w-6 text-amber-800" />
             </div>
-            <p className="text-neutral-700 text-lg font-medium">
+            <p className="text-neutral-700 text-lg content-center font-medium">
               speedine.in@gmail.com
             </p>
           </div>
@@ -59,7 +59,7 @@ const Contact = () => {
 
         {/* CONTACT FORM */}
         <div className="p-6 rounded-xl  border border-amber-100">
-          <h2 className="text-2xl font-bold mb-6 text-amber-800">
+          <h2 className="text-2xl font-medium mb-6 text-amber-800">
             Get In Touch
           </h2>
 

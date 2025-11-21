@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { Instagram, Facebook, Linkedin } from "lucide-react";
+import { Instagram, Facebook, Linkedin, Youtube } from "lucide-react";
 import { PiPinterestLogo } from "react-icons/pi";
 import { FaXTwitter } from "react-icons/fa6";
 
@@ -8,15 +8,15 @@ const Footer = () => {
   return (
     <footer className="relative bg-[url('/footer-background.jpg')]  text-white">
       <div className="absolute inset-0 bg-amber-900/70"></div>
-      <div className="max-w-7xl mx-auto px-6 py-12 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 pt-12 pb-6 relative z-10">
         {/* TOP CONTENT */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {/* QUICK LINKS */}
           <div>
             <h2 className="text-lg font-semibold mb-4 text-white">
               Quick Links
             </h2>
-            <ul className="space-y-2">
+            <ul className="space-y-1">
               <li>
                 <Link
                   to="/"
@@ -55,7 +55,7 @@ const Footer = () => {
           {/* ADDRESS */}
           <div>
             <h2 className="text-lg font-semibold mb-4 text-white">Address</h2>
-            <div className="space-y-2">
+            <div className="space-y-1">
               <p className="text-white font-medium">SpeeDine</p>
               <p className="leading-relaxed">
                 Malappuram, <br />
@@ -97,6 +97,13 @@ const Footer = () => {
                 className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
               >
                 <PiPinterestLogo size={20} />
+              </a>
+              <a
+                title="youtube"
+                href="https://www.linkedin.com/company/speedine/"
+                className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
+              >
+                <Youtube size={20} />
               </a>
               <a
                 title="linkedin"

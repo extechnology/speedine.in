@@ -16,7 +16,7 @@ const AboutIntro = () => {
             </div>
           </div>
           <div>
-            <h2 className="text-4xl font-extrabold text-center md:text-start text-amber-900 mb-6">
+            <h2 className="text-3xl font-semibold text-center md:text-start text-amber-900 mb-3">
               Who We Are
             </h2>
             <p className="text-neutral-900 mb-4 text-justify leading-relaxed">
@@ -32,12 +32,12 @@ const AboutIntro = () => {
               meals in minutes without compromising on freshness or
               authenticity.
             </p>
-            <p className="text-neutral-900 text-justify leading-relaxed border-b border-dashed border-amber-900 pb-7">
+            <p className="text-neutral-900 text-justify leading-relaxed border-b border-dashed border-amber-900 pb-5">
               From classing Kerala flavours to specialty regional blends, we are
               committed to offering products that make cooking faster, easier
               and more enjoyable for today's busy busy households.
             </p>
-            <div className="flex justify-center text-white gap-4 pt-7">
+            <div className="flex justify-center text-white gap-4 pt-5">
               <a
                 href="https://www.instagram.com/speedine.in/"
                 title="Instagram"

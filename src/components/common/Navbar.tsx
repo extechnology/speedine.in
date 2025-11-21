@@ -24,7 +24,7 @@ const Navbar = () => {
         </Link>
 
         {/* Navigation Items */}
-        <ul className="hidden md:flex gap-8 text-gray-700 font-bold">
+        <ul className="hidden md:flex gap-8 text-gray-700 font-medium">
           {NavItems.map((item) => (
             <li key={item.name}>
               <Link
@@ -43,7 +43,7 @@ const Navbar = () => {
           <div className="hidden md:block">
             {isSearchOpen ? (
               <div className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-xl bg-white shadow-sm focus-within:border-[#D1A837] transition-all animate-[slideIn_0.3s_ease-out]">
-                <Search size={18} strokeWidth={3} className="text-gray-500" />
+                <Search size={18} strokeWidth={2} className="text-gray-500" />
                 <input
                   type="text"
                   placeholder="Search products..."
@@ -66,7 +66,7 @@ const Navbar = () => {
               >
                 <Search
                   size={22}
-                  strokeWidth={3}
+                  strokeWidth={2}
                   className="text-gray-700 hover:text-gray-100"
                 />
               </button>
@@ -81,7 +81,7 @@ const Navbar = () => {
           >
             <Search
               size={22}
-              strokeWidth={3}
+              strokeWidth={2}
               className="text-gray-700 hover:text-gray-100"
             />
           </button>
@@ -93,7 +93,7 @@ const Navbar = () => {
           >
             <ShoppingBag
               size={22}
-              strokeWidth={3}
+              strokeWidth={2}
               className="text-gray-700 hover:text-gray-100"
             />
           </Link>
@@ -103,7 +103,7 @@ const Navbar = () => {
             className="hidden md:block p-2 hover:bg-[#D1A837] rounded-full transition-colors"
           >
             <User
-              strokeWidth={3}
+              strokeWidth={2}
               size={22}
               className="text-gray-700 hover:text-gray-100"
             />
@@ -115,9 +115,9 @@ const Navbar = () => {
             className="md:hidden p-2 hover:bg-[#D1A837] rounded-full transition-colors"
           >
             {isMobileMenuOpen ? (
-              <X size={24} strokeWidth={3} className="text-gray-700 hover:text-gray-100" />
+              <X size={24} strokeWidth={2} className="text-gray-700 hover:text-gray-100" />
             ) : (
-              <Menu size={24}  strokeWidth={3} className="text-gray-700 hover:text-gray-100" />
+              <Menu size={24}  strokeWidth={2} className="text-gray-700 hover:text-gray-100" />
             )}
           </button>
         </div>
@@ -180,7 +180,7 @@ const Navbar = () => {
               className="flex items-center gap-2 py-2 px-4 text-gray-700 font-bold hover:bg-[#D1A837]/10 hover:text-[#D1A837] rounded-lg transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <User size={20} strokeWidth={3} />
+              <User size={20} strokeWidth={2} />
               Account
             </Link>
           </li>

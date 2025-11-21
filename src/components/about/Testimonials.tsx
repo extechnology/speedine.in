@@ -43,7 +43,7 @@ const Testimonials = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 md:py-16 py-8">
       {/* Section Heading */}
-      <h1 className="text-4xl font-extrabold md:mb-12 mb-7 text-center bg-clip-text text-transparent bg-linear-to-r from-amber-700 to-amber-900">
+      <h1 className="text-3xl font-semibold md:mb-8 mb-5 text-center bg-clip-text text-transparent bg-linear-to-r from-amber-700 to-amber-900">
         What Our Customers Say
       </h1>
 

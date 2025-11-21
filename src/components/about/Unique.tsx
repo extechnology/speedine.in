@@ -56,7 +56,7 @@ const UniqueData = [
 const Unique = () => {
   return (
     <div className="max-w-7xl mx-auto pb-12 px-4">
-      <h1 className="text-4xl font-extrabold text-amber-900 mb-10 text-center">
+      <h1 className="text-3xl font-semibold text-amber-900 mb-7 text-center">
         What Makes Us Unique
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-3 md:gap-8 gap-4 ">
