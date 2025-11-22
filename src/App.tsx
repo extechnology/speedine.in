@@ -16,6 +16,7 @@ const Authentication = lazy(() => import("./pages/Authentication"));
 const Verify = lazy(() => import("./pages/VerifyOtp"));
 const Recipe = lazy(() => import("./pages/RecipePage"));
 const Cart = lazy(() => import("./pages/Cart"));
+const CheckOut = lazy(() => import("./pages/CheckOut"));
 const Account = lazy(() => import("./pages/Account"));
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
             <Route path="/verify" element={<Verify />} />
             <Route path="/recipe" element={<Recipe />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<CheckOut />} />
             <Route path="/account" element={<Account />} />
           </Routes>
         </Suspense>

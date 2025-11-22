@@ -298,16 +298,44 @@ const DetailPage = () => {
               <h3 className="text-2xl font-bold text-gray-800 mb-4">
                 Ingredients
               </h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {productDetail.ingredients.map((item) => (
-                  <div
-                    key={item}
-                    className="bg-linear-to-br from-orange-50 to-red-50 p-4 rounded-xl hover:shadow-md transition-all hover:scale-105 cursor-pointer"
-                  >
-                    <div className="text-3xl mb-2">🌿</div>
-                    <div className="font-semibold text-gray-800">{item}</div>
-                  </div>
-                ))}
+              <div className="grid gap-4 text-sm sm:grid-cols-2">
+                {(() => {
+                  const midPoint = Math.ceil(
+                    productDetail.ingredients.length / 2
+                  );
+                  const columns: string[][] = [
+                    productDetail.ingredients.slice(0, midPoint),
+                    productDetail.ingredients.slice(midPoint),
+                  ];
+
+                  return columns.map(
+                    (column: string[], columnIndex: number) => {
+                      const offset = columnIndex === 0 ? 0 : columns[0].length;
+
+                      return (
+                        <ul
+                          key={`ingredients-column-${columnIndex}-${
+                            column[0] || ""
+                          }`}
+                          className="flex flex-col gap-3 rounded-2xl bg-stone-50 p-4"
+                        >
+                          {column.map((item: string, index: number) => (
+                            <li
+                              key={`${item}-${index}`}
+                              className="flex items-center justify-between text-stone-700"
+                            >
+                              <span className="font-medium">
+                                {offset + index + 1}.
+                              </span>
+                              <span className="flex-1 pl-3">{item}</span>
+                              
+                            </li>
+                          ))}
+                        </ul>
+                      );
+                    }
+                  );
+                })()}
               </div>
             </div>
           )}

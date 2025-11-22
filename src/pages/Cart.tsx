@@ -11,6 +11,7 @@ import {
   Shield,
   CreditCard,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface CartItem {
   id: number;
@@ -23,6 +24,7 @@ interface CartItem {
 }
 
 const Cart = () => {
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: 1,
@@ -294,7 +296,10 @@ const Cart = () => {
                 </div>
               </div>
 
-              <button className="w-full bg-linear-to-r from-amber-800 to-[#640000] text-white py-4 rounded-xl font-semibold text-lg hover:shadow-lg transition-all duration-300 hover:scale-105 mb-4 flex items-center justify-center gap-2">
+              <button
+                onClick={() => navigate("/checkout")}
+                className="w-full bg-linear-to-r from-amber-800 to-[#640000] text-white py-4 rounded-xl font-semibold text-lg hover:shadow-lg transition-all duration-300 hover:scale-105 mb-4 flex items-center justify-center gap-2"
+              >
                 <CreditCard size={20} />
                 Proceed to Checkout
               </button>

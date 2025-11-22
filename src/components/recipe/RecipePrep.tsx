@@ -150,7 +150,7 @@ const RecipePrep = () => {
                 Follow the Recipe
               </p>
               <h3 className="text-xl font-bold text-[#640000]">
-                Ingredients Inside
+                Ingredients 
               </h3>
             </div>
             <div className="grid gap-4 text-sm sm:grid-cols-2">
@@ -172,9 +172,7 @@ const RecipePrep = () => {
                           {offset + index + 1}.
                         </span>
                         <span className="flex-1 pl-3">{item}</span>
-                        <span className="text-xs uppercase text-stone-400">
-                          Fresh
-                        </span>
+                        
                       </li>
                     ))}
                   </ul>
