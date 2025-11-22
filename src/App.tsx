@@ -6,7 +6,6 @@ import Navbar from "./components/common/Navbar";
 import Footer from "./components/common/Footer";
 import ScrollToTop from "./components/common/ScrollToTop";
 
-
 const Home = lazy(() => import("./pages/Home"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const About = lazy(() => import("./pages/AboutUs"));
@@ -16,6 +15,8 @@ const Products = lazy(() => import("./pages/FilterPage"));
 const Authentication = lazy(() => import("./pages/Authentication"));
 const Verify = lazy(() => import("./pages/VerifyOtp"));
 const Recipe = lazy(() => import("./pages/RecipePage"));
+const Cart = lazy(() => import("./pages/Cart"));
+const Account = lazy(() => import("./pages/Account"));
 
 function App() {
   return (
@@ -34,6 +35,8 @@ function App() {
             <Route path="/auth" element={<Authentication />} />
             <Route path="/verify" element={<Verify />} />
             <Route path="/recipe" element={<Recipe />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/account" element={<Account />} />
           </Routes>
         </Suspense>
         <Footer />

@@ -1,6 +1,7 @@
 import { memo, useState } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingBag, Search, User, Menu, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const NavItems = [
   { name: "Home", href: "/" },
@@ -24,6 +25,7 @@ const NavItems = [
 
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
@@ -144,16 +146,42 @@ const Navbar = () => {
             />
           </Link>
 
-          <Link
-            to="/account"
-            className="hidden md:block p-2 hover:bg-[#DBB737] rounded-full transition-colors"
-          >
-            <User
-              strokeWidth={2}
-              size={22}
-              className="text-gray-700 hover:text-gray-100"
-            />
-          </Link>
+          <div className="relative group hidden md:block">
+            <button
+              onClick={() => navigate("/account")}
+              title="account"
+              className="p-2 hover:bg-[#DBB737] rounded-full transition-colors"
+            >
+              <User
+                strokeWidth={2}
+                size={22}
+                className="text-gray-700 hover:text-gray-100"
+              />
+            </button>
+
+            {/* Dropdown */}
+            <div
+              className="
+      absolute right-0 mt-2 w-44 bg-white shadow-xl rounded-xl
+      border border-gray-100 opacity-0 invisible
+      group-hover:opacity-100 group-hover:visible group-hover:translate-y-1
+      transition-all duration-300 z-30
+    "
+            >
+              <Link
+                to="/auth"
+                className="block px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737] rounded-t-xl"
+              >
+                🔐 Login
+              </Link>
+              <Link
+                to="/signup"
+                className="block px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737] rounded-b-xl border-t border-gray-100"
+              >
+                ✨ Signup
+              </Link>
+            </div>
+          </div>
 
           {/* Hamburger Menu */}
           <button
@@ -260,14 +288,42 @@ const Navbar = () => {
                 : "none",
             }}
           >
-            <Link
-              to="/account"
-              className="flex items-center gap-2 py-2 px-4 text-gray-700 font-bold hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <User size={20} strokeWidth={2} />
-              Account
-            </Link>
+            <div className="relative group hidden md:block">
+              <button
+                onClick={() => navigate("/account")}
+                title="account"
+                className="p-2 hover:bg-[#DBB737] rounded-full transition-colors"
+              >
+                <User
+                  strokeWidth={2}
+                  size={22}
+                  className="text-gray-700 hover:text-gray-100"
+                />
+              </button>
+
+              {/* Dropdown */}
+              <div
+                className="
+      absolute right-0 mt-2 w-44 bg-white shadow-xl rounded-xl
+      border border-gray-100 opacity-0 invisible
+      group-hover:opacity-100 group-hover:visible group-hover:translate-y-1
+      transition-all duration-300 z-30
+    "
+              >
+                <Link
+                  to="/auth"
+                  className="block px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737] rounded-t-xl"
+                >
+                  🔐 Login
+                </Link>
+                <Link
+                  to="/auth"
+                  className="block px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737] rounded-b-xl border-t border-gray-100"
+                >
+                  ✨ Signup
+                </Link>
+              </div>
+            </div>
           </li>
         </ul>
       </div>
