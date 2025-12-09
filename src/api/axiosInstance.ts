@@ -2,69 +2,60 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
-    Accept: "application/json",
   },
 });
 
-let isRefreshing = false;
-let refreshSubscribers: ((token: string) => void)[] = [];
+// Request: attach access token
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const access = localStorage.getItem("accessToken");
+    if (access) {
+      config.headers.Authorization = `Bearer ${access}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-const subscribeTokenRefresh = (callback: (token: string) => void) => {
-  refreshSubscribers.push(callback);
-};
-
-const onRefreshed = (token: string) => {
-  for (const callback of refreshSubscribers) {
-    callback(token);
-  }
-  refreshSubscribers = [];
-};
-
+// Response interceptor
 axiosInstance.interceptors.response.use(
   (response) => response,
-
   async (error) => {
     const originalRequest = error.config;
 
+    // Token expired (401)
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      if (isRefreshing) {
-        return new Promise((resolve) => {
-          subscribeTokenRefresh((token: string) => {
-            originalRequest.headers["Authorization"] = `Bearer ${token}`;
-            resolve(axiosInstance(originalRequest));
-          });
-        });
-      }
-
-      isRefreshing = true;
-
       try {
-        const { data } = await axiosInstance.post("/auth/refresh/");
+        const refresh = localStorage.getItem("refreshToken");
 
-        const newAccessToken = data.access;
+        const res = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/auth/token/refresh/`,
+          { refresh }
+        );
 
-        onRefreshed(newAccessToken);
+        // Get new access token
+        const newAccess = res.data.access;
+        localStorage.setItem("accessToken", newAccess);
 
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-
+        // Retry original request
+        originalRequest.headers.Authorization = `Bearer ${newAccess}`;
         return axiosInstance(originalRequest);
-      } catch (refreshError) {
-        console.error("Refresh token failed:", refreshError);
 
-        globalThis.location.href = "/login";
-        console.error("Refresh token failed:", refreshError);
-        throw new Error("Refresh token failed");
-      } finally {
-        isRefreshing = false;
+      } catch (err) {
+        // Refresh token expired → force logout
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+
+        // Redirect to login page
+        window.location.href = "/auth";
       }
     }
 
-    throw error;
+    return Promise.reject(error);
   }
 );
 

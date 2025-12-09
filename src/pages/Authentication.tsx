@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { BsGoogle } from "react-icons/bs";
 import { loginUser, registerUser } from "../services/authService";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import axiosInstance from "../api/axiosInstance";
+
 
 const AuthPage = () => {
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -51,8 +53,10 @@ const AuthPage = () => {
           password: form.password,
         });
 
-        if (res.message === "Login successful") navigate("/");
-        console.log(res);
+        if (res.access_token) navigate("/");
+        console.log(res,"login response");
+        localStorage.setItem("accessToken", res.access_token);
+        localStorage.setItem("refreshToken", res.refresh_token);
       }
     } catch (error) {
       console.log(error);
@@ -60,6 +64,29 @@ const AuthPage = () => {
       setLoading(false);
     }
   };
+
+  const handleGoogleLogin = async (credentialResponse: any) => {
+    if (!credentialResponse.credential) return;
+
+    try {
+      const res = await axiosInstance.post(
+        "/auth/google-auth/",
+        { token: credentialResponse.credential },
+        {
+          withCredentials: true, 
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Google login success", res.data);
+      window.location.href = "/"; // redirect user
+    } catch (err) {
+      console.error("Google auth error", err);
+    }
+  };
+
 
   let buttonText;
 
@@ -97,14 +124,10 @@ const AuthPage = () => {
         </div>
 
         {/* Google Sign-in */}
-        <button
-          className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 py-2.5 rounded-xl shadow-sm hover:bg-gray-50 mb-4"
-          onClick={() =>
-            (globalThis.location.href = "http://localhost:8000/auth/google")
-          }
-        >
-          <BsGoogle size={20} /> Continue with Google
-        </button>
+        <GoogleLogin
+          onSuccess={handleGoogleLogin}
+          onError={() => console.log("Google Login Failed")}
+        />
 
         {/* Divider */}
         <div className="flex items-center my-5">

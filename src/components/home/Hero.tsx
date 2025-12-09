@@ -1,63 +1,55 @@
 import { memo, useEffect, useState } from "react";
-
-const slides = [
-  {
-    src: "chillie5.jpg",
-    title: "Premium Chilli Powder",
-  },
-  {
-    src: "chilie4.jpg",
-    title: "Organic Red Chilli Powder",
-  },
-  {
-    src: "chillie3.jpg",
-    title: "Finest Kashmiri Chilli",
-  },
-  {
-    src: "chillie2.jpg",
-    title: "Hot & Spicy Masala Blend",
-  },
-];
+import useHeroCarousel from "../../hooks/useHeroCarousel";
+// import useProducts from "../../hooks/useProducts";
+import { BlurFade } from "../ui/blur-fade";
+// import useProducts from "../../hooks/useProducts";
 
 const Hero = () => {
+  const { carousel } = useHeroCarousel();
+  // const { products } = useProducts();
+
+  // const { products } = useProducts();
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
+    if (!carousel || carousel.length === 0) return;
+
     const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % slides.length);
+      setIndex((prev) => (prev + 1) % carousel.length);
     }, 3000);
+
     return () => clearInterval(interval);
-  }, []);
+  }, [carousel]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:py-12 pt-6 pb-5">
       <div className="flex flex-col md:flex-row gap-6">
         {/* LEFT BIG SLIDER */}
-        <div
-          className="md:w-1/2 w-full overflow-hidden rounded-3xl shadow-lg relative h-[300px] sm:h-[380px] md:h-auto"
-        >
+        <div className="md:w-1/2 w-full overflow-hidden rounded-3xl shadow-lg relative h-[300px] sm:h-[380px] md:h-auto">
           {/* FADE ANIMATION WRAPPER */}
           <div className="relative w-full h-full">
-            {slides.map((slide, i) => (
-              <div
-                key={i}
-                className={`absolute inset-0 transition-opacity duration-700 ${
-                  i === index ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                <img
-                  src={slide.src}
-                  alt={slide.title}
-                  className="aspect-square w-full object-cover transition-transform duration-700 hover:scale-110"
-                />
+            {Array.isArray(carousel) &&
+              carousel?.map((slide, i) => (
+                <div
+                  key={i}
+                  className={`absolute inset-0 transition-opacity duration-700 ${
+                    i === index ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <BlurFade delay={0.25} duration={0.5} inView>
+                    <img
+                      src={slide.image}
+                      alt="carousel images"
+                      className="aspect-square w-full object-cover transition-transform duration-700 hover:scale-110"
+                    />
+                  </BlurFade>
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/20"></div>
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-black/20"></div>
 
-                {/* Label */}
-                
-              </div>
-            ))}
+                  {/* Label */}
+                </div>
+              ))}
           </div>
         </div>
 
@@ -66,7 +58,7 @@ const Hero = () => {
           {/* GRID ITEM WITH TEXT */}
           <div className="relative overflow-hidden rounded-3xl shadow-md group">
             <img
-              src="chilie4.jpg"
+              src="/hero-right1.webp"
               alt="Chilli Powder"
               className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
@@ -77,7 +69,7 @@ const Hero = () => {
           </div>
           <div className="relative overflow-hidden rounded-3xl shadow-md group">
             <img
-              src="chillie3.jpg"
+              src="/hero-right2.webp"
               alt="Chilli Powder"
               className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
@@ -88,7 +80,7 @@ const Hero = () => {
           </div>
           <div className="relative overflow-hidden rounded-3xl shadow-md group">
             <img
-              src="chillie2.jpg"
+              src="/hero-right3.webp"
               alt="Chilli Powder"
               className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
@@ -99,7 +91,7 @@ const Hero = () => {
           </div>
           <div className="relative overflow-hidden rounded-3xl shadow-md group">
             <img
-              src="chillie1.jpg"
+              src="/hero-right4.webp"
               alt="Chilli Powder"
               className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110"
             />

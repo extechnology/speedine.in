@@ -1,116 +1,28 @@
 import { useState } from "react";
-import {
-  ShoppingCart,
-  Star,
-  Heart,
-  Minus,
-  Plus,
-  ChefHat,
-  Clock,
-  Users,
-} from "lucide-react";
-
-const productDetail = {
-  name: "Instant Malabar Chicken Curry 100g",
-  mrp: "₹90.00",
-  originalPrice: "₹120.00",
-  discount: "25% OFF",
-  rating: 4.5,
-  reviews: 128,
-  qtyLabel: "Qty :",
-  description:
-    "Malabar Chicken curry is a rich, aromatic dish from the Malabar region of Kerala. It's known for its deep flavors, coconut based gravy, and generous use of spices.",
-  images: Array.from({ length: 4 }).map((_, idx) => ({
-    id: `image-${idx + 1}`,
-    src: `/chillie5.jpg+${idx + 1}`,
-  })),
-  ingredients: [
-    "Tomato",
-    "Garlic",
-    "Ginger",
-    "Coriander",
-    "Red chilli",
-    "Turmeric",
-    "Coconut",
-    "Cardamom",
-    "Cinnamon",
-    "Cloves",
-    "Fennel",
-    "Cumin",
-  ],
-  prepSummary:
-    "The 100 gm mix of Speedline Malabar Chicken curry is suitable for 1.5 kg chicken. Vegetables like onion, tomato, ginger, and garlic are already included in this mix, so there's no need to add any of this.",
-  prepSteps: [
-    {
-      headline: "Mix",
-      icon: "🥣",
-      details:
-        "Marinate chicken with Speedline Malabar chicken curry mix and salt to taste. Add some curry leaves and oil to the chicken. Then mix well.",
-    },
-    {
-      headline: "Cook",
-      icon: "🍳",
-      details: "Add 800 ml water to chicken then cover and cook on low flame.",
-    },
-    {
-      headline: "Serve",
-      icon: "🍛",
-      details:
-        "Top with coriander leaves and keep covered for 10 minutes. Traditionally served with appam, pathiri, Kerala porotta, ghee rice, coconut rice, etc.",
-    },
-  ],
-  specs: [
-    {
-      icon: <Clock className="w-5 h-5" />,
-      label: "Prep Time",
-      value: "30 mins",
-    },
-    {
-      icon: <Users className="w-5 h-5" />,
-      label: "Serves",
-      value: "4-6 people",
-    },
-    {
-      icon: <ChefHat className="w-5 h-5" />,
-      label: "Difficulty",
-      value: "Easy",
-    },
-  ],
-  sellingProducts: [
-    {
-      id: 1,
-      name: "Kerala Fish Curry",
-      price: "₹85",
-      img: "/chilie4.jpg",
-    },
-    {
-      id: 2,
-      name: "Biryani Masala",
-      price: "₹95",
-      img: "/chillie5.jpg",
-    },
-    {
-      id: 3,
-      name: "Garam Masala",
-      price: "₹75",
-      img: "/chillie5.jpg",
-    },
-    {
-      id: 4,
-      name: "Tandoori Mix",
-      price: "₹80",
-      img: "/chillie5.jpg",
-    },
-  ],
-};
+import { ShoppingCart, Star, Minus, Plus } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
+import useProducts from "../hooks/useProducts";
+import useCartActions from "../hooks/useCartApi";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import ImageMagnifier from "../components/products/ImageMagnifier";
 
 const ratingStarLabels = ["first", "second", "third", "fourth", "fifth"];
 
 const DetailPage = () => {
+  const { unique_id } = useParams();
+  const { products } = useProducts();
+  const navigate = useNavigate();
+
+  const { addToCart } = useCartActions();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [isWishlisted, setIsWishlisted] = useState(false);
-  const [activeTab, setActiveTab] = useState("ingredients");
+  const [activeTab, setActiveTab] = useState("preparation");
+  const filteredProduct = products?.find(
+    (product) => product?.unique_id == unique_id
+  );
+
+  console.log(filteredProduct, "filtered product");
 
   const handleQuantityChange = (delta: number) => {
     setQuantity(Math.max(1, quantity + delta));
@@ -119,38 +31,36 @@ const DetailPage = () => {
   return (
     <div className="min-h-screen bg-linear-to-br from-orange-50 via-white to-red-50">
       {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-3 py-8">
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           {/* Image Gallery */}
-          <div className="space-y-4">
-            <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden group">
-              <div className="absolute top-4 left-4 z-10 bg-red-500 text-white px-4 py-2 rounded-full text-sm font-bold animate-pulse">
-                {productDetail.discount}
-              </div>
-              <img
-                src={productDetail.images[selectedImage].src}
-                alt="Product"
-                className="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110"
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Main Image - Show first on mobile */}
+            <div className="relative flex-1 bg-white rounded-2xl shadow-xl overflow-hidden group order-1 md:order-2">
+              <ImageMagnifier
+                src={filteredProduct?.images?.[selectedImage]?.image ?? ""}
+                zoom={2.5}
+                className="w-full h-96 rounded-2xl"
               />
             </div>
 
-            <div className="grid grid-cols-4 gap-3">
-              {productDetail.images.map((image, idx) => (
+            {/* Thumbnails - Move below on mobile */}
+            <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-visible gap-3 order-2 md:order-1">
+              {filteredProduct?.images?.map((img, idx) => (
                 <button
+                  key={img.id}
                   type="button"
-                  aria-label={`Select product image ${idx + 1}`}
-                  key={image.id}
                   onClick={() => setSelectedImage(idx)}
-                  className={`rounded-xl overflow-hidden border-4 transition-all duration-300 hover:scale-105 ${
+                  className={`rounded-xl overflow-hidden border transition-all duration-300 hover:scale-105 ${
                     selectedImage === idx
-                      ? "border-orange-500 shadow-lg"
-                      : "border-transparent opacity-60 hover:opacity-100"
+                      ? "border-amber-700 shadow-lg"
+                      : "border-transparent opacity-80 hover:opacity-100"
                   }`}
                 >
                   <img
-                    src={image.src}
+                    src={img.image}
                     alt={`Thumbnail ${idx + 1}`}
-                    className="w-full h-20 object-cover"
+                    className="w-24 h-24 object-cover"
                   />
                 </button>
               ))}
@@ -158,73 +68,94 @@ const DetailPage = () => {
           </div>
 
           {/* Product Info */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-2xl p-6 shadow-lg">
-              <h1 className="text-3xl font-bold text-[#640000] mb-3">
-                {productDetail.name}
+          <div className="space-y-6 px-2 sm:px-4 lg:px-0">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg">
+              <h1 className="text-lg sm:text-xl font-medium text-[#640000] mb-3">
+                {filteredProduct?.name}
               </h1>
 
+              {/* Rating */}
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center gap-1">
                   {ratingStarLabels.map((label, i) => (
                     <Star
                       key={label}
-                      className={`w-5 h-5 ${
-                        i < Math.floor(productDetail.rating)
+                      className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                        i < Math.floor(filteredProduct?.rating ?? 0)
                           ? "fill-yellow-400 text-yellow-400"
                           : "text-gray-300"
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-gray-600">
-                  ({productDetail.reviews} reviews)
+              </div>
+
+              {/* Price */}
+              <div className="flex items-baseline gap-3 mb-2">
+                <span className="text-xl sm:text-2xl font-medium text-[#640000]">
+                  {filteredProduct?.price}
+                </span>
+                <span className="text-lg sm:text-xl text-gray-400 line-through">
+                  {filteredProduct?.old_price}
                 </span>
               </div>
 
-              <div className="flex items-baseline gap-3 mb-6">
-                <span className="text-4xl font-bold text-[#640000]">
-                  {productDetail.mrp}
-                </span>
-                <span className="text-xl text-gray-400 line-through">
-                  {productDetail.originalPrice}
-                </span>
+              {/* Weight */}
+              <div className="pb-3 text-sm sm:text-base">
+                <p>weight : {filteredProduct?.weight}</p>
               </div>
 
-              <p className="text-gray-600 leading-relaxed mb-6">
-                {productDetail.description}
+              {/* Description */}
+              <p className="text-gray-600 text-xs sm:text-sm leading-relaxed mb-6">
+                {filteredProduct?.description}
               </p>
 
               {/* Specs */}
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                {productDetail.specs.map((spec) => (
-                  <div
-                    key={spec.label}
-                    className="text-center p-3 bg-orange-50 rounded-xl hover:bg-orange-100 transition-colors"
-                  >
-                    <div className="flex justify-center mb-2 text-orange-600">
-                      {spec.icon}
-                    </div>
-                    <div className="text-xs text-gray-500">{spec.label}</div>
-                    <div className="font-semibold text-gray-800">
-                      {spec.value}
-                    </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
+                {/* Difficulty */}
+                <div className="p-3 sm:p-4 bg-linear-to-br from-orange-50 to-yellow-50 shadow-sm rounded-2xl border border-orange-100 hover:shadow-md transition-all text-center">
+                  <div className="flex justify-center mb-1 sm:mb-2 text-orange-600 font-semibold text-xs sm:text-sm">
+                    {filteredProduct?.difficulty_level}
                   </div>
-                ))}
+                  <p className="text-[10px] sm:text-xs text-gray-500">
+                    Difficulty
+                  </p>
+                </div>
+
+                {/* Prepare Time */}
+                <div className="p-3 sm:p-4 bg-linear-to-br from-orange-50 to-yellow-50 shadow-sm rounded-2xl border border-orange-100 hover:shadow-md transition-all text-center">
+                  <div className="flex justify-center mb-1 sm:mb-2 text-orange-600 font-semibold text-xs sm:text-sm">
+                    ⏱ {filteredProduct?.prepare_time} mins
+                  </div>
+                  <p className="text-[10px] sm:text-xs text-gray-500">
+                    Cooking Time
+                  </p>
+                </div>
+
+                {/* Servings */}
+                <div className="p-3 sm:p-4 bg-linear-to-br from-orange-50 to-yellow-50 shadow-sm rounded-2xl border border-orange-100 hover:shadow-md transition-all text-center">
+                  <div className="flex justify-center mb-1 sm:mb-2 text-orange-600 font-semibold text-xs sm:text-sm">
+                    🍽 {filteredProduct?.serving_count}
+                  </div>
+                  <p className="text-[10px] sm:text-xs text-gray-500">
+                    Servings
+                  </p>
+                </div>
               </div>
 
-              {/* Quantity & Add to Cart */}
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex items-center gap-3 bg-gray-100 rounded-lg px-4 py-2">
+              {/* Quantity & Buy */}
+              <div className="flex flex-col sm:flex-row items-center sm:items-stretch sm:gap-4 gap-3 mb-4">
+                {/* Quantity Selector */}
+                <div className="flex items-center justify-between gap-3 bg-gray-100 rounded-lg px-4 py-2 w-full sm:w-auto sm:justify-center">
                   <button
                     type="button"
                     aria-label="Decrease quantity"
                     onClick={() => handleQuantityChange(-1)}
                     className="text-gray-600 hover:text-orange-600 transition-colors"
                   >
-                    <Minus className="w-5 h-5" />
+                    <Minus className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
-                  <span className="font-semibold w-8 text-center">
+                  <span className="font-semibold w-10 text-center text-sm sm:text-base">
                     {quantity}
                   </span>
                   <button
@@ -233,33 +164,57 @@ const DetailPage = () => {
                     onClick={() => handleQuantityChange(1)}
                     className="text-gray-600 hover:text-orange-600 transition-colors"
                   >
-                    <Plus className="w-5 h-5" />
+                    <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 </div>
 
+                {/* Add to Cart */}
                 <button
                   type="button"
-                  className="flex-1 bg-linear-to-r from-amber-800 to-[#640000] text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                  onClick={() => {
+                    if (!filteredProduct) {
+                      toast.error("Product not found");
+                      return;
+                    }
+
+                    if (!filteredProduct?.unique_id) {
+                      toast.error("Invalid product ID");
+                      return;
+                    }
+
+                    addToCart(filteredProduct?.unique_id);
+                  }}
+                  className="w-full sm:flex-1 bg-linear-to-r from-amber-800 to-[#640000] text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-[1.03] shadow-lg flex items-center justify-center gap-2 text-sm sm:text-base"
                 >
-                  <ShoppingCart className="w-5 h-5" />
+                  <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
                   Add to Cart
                 </button>
 
+                {/* Buy Now */}
                 <button
                   type="button"
-                  aria-label={
-                    isWishlisted ? "Remove from wishlist" : "Add to wishlist"
+                  onClick={() =>
+                    navigate("/checkout", {
+                      state: {
+                        source: "single",
+                        items: [
+                          {
+                            id: filteredProduct?.unique_id,
+                            name: filteredProduct?.name,
+                            price: Number(filteredProduct?.price),
+                            originalPrice: Number(filteredProduct?.old_price),
+                            image: filteredProduct?.images?.[0]?.image,
+                            quantity,
+                            category: filteredProduct?.category_name,
+                          },
+                        ],
+                      },
+                    })
                   }
-                  onClick={() => setIsWishlisted(!isWishlisted)}
-                  className={`p-3 rounded-lg border-2 transition-all ${
-                    isWishlisted
-                      ? "bg-red-500 border-red-500 text-white"
-                      : "border-gray-300 text-gray-600 hover:border-red-500 hover:text-red-500"
-                  }`}
+                  className="w-full sm:flex-1 bg-linear-to-r from-amber-800 to-[#640000] text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-[1.03] shadow-lg flex items-center justify-center gap-2 text-sm sm:text-base"
                 >
-                  <Heart
-                    className={`w-6 h-6 ${isWishlisted ? "fill-current" : ""}`}
-                  />
+                  <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
+                  Buy Now
                 </button>
               </div>
             </div>
@@ -271,17 +226,6 @@ const DetailPage = () => {
           <div className="flex gap-4 border-b border-gray-200 mb-6">
             <button
               type="button"
-              onClick={() => setActiveTab("ingredients")}
-              className={`pb-3 px-4 font-semibold transition-all ${
-                activeTab === "ingredients"
-                  ? "text-orange-600 border-b-2 border-orange-600"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              Ingredients
-            </button>
-            <button
-              type="button"
               onClick={() => setActiveTab("preparation")}
               className={`pb-3 px-4 font-semibold transition-all ${
                 activeTab === "preparation"
@@ -291,132 +235,113 @@ const DetailPage = () => {
             >
               How to Prepare
             </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("ingredients")}
+              className={`pb-3 px-4 font-semibold transition-all ${
+                activeTab === "ingredients"
+                  ? "text-orange-600 border-b-2 border-orange-600"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Ingredients
+            </button>
           </div>
 
           {activeTab === "ingredients" && (
             <div className="animate-fadeIn">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">
+              <h3 className="text-xl font-medium text-gray-800 mb-4">
                 Ingredients
               </h3>
-              <div className="grid gap-4 text-sm sm:grid-cols-2">
-                {(() => {
-                  const midPoint = Math.ceil(
-                    productDetail.ingredients.length / 2
-                  );
-                  const columns: string[][] = [
-                    productDetail.ingredients.slice(0, midPoint),
-                    productDetail.ingredients.slice(midPoint),
-                  ];
 
-                  return columns.map(
-                    (column: string[], columnIndex: number) => {
-                      const offset = columnIndex === 0 ? 0 : columns[0].length;
-
-                      return (
-                        <ul
-                          key={`ingredients-column-${columnIndex}-${
-                            column[0] || ""
-                          }`}
-                          className="flex flex-col gap-3 rounded-2xl bg-stone-50 p-4"
-                        >
-                          {column.map((item: string, index: number) => (
-                            <li
-                              key={`${item}-${index}`}
-                              className="flex items-center justify-between text-stone-700"
-                            >
-                              <span className="font-medium">
-                                {offset + index + 1}.
-                              </span>
-                              <span className="flex-1 pl-3">{item}</span>
-                              
-                            </li>
-                          ))}
-                        </ul>
-                      );
-                    }
-                  );
-                })()}
-              </div>
+              <ul className="bg-stone-50 rounded-2xl p-4 space-y-3">
+                {filteredProduct?.ingredients?.map((item, index) => (
+                  <li
+                    key={item.id}
+                    className="flex justify-between text-stone-700"
+                  >
+                    <span>{index + 1}.</span>
+                    <span className="flex-1 pl-3">
+                      {item.name} — {item.quantity}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 
           {activeTab === "preparation" && (
             <div className="animate-fadeIn">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">
+              <h3 className="text-xl font-medium text-gray-800 mb-4">
                 How to Prepare
               </h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                {productDetail.prepSummary}
+
+              <p className="text-gray-600 mb-6">
+                {filteredProduct?.preparations?.[0]?.overview}
               </p>
 
-              <div className="space-y-4">
-                {productDetail.prepSteps.map((step, idx) => (
-                  <div
-                    key={step.headline}
-                    className="bg-linear-to-r from-orange-50 to-transparent p-6 rounded-xl hover:shadow-md transition-all border-l-4 border-orange-500"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="text-4xl">{step.icon}</div>
-                      <div className="flex-1">
-                        <h4 className="text-xl font-bold text-gray-800 mb-2">
-                          Step {idx + 1}: {step.headline}
-                        </h4>
-                        <p className="text-gray-600 leading-relaxed">
-                          {step.details}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
-                <p className="text-green-800 font-semibold text-center">
-                  🍛 Enjoy the thick delicious Malabar chicken curry!
-                </p>
-              </div>
+              {filteredProduct?.preparations?.[0]?.steps?.map((step) => (
+                <div
+                  key={step.id}
+                  className="bg-linear-to-r from-orange-50 to-transparent p-6 rounded-xl border-l-4 border-orange-500 mb-4"
+                >
+                  <h4 className="text-xl font-medium mb-2">
+                    Step {step.step_number}: {step.heading}
+                  </h4>
+                  <p className="text-gray-600">{step.details}</p>
+                </div>
+              ))}
             </div>
           )}
         </div>
 
         {/* Most Selling Products */}
         <div className="mb-12">
-          <h3 className="text-3xl font-bold text-gray-800 mb-6">
-            Most Selling Products
+          <h3 className="relative inline-block text-2xl font-medium text-gray-800 mb-6">
+            <span className="relative z-10">Most Selling Products</span>
+
+            {/* Color splash */}
+            <span className="absolute -inset-1 rounded-lg bg-[linear-gradient(115deg,#ffe7a3,#ffce47,#ffc100)] opacity-40 blur-md -z-0"></span>
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {productDetail.sellingProducts.map((product) => (
-              <div
-                key={product.id}
-                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all hover:scale-105 cursor-pointer group"
-              >
-                <div className="relative overflow-hidden">
-                  <img
-                    src={product.img}
-                    alt={product.name}
-                    className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0  bg-opacity-0 group-hover:bg-opacity-20 transition-all" />
-                </div>
-                <div className="p-4">
-                  <h4 className="font-semibold text-gray-800 mb-2">
-                    {product.name}
-                  </h4>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold text-orange-600">
-                      {product.price}
-                    </span>
-                    <button
-                      type="button"
-                      aria-label={`Add ${product.name} to cart`}
-                      className="text-orange-600 hover:text-orange-700"
-                    >
-                      <ShoppingCart className="w-5 h-5" />
-                    </button>
+
+          <div className="max-h-[400px] overflow-y-auto pr-1">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {products?.slice(0, 4).map((product) => (
+                <div
+                  key={product.id}
+                  className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all hover:scale-105 cursor-pointer group"
+                >
+                  <div className="relative overflow-hidden">
+                    <Link to={`/detail/${product?.unique_id}`}>
+                      <img
+                        src={product.images[0]?.image}
+                        alt={product.name}
+                        className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-20 transition-all" />
+                    </Link>
+                  </div>
+                  <div className="p-4">
+                    <h4 className="font-semibold text-gray-800 mb-2">
+                      {product.name}
+                    </h4>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xl font-semibold text-amber-900">
+                        {product.price}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => addToCart(product.unique_id)}
+                        aria-label={`Add ${product.name} to cart`}
+                        className="text-amber-900 hover:text-white hover:rounded-full p-2 transition-all hover:bg-amber-500"
+                      >
+                        <ShoppingCart className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>

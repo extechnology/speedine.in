@@ -1,124 +1,113 @@
 import { useState } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  category?: string;
-  rating?: number;
-}
-
-const ProductData: Product[] = [
-  {
-    id: 1,
-    name: "Premium Chilli Powder",
-    price: 100,
-    image: "/chillie2.jpg",
-    category: "Spices",
-    rating: 4.5,
-  },
-  {
-    id: 2,
-    name: "Organic Chilli Powder",
-    price: 150,
-    image: "/chillie3.jpg",
-    category: "Spices",
-    rating: 4.8,
-  },
-  {
-    id: 3,
-    name: "Hot Chilli Powder",
-    price: 120,
-    image: "/chillie5.jpg",
-    category: "Spices",
-    rating: 4.2,
-  },
-  {
-    id: 4,
-    name: "Mild Chilli Powder",
-    price: 90,
-    image: "/chillie2.jpg",
-    category: "Spices",
-    rating: 4.1,
-  },
-  {
-    id: 5,
-    name: "Extra Hot Chilli",
-    price: 180,
-    image: "/chillie3.jpg",
-    category: "Spices",
-    rating: 4.7,
-  },
-  {
-    id: 6,
-    name: "Classic Chilli Powder",
-    price: 110,
-    image: "/chillie5.jpg",
-    category: "Spices",
-    rating: 4.3,
-  },
-];
+import { SlidersHorizontal, X } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import useProducts from "../hooks/useProducts";
+import { useCategories } from "../hooks/useCategory";
+import useCartActions from "../hooks/useCartApi";
 
 const FilterPage = () => {
   const navigate = useNavigate();
+  const { products: ProductData } = useProducts();
+  const [searchParams] = useSearchParams();
+  const { addToCart } = useCartActions();
+  console.log(ProductData, "products");
+  const { categories } = useCategories();
+  console.log(categories, "categories");
+  const categoryId = searchParams.get("category");
+  console.log(categoryId, "category id");
   const [searchQuery, setSearchQuery] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 200]);
+  const prices = ProductData.map((p) => Number(p.price));
+  const maxPrice = prices.length ? Math.max(...prices) : 200;
+
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, maxPrice]);
+  const [isWeightOpen, setIsWeightOpen] = useState(false);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState("featured");
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedWeight, setSelectedWeight] = useState("");
-
-  const toggleCategory = (cat: string) => {
+  const filterCategory = categories.map((cat) => cat?.name);
+  const filterWeight = ProductData?.map((prod) => prod?.weight);
+  console.log(filterWeight, "filter weight");
+  console.log(selectedCategories, "selected categories");
+  const toggleCategory = (categoryId: string) => {
     setSelectedCategories((prev) =>
-      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+      prev.includes(categoryId)
+        ? prev.filter((c) => c !== categoryId)
+        : [...prev, categoryId]
     );
   };
 
-  const filteredProducts = ProductData.filter((product) => {
-    const matchesSearch = product.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const matchesPrice =
-      product.price >= priceRange[0] && product.price <= priceRange[1];
-    const matchesRating = selectedRating
-      ? (product.rating || 0) >= selectedRating
+  const normalize = (v: any) => v?.toString().trim().toLowerCase() ?? "";
+
+  const pricesList = ProductData.map((p) => Number(p.price));
+  const minPriceGlobal = pricesList.length ? Math.min(...pricesList) : 0;
+  const maxPriceGlobal = pricesList.length ? Math.max(...pricesList) : 500;
+
+  let filteredProducts = ProductData.filter((product) => {
+    const pName = normalize(product.name);
+    const pCatName = normalize(product.category_name);
+    const pCatId = normalize(product.category_id);
+    const pWeight = normalize(product.weight);
+    const pPrice = Number(product.price);
+
+    /* --------------------- CATEGORY FROM URL ---------------------- */
+    const urlCategory = normalize(categoryId);
+    const urlCategoryMatch = urlCategory ? pCatId === urlCategory : true;
+
+    /* --------------------- CATEGORY CHECKBOX ---------------------- */
+    const selectedCatNormalized = selectedCategories.map((c) => normalize(c));
+    const checkboxCategoryMatch =
+      selectedCatNormalized.length > 0
+        ? selectedCatNormalized.includes(pCatName)
+        : true;
+
+    /* --------------------- SEARCH ---------------------- */
+    const searchTerm = normalize(searchQuery);
+    const searchMatch = searchTerm ? pName.includes(searchTerm) : true;
+
+    /* --------------------- PRICE ---------------------- */
+    const priceMatch = pPrice >= priceRange[0] && pPrice <= priceRange[1];
+
+    /* --------------------- RATING ---------------------- */
+    const ratingMatch =
+      selectedRating !== null ? (product.rating || 0) >= selectedRating : true;
+
+    /* --------------------- WEIGHT ---------------------- */
+    const selectedWeightNorm = normalize(selectedWeight);
+    const weightMatch = selectedWeightNorm
+      ? pWeight === selectedWeightNorm
       : true;
-    return matchesSearch && matchesPrice && matchesRating;
-  }).sort((a, b) => {
-    if (sortBy === "price-low") return a.price - b.price;
-    if (sortBy === "price-high") return b.price - a.price;
+
+    /* --------------------- FINAL ---------------------- */
+    return (
+      urlCategoryMatch &&
+      checkboxCategoryMatch &&
+      searchMatch &&
+      priceMatch &&
+      ratingMatch &&
+      weightMatch
+    );
+  });
+
+  filteredProducts = [...filteredProducts].sort((a, b) => {
+    const pa = Number(a.price);
+    const pb = Number(b.price);
+
+    if (sortBy === "price-low") return pa - pb;
+    if (sortBy === "price-high") return pb - pa;
     if (sortBy === "rating") return (b.rating || 0) - (a.rating || 0);
+
     return 0;
   });
 
   const FilterSection = () => (
     <div className="space-y-8  p-2 rounded-2xl  border-gray-200">
-      {/* Search */}
-      <div>
-        <h3 className="text-lg font-semibold mb-3 text-[#640000] flex items-center gap-2">
-          <Search className="w-4 h-4" /> Search
-        </h3>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#DBB737] bg-gray-50 hover:bg-white transition"
-          />
-        </div>
-      </div>
-
       {/* Category Filter */}
       <div>
         <h3 className="text-lg font-semibold mb-3 text-[#640000]">Category</h3>
         <div className="space-y-2">
-          {["Spices", "Snacks", "Beverages", "Dry Fruits"].map((category) => (
+          {filterCategory.map((category) => (
             <label
               key={category}
               className="flex items-center gap-3 cursor-pointer group"
@@ -138,20 +127,102 @@ const FilterPage = () => {
       </div>
 
       {/* Weight Filter */}
-      <div>
-        <h3 className="text-lg font-semibold mb-3 text-[#640000]">Weight</h3>
-        <select
-          title="select weight"
-          value={selectedWeight}
-          onChange={(e) => setSelectedWeight(e.target.value)}
-          className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 bg-gray-50 hover:bg-white focus:ring-2 focus:ring-[#DBB737] transition"
-        >
-          <option value="">All</option>
-          <option value="100g">100g</option>
-          <option value="250g">250g</option>
-          <option value="500g">500g</option>
-          <option value="1kg">1kg</option>
-        </select>
+      <div className="w-full">
+        <h3 className="text-lg font-semibold mb-4 text-[#640000] tracking-tight">
+          Weight
+        </h3>
+
+        <div className="relative">
+          {/* Custom Dropdown Trigger */}
+          <button
+            type="button"
+            className={`
+        w-full flex items-center justify-between px-3 py-3.5 
+        border-2 border-gray-100 rounded-2xl text-gray-800 
+        bg-linear-to-r from-white to-gray-50/80 
+        hover:border-[#DBB737]/60 hover:shadow-lg 
+        hover:shadow-[#DBB737]/10 focus:outline-none focus:ring-4 
+        focus:ring-[#DBB737]/20 focus:shadow-xl transition-all 
+        duration-300 ease-out group text-left font-medium
+        ${selectedWeight ? "text-[#640000]" : "text-gray-500"}
+      `}
+            onClick={() => setIsWeightOpen(!isWeightOpen)}
+          >
+            {selectedWeight || "Select Weight"}
+
+            <svg
+              className={`
+          w-5 h-5 transition-transform duration-300 ease-out 
+          ${isWeightOpen ? "rotate-180" : ""}
+        `}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          {/* Custom Dropdown Menu */}
+          {isWeightOpen && (
+            <div
+              className="
+        absolute w-full mt-2 bg-white/95 backdrop-blur-xl 
+        border border-gray-100 shadow-2xl rounded-2xl 
+        py-2 z-50 origin-top-right transition-all duration-300 
+        ease-out scale-100 opacity-100
+        max-h-72 overflow-y-auto
+      "
+            >
+              {(() => {
+                const uniqueWeights = [...new Set(filterWeight)];
+                const sortedWeights = uniqueWeights.sort((a, b) =>
+                  a.localeCompare(b)
+                );
+
+                return (
+                  <>
+                    {sortedWeights.map((weight, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        className={`
+                    w-full px-4 py-3 text-left hover:bg-[#DBB737]/10 
+                    hover:text-[#640000] transition-all duration-200 
+                    text-sm font-medium rounded-xl mx-1
+                    ${
+                      selectedWeight === weight
+                        ? "bg-[#DBB737]/20 text-[#640000] border-r-4 border-[#DBB737]"
+                        : "text-gray-700 hover:shadow-sm"
+                    }
+                  `}
+                        onClick={() => {
+                          setSelectedWeight(weight);
+                          setIsWeightOpen(false);
+                        }}
+                      >
+                        {weight}
+                      </button>
+                    ))}
+                  </>
+                );
+              })()}
+            </div>
+          )}
+
+          {/* Backdrop */}
+          {isWeightOpen && (
+            <div
+              className="fixed inset-0 z-40"
+              onClick={() => setIsWeightOpen(false)}
+            />
+          )}
+        </div>
       </div>
 
       {/* Price Range */}
@@ -160,34 +231,45 @@ const FilterPage = () => {
           Price Range
         </h3>
 
-        <div className="space-y-3">
-          <input
-            title="price range"
-            type="range"
-            min="0"
-            max="200"
-            value={priceRange[1]}
-            onChange={(e) =>
-              setPriceRange([0, Number.parseInt(e.target.value)])
-            }
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#D1A837]"
-          />
-          <div className="flex justify-between text-sm text-gray-600 font-medium">
-            <span>₹{priceRange[0]}</span>
-            <span>₹{priceRange[1]}</span>
-          </div>
-        </div>
+        {(() => {
+          const prices = ProductData.map((p) => Number(p.price));
+          const minPrice = Math.min(...prices);
+          const maxPrice = Math.max(...prices);
+
+          return (
+            <div className="space-y-3">
+              <input
+                title="select price"
+                type="range"
+                min={minPrice}
+                max={maxPrice}
+                value={priceRange[1]}
+                onChange={(e) =>
+                  setPriceRange([minPrice, Number(e.target.value)])
+                }
+                className="w-full"
+              />
+
+              <div className="flex justify-between text-sm text-gray-600 font-medium">
+                <span>₹{priceRange[0]}</span>
+                <span>₹{priceRange[1]}</span>
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Clear Filters */}
       <button
+        type="button"
         onClick={() => {
           setSearchQuery("");
-          setPriceRange([0, 200]);
           setSelectedRating(null);
           setSortBy("featured");
           setSelectedCategories([]);
           setSelectedWeight("");
+          setPriceRange([minPriceGlobal, maxPriceGlobal]);
+          navigate("/products"); // IMPORTANT: removes ?category=value
         }}
         className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-[#640000] rounded-xl transition font-semibold"
       >
@@ -197,7 +279,7 @@ const FilterPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-orange-50 via-white to-red-50">
+    <div className="bg-linear-to-br from-orange-50 via-white to-red-50">
       <div className="max-w-7xl mx-auto md:px-4 px-2 py-8">
         {/* Header */}
         <div className="md:mb-8 mb-4 pl-2">
@@ -263,18 +345,22 @@ const FilterPage = () => {
           {/* Product Section */}
           <div className="flex-1">
             {/* Sort Bar */}
-            <div className="bg-white px-2 rounded-xl shadow-sm border border-gray-100 p-4 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <p className="text-gray-600 text-sm pl-5">
-                <span className="font-semibold text-sm text-gray-900">
+            <div
+              className="bg-white px-2 rounded-xl shadow-sm border border-gray-100 p-4 mb-6
+     flex flex-row justify-between items-center gap-2"
+            >
+              <p className="text-gray-600 text-xs pl-5">
+                <span className="font-semibold text-xs text-gray-900">
                   {filteredProducts.length}
                 </span>{" "}
                 products found
               </p>
+
               <select
                 title="sort by"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 mr-2 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DBB737] bg-white"
+                className="px-4 mr-2 text-xs py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DBB737] bg-white"
               >
                 <option value="featured">Featured</option>
                 <option value="price-low">Price: Low to High</option>
@@ -293,13 +379,13 @@ const FilterPage = () => {
                   <div className="relative overflow-hidden bg-linear-to-br from-red-50 to-orange-50">
                     <button
                       type="button"
-                      onClick={() => navigate(`/detail`)}
-                      className="block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#DBB737]"
+                      onClick={() => navigate(`/detail/${product?.unique_id}`)}
+                      className="block cursor-pointer w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#DBB737]"
                     >
                       <img
-                        src={product.image}
+                        src={product.images[0]?.image}
                         alt={product.name}
-                        className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="w-full  aspect-square  cursor-pointer object-cover group-hover:scale-110 transition-transform duration-500"
                         onError={(e) => {
                           e.currentTarget.src =
                             "https://images.unsplash.com/photo-1599639957043-f3aa5c986398?w=400&h=400&fit=crop";
@@ -335,7 +421,7 @@ const FilterPage = () => {
                     </h3>
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="md:text-2xl text-sm font-bold text-gray-900">
+                        <span className="md:text-xl text-sm font-medium text-gray-900">
                           ₹{product.price}
                         </span>
                         <span className="text-sm text-gray-400 line-through ml-2">
@@ -343,7 +429,10 @@ const FilterPage = () => {
                         </span>
                       </div>
                     </div>
-                    <button className="w-full text-xs md:text-md mt-4 bg-linear-to-r from-amber-700 to-[#640000] text-white md:py-2.5 py-1.5 rounded-lg hover:from-[#640000] hover:to-amber-700 transition-all font-medium shadow-md hover:shadow-lg">
+                    <button
+                      onClick={() => addToCart(product.unique_id, 1)}
+                      className="w-full text-xs md:text-md mt-4 bg-linear-to-r from-amber-700 to-[#640000] text-white md:py-2.5 py-1.5 rounded-lg hover:from-[#640000] hover:to-amber-700 transition-all font-medium shadow-md hover:shadow-lg"
+                    >
                       Add to Cart
                     </button>
                   </div>

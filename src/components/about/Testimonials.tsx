@@ -1,55 +1,6 @@
 import { memo } from "react";
+import useCustomerReview from "../../hooks/useCustomerReview";
 
-const Data = [
-  {
-    id: 1,
-    name: "Aiwariya",
-    comment:
-      "Speedine masala mixes have completely changed the way I cook. The flavours are authentic, rich, and perfectly balanced. Whether it's veg or non-veg dishes, the results are consistently delicious. It saves me so much time, and my family absolutely loves every meal",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Aiwariya",
-  },
-  {
-    id: 2,
-    name: "Shahana",
-    comment:
-      "I've tried many instant masalas, but Speedine stands out for its purity and taste. The spices smell so fresh, and the dishes turn out restaurant-quality every time. It's perfect for my busy schedule, and I don't have to compromise on flavour or quality.",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Shahana",
-  },
-  {
-    id: 3,
-    name: "Rose Mery",
-    comment:
-      "Speedine products are a blessing for working mothers like me. Quick, easy, and incredibly flavourful! The sambar and fish curry mixes especially taste just like traditional homemade recipes. I trust Speedine because it delivers consistency and convenience in every pack.",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=RoseMery",
-  },
-  {
-    id: 4,
-    name: "Jasmine",
-    comment:
-      "I've been using Speedine for months, and every product has exceeded expectations. The blends are strong, aromatic, and truly authentic. Even my guests often ask for the recipe! It's the perfect choice for anyone who loves traditional Kerala flavours without spending hours in the kitchen.",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jasmine",
-  },
-  {
-    id: 5,
-    name: "Razeena",
-    comment:
-      "Speedine masalas have made cooking effortless for me. The instant mixes are clean, fresh, and free from unnecessary additives. I love how quickly I can prepare delicious meals after work. It feels like home-cooked food with zero hassle",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Razeena",
-  },
-  {
-    id: 6,
-    name: "Janish",
-    comment:
-      "A friend recommended Speedine, and now I can't imagine my kitchen without it. The taste, aroma, and convenience are unmatched. From chicken curry to beef fry, every mix brings out authentic flavours. It's truly a reliable brand for everyday cooking",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Janish",
-  },
-];
 
 const StarRating = ({ rating }: { rating: number }) => {
   const stars = [1, 2, 3, 4, 5];
@@ -74,6 +25,8 @@ const StarRating = ({ rating }: { rating: number }) => {
 };
 
 const Testimonials = () => {
+  const { review } = useCustomerReview();
+  console.log(review, "reivew from customer");
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-14">
       {/* Section Heading */}
@@ -89,7 +42,7 @@ const Testimonials = () => {
 
       {/* Testimonials Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-        {Data.map((data, index) => {
+        {review.map((data, index) => {
           // Varied card designs for visual interest
           const cardVariants = [
             "bg-linear-to-br from-white to-amber-50/30",
@@ -102,7 +55,7 @@ const Testimonials = () => {
 
           return (
             <div
-              key={data.id}
+              key={index}
               className={`group relative p-6 md:p-8 rounded-3xl ${cardVariants[index]} border border-amber-100/50 shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:border-amber-200/80 overflow-hidden`}
             >
               {/* Decorative gradient overlay on hover */}
@@ -125,11 +78,19 @@ const Testimonials = () => {
                 <div className="flex items-center gap-4 mb-5">
                   <div className="relative">
                     <div className="absolute inset-0 bg-linear-to-br from-amber-400 to-amber-600 rounded-full blur-sm opacity-50 group-hover:opacity-75 transition-opacity duration-500" />
-                    <img
-                      src={data.avatar}
-                      alt={data.name}
-                      className="relative w-14 h-14 rounded-full object-cover border-2 border-white shadow-lg ring-2 ring-amber-100 group-hover:ring-amber-200 transition-all duration-500"
-                    />
+                    {data.image ? (
+                      <img
+                        src={data.image}
+                        alt={data.name}
+                        className="relative w-14 h-14 rounded-full object-cover border-2 border-white shadow-lg ring-2 ring-amber-100 group-hover:ring-amber-200 transition-all duration-500"
+                      />
+                    ) : (
+                      <div className="relative w-14 h-14 rounded-full border-2 border-white shadow-lg ring-2 ring-amber-100 group-hover:ring-amber-200 transition-all duration-500 flex items-center justify-center bg-white group">
+                        <span className="text-2xl font-bold text-amber-600 opacity-80 group-hover:opacity-100 group-hover:drop-shadow-[0_0_4px_#fbbf24] transition-all duration-500">
+                          {data.name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-[#640000] mb-1 group-hover:text-amber-700 transition-colors duration-300">
@@ -141,7 +102,7 @@ const Testimonials = () => {
 
                 {/* Comment */}
                 <p className="text-gray-700 leading-relaxed text-[15px] relative pl-4 border-l-2 border-amber-200/50 group-hover:border-amber-300 transition-colors duration-300">
-                  {data.comment}
+                  {data.description}
                 </p>
               </div>
 

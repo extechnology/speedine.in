@@ -25,7 +25,6 @@ const OtpVerify = () => {
     return () => clearTimeout(timer);
   }, [resendTimer]);
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
@@ -42,8 +41,10 @@ const OtpVerify = () => {
         password: password,
         otp: Number(otp),
       });
+      console.log(res,"response");
 
-      if (res?.success) {
+      if (res?.message.includes("verified successfully")) {
+        console.log(res, "otp verification response");
         navigate("/");
       } else {
         setErrorMsg(res?.message || "Invalid OTP. Try again.");
@@ -60,7 +61,7 @@ const OtpVerify = () => {
 
     try {
       const res = await ResendOTP({ identifier: email });
-      console.log(res)
+      console.log(res);
       setErrorMsg("");
       setOtp("");
       setResendTimer(30);

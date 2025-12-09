@@ -1,22 +1,15 @@
 import { memo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShoppingBag, Search, User, Menu, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useCategories } from "../../hooks/useCategory";
+import useProducts from "../../hooks/useProducts";
+import { useProductSearch } from "../../hooks/useProductSearch";
 
 const NavItems = [
   { name: "Home", href: "/" },
   { name: "About", href: "/about" },
   {
     name: "Products",
-    href: "/products",
-    dropdown: [
-      { label: "All Products", href: "/products" },
-      { label: "Instant Veg Mix", href: "/products?category=spices" },
-      { label: "Instant Chicken Mix", href: "/products?category=snacks" },
-      { label: "Instant Fish Mix", href: "/products?category=beverages" },
-      { label: "Instant Meat Mix", href: "/products?category=beverages" },
-      { label: "Spices & Masalas", href: "/products?category=beverages" },
-    ],
   },
   { name: "Find Recipes", href: "/recipe" },
   { name: "Order Now", href: "/products" },
@@ -26,8 +19,19 @@ const NavItems = [
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const navigate = useNavigate();
+  const { categories, loading } = useCategories();
+  const { products } = useProducts();
+  const { query, setQuery, results } = useProductSearch(products);
+  const isLoggedIn = localStorage.getItem("accessToken") ? true : false;
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  const handleLogout =  () => {
+    localStorage.clear();
+
+    navigate("/");
+  };
 
   return (
     <nav className="py-1 shadow-md border-gray-400 bg-white/60 backdrop-blur-md sticky top-0 z-50">
@@ -42,43 +46,61 @@ const Navbar = () => {
           {NavItems.map((item) => (
             <li key={item.name} className="relative group">
               {/* Main link */}
-              <Link
-                to={item.href}
-                className="hover:text-[#DBB737] transition-colors flex items-center gap-1"
-              >
-                {item.name}
-              </Link>
+              {item.href ? (
+                <Link
+                  to={item.href}
+                  className="hover:text-[#DBB737] transition-colors flex items-center gap-1"
+                >
+                  {item.name}
+                </Link>
+              ) : (
+                <span className="hover:text-[#DBB737] transition-colors flex items-center gap-1 cursor-pointer">
+                  {item.name}
+                </span>
+              )}
 
               {/* Desktop dropdown on hover */}
-              {item.dropdown && (
+              {item.name === "Products" && (
                 <div
                   className="
-    absolute left-0 top-full mt-2 w-64
-    bg-linear-to-br from-white via-[#fff7e7] to-white
-    shadow-xl rounded-xl border border-gray-100
-    opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-1
-    transition-all duration-300 ring-1 ring-[#DBB737]/10 z-20
-  "
+      absolute left-0 top-full mt-2 w-64
+      bg-linear-to-br from-white via-[#fff7e7] to-white
+      shadow-xl rounded-xl border border-gray-100
+      opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-1
+      transition-all duration-300 ring-1 ring-[#DBB737]/10 z-20
+    "
                 >
-                  {item.dropdown.map((d, idx) => (
+                  <Link
+                    to="/products"
+                    className="
+        block px-5 py-3 font-medium text-gray-700 
+        hover:bg-[#DBB737]/20 hover:text-[#DBB737] 
+        rounded-t-xl border-b border-gray-100
+      "
+                  >
+                    All Products
+                  </Link>
+
+                  {/* Loop categories */}
+                  {categories.map((cat) => (
                     <Link
-                      key={d.label}
-                      to={d.href}
-                      className={`
-          flex items-center gap-3 px-5 py-3 
-          text-gray-700 transition 
-          hover:bg-[#DBB737]/20 hover:text-[#DBB737] hover:pl-7
-          rounded-lg group
-          ${idx > 0 ? "border-t border-gray-100" : ""}
-        `}
+                      key={cat.id}
+                      to={`/products?category=${cat.unique_id}`}
+                      className="
+          block px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737]
+          border-t border-gray-100 transition
+        "
                     >
-                      {/* Optional: Placeholder for a left-side icon */}
-                      {/* <IconComponent className="h-5 w-5 text-gray-300 group-hover:text-[#D1A837]" /> */}
-                      <span className="font-medium tracking-wide">
-                        {d.label}
-                      </span>
+                      {cat.name}
                     </Link>
                   ))}
+
+                  {/* Loading state */}
+                  {loading && (
+                    <p className="px-5 py-3 text-sm text-gray-500">
+                      Loading...
+                    </p>
+                  )}
                 </div>
               )}
             </li>
@@ -89,36 +111,90 @@ const Navbar = () => {
         <div className="flex items-center gap-2 md:gap-4">
           {/* Search Bar for Desktop */}
           <div className="hidden md:block">
-            {isSearchOpen ? (
-              <div className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-xl bg-white shadow-sm focus-within:border-[#D1A837] transition-all animate-[slideIn_0.3s_ease-out]">
-                <Search size={18} strokeWidth={2} className="text-gray-500" />
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  className="outline-none text-sm bg-transparent w-48"
-                  autoFocus
-                />
+            <div className="hidden md:block relative">
+              {isSearchOpen ? (
+                <div className="relative w-64">
+                  <div className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-xl bg-white shadow-sm focus-within:border-[#D1A837] transition-all animate-[slideIn_0.3s_ease-out]">
+                    <Search size={18} className="text-gray-500" />
+
+                    <input
+                      type="text"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="Search products..."
+                      className="outline-none text-sm bg-transparent w-full"
+                    />
+
+                    <button
+                      title="close search"
+                      onClick={() => {
+                        setIsSearchOpen(false);
+                        setQuery("");
+                      }}
+                    >
+                      <X size={18} className="text-gray-500" />
+                    </button>
+                  </div>
+
+                  {query && (
+                    <ul className="absolute left-0 right-0 mt-2 rounded-xl border border-gray-100 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] z-50 max-h-72 overflow-y-auto backdrop-blur-xl">
+                      {/* No results */}
+                      {results.length === 0 && (
+                        <li className="p-4 text-sm text-gray-500 text-center">
+                          No results found
+                        </li>
+                      )}
+
+                      {/* Results */}
+                      {results.map((r) => (
+                        <li key={r.id}>
+                          <Link
+                            to={`/detail/${r.unique_id}`}
+                            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition rounded-lg"
+                            onClick={() => {
+                              setQuery("");
+                              setIsSearchOpen(false);
+                            }}
+                          >
+                            {/* Product Image */}
+                            <img
+                              src={
+                                r.image ||
+                                r.images?.[0].image ||
+                                "/placeholder.png"
+                              }
+                              alt={r.name}
+                              className="w-10 h-10 rounded-lg object-cover "
+                            />
+
+                            {/* Name + Price */}
+                            <div className="flex flex-col">
+                              <span className="text-sm font-medium text-gray-800">
+                                {r.name}
+                              </span>
+
+                              {r.price && (
+                                <span className="text-xs text-gray-500">
+                                  ₹{r.price}
+                                </span>
+                              )}
+                            </div>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ) : (
                 <button
-                  title="Close search"
-                  onClick={() => setIsSearchOpen(false)}
-                  className="text-gray-500 hover:text-gray-700"
+                  title="open search"
+                  onClick={() => setIsSearchOpen(true)}
+                  className="p-2 hover:bg-[#DBB737] rounded-full transition-colors"
                 >
-                  <X size={18} />
+                  <Search size={22} className="text-gray-600" />
                 </button>
-              </div>
-            ) : (
-              <button
-                title="open search"
-                onClick={() => setIsSearchOpen(true)}
-                className="p-2 hover:bg-[#DBB737] rounded-full transition-colors"
-              >
-                <Search
-                  size={22}
-                  strokeWidth={2}
-                  className="text-gray-600 hover:text-gray-100"
-                />
-              </button>
-            )}
+              )}
+            </div>
           </div>
 
           {/* Search Icon for Mobile */}
@@ -160,27 +236,54 @@ const Navbar = () => {
             </button>
 
             {/* Dropdown */}
-            <div
-              className="
+            {isLoggedIn ? (
+              <div className="relative">
+                <div
+                  className="
       absolute right-0 mt-2 w-44 bg-white shadow-xl rounded-xl
       border border-gray-100 opacity-0 invisible
       group-hover:opacity-100 group-hover:visible group-hover:translate-y-1
       transition-all duration-300 z-30
     "
-            >
-              <Link
-                to="/auth"
-                className="block px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737] rounded-t-xl"
-              >
-                🔐 Login
-              </Link>
-              <Link
-                to="/signup"
-                className="block px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737] rounded-b-xl border-t border-gray-100"
-              >
-                ✨ Signup
-              </Link>
-            </div>
+                >
+                  <button
+                    title="logout"
+                    onClick={handleLogout}
+                    className="
+        block w-full px-5 py-3 text-left text-gray-700 
+        hover:bg-[#DBB737]/20 hover:text-[#DBB737] 
+        rounded-t-xl transition-colors
+      "
+                  >
+                    🔐 Logout
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div
+                  className="
+      absolute right-0 mt-2 w-44 bg-white shadow-xl rounded-xl
+      border border-gray-100 opacity-0 invisible
+      group-hover:opacity-100 group-hover:visible group-hover:translate-y-1
+      transition-all duration-300 z-30
+    "
+                >
+                  <Link
+                    to="/auth"
+                    className="block px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737] rounded-t-xl"
+                  >
+                    🔐 Login
+                  </Link>
+                  <Link
+                    to="/auth"
+                    className="block px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737] rounded-b-xl border-t border-gray-100"
+                  >
+                    ✨ Signup
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Hamburger Menu */}
@@ -233,7 +336,7 @@ const Navbar = () => {
           {NavItems.map((item) => (
             <li key={item.name} className="transition-all">
               {/* Normal item without dropdown */}
-              {item.dropdown ? (
+              {item.name === "Products" ? (
                 <>
                   {/* Dropdown parent */}
                   <button
@@ -244,38 +347,56 @@ const Navbar = () => {
                     }
                     className="w-full flex justify-between items-center py-2 px-4 text-gray-700 font-bold hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg"
                   >
-                    {item.name}
+                    Products
                     <span>{openDropdown === item.name ? "▲" : "▼"}</span>
                   </button>
 
                   {/* Dropdown content */}
                   <div
                     className={`overflow-hidden transition-all duration-300 ${
-                      openDropdown === item.name ? "max-h-40" : "max-h-0"
+                      openDropdown === "Products" ? "max-h-80" : "max-h-0"
                     }`}
                   >
-                    {item.dropdown.map((d) => (
-                      <Link
-                        key={d.label}
-                        to={d.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="block ml-6 py-2 px-3 text-gray-600 hover:text-[#DBB737]"
-                      >
-                        {d.label}
-                      </Link>
-                    ))}
+                    {/* All Products */}
+                    <Link
+                      to="/products"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block ml-6 py-2 px-3 text-gray-700 font-medium hover:text-[#DBB737]"
+                    >
+                      All Products
+                    </Link>
+
+                    {/* Dynamic category list */}
+                    {!loading &&
+                      categories.map((cat) => (
+                        <Link
+                          key={cat.id}
+                          to={`/products?category=${cat.unique_id}`}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block ml-6 py-2 px-3 text-gray-600 hover:text-[#DBB737]"
+                        >
+                          {cat.name}
+                        </Link>
+                      ))}
+
+                    {loading && (
+                      <p className="ml-6 py-2 px-3 text-gray-400 text-sm">
+                        Loading...
+                      </p>
+                    )}
                   </div>
                 </>
               ) : (
-                <div>
-                  <Link
-                    to={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block py-2 px-4 text-gray-700 font-bold hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg"
-                  >
-                    {item.name}
-                  </Link>
-                </div>
+                // Default mobile item
+                <button
+                  title="name"
+                  type="button"
+                  // to={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block py-2 px-4 text-gray-700 font-bold hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg"
+                >
+                  {item.name}
+                </button>
               )}
             </li>
           ))}
