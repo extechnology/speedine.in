@@ -64,7 +64,7 @@ const NewArrival = () => {
               <h3 className="text-xl font-semibold text-[#640000] mb-2 group-hover:text-[#640000] transition-colors">
                 {product.name}
               </h3>
-              <p className="text-gray-600 mb-2">{product.description}</p>
+              <p className="text-gray-600 truncate mb-2">{product.description}</p>
 
               {/* Price and Action */}
               <div className="flex items-center justify-between">

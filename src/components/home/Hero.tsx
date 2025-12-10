@@ -1,14 +1,16 @@
 import { memo, useEffect, useState } from "react";
 import useHeroCarousel from "../../hooks/useHeroCarousel";
+import { useCategories } from "../../hooks/useCategory";
 // import useProducts from "../../hooks/useProducts";
 import { BlurFade } from "../ui/blur-fade";
+import { Link } from "react-router-dom";
 // import useProducts from "../../hooks/useProducts";
 
 const Hero = () => {
   const { carousel } = useHeroCarousel();
-  // const { products } = useProducts();
+  const { categories } = useCategories();
+  console.log(categories, "categories");
 
-  // const { products } = useProducts();
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -54,52 +56,29 @@ const Hero = () => {
         </div>
 
         {/* RIGHT GRID */}
+
         <div className="grid grid-cols-2 md:gap-6 gap-4 md:w-1/2 w-full">
-          {/* GRID ITEM WITH TEXT */}
-          <div className="relative overflow-hidden rounded-3xl shadow-md group">
-            <img
-              src="/hero-right1.webp"
-              alt="Chilli Powder"
-              className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <h3 className="text-white text-xl font-bold">Chilli Powder</h3>
-            </div>
-          </div>
-          <div className="relative overflow-hidden rounded-3xl shadow-md group">
-            <img
-              src="/hero-right2.webp"
-              alt="Chilli Powder"
-              className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <h3 className="text-white text-xl font-bold">Chilli Powder</h3>
-            </div>
-          </div>
-          <div className="relative overflow-hidden rounded-3xl shadow-md group">
-            <img
-              src="/hero-right3.webp"
-              alt="Chilli Powder"
-              className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <h3 className="text-white text-xl font-bold">Chilli Powder</h3>
-            </div>
-          </div>
-          <div className="relative overflow-hidden rounded-3xl shadow-md group">
-            <img
-              src="/hero-right4.webp"
-              alt="Chilli Powder"
-              className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <h3 className="text-white text-xl font-bold">Chilli Powder</h3>
-            </div>
-          </div>
+          {categories?.slice(0, 4).map((category) => (
+            <Link to={`/products?category=${category.unique_id}`}>
+              <div
+                key={category.id}
+                className="relative overflow-hidden rounded-3xl shadow-md group"
+              >
+                <img
+                  src={category.image}
+                  alt={category.name}
+                  className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <h3 className="text-white text-xl text-center drop-shadow-2xl font-semibold">
+                    {" "}
+                    {category.display_name}
+                  </h3>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>

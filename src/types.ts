@@ -64,10 +64,13 @@ export interface CustomerReview {
 }
 
 export interface Category {
+  id:number;
   name: string;
+  image: string;
   priority: number;
   unique_id: string;
   description: string;
+  display_name: string;
   is_available: boolean;
   special_tags: string;
   special_offer: string;
@@ -226,7 +229,7 @@ export interface RazorpayOrderResponse {
   amount: number;
   currency: string;
   key: string;
-  order_id: string; 
+  order_id: string;
   razorpay_order: {
     id: string;
     amount: number;
@@ -238,7 +241,6 @@ export interface RazorpayOrderResponse {
     created_at: number;
   };
 }
-
 
 export interface UserOrder {
   id: number;

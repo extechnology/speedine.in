@@ -3,7 +3,7 @@ import { loginUser, registerUser } from "../services/authService";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import axiosInstance from "../api/axiosInstance";
-
+import { toast } from "sonner";
 
 const AuthPage = () => {
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -30,6 +30,7 @@ const AuthPage = () => {
 
     if (mode === "register" && form.password !== confirmPassword) {
       setErrorMsg("Passwords do not match");
+      toast.warning("Passwords do not match");
       return;
     }
 
@@ -54,12 +55,14 @@ const AuthPage = () => {
         });
 
         if (res.access_token) navigate("/");
-        console.log(res,"login response");
+        toast.success("Login successful");
+        console.log(res, "login response");
         localStorage.setItem("accessToken", res.access_token);
         localStorage.setItem("refreshToken", res.refresh_token);
       }
     } catch (error) {
       console.log(error);
+      toast.error("Login failed, please check your credentials");
     } finally {
       setLoading(false);
     }
@@ -73,7 +76,7 @@ const AuthPage = () => {
         "/auth/google-auth/",
         { token: credentialResponse.credential },
         {
-          withCredentials: true, 
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
           },
@@ -81,12 +84,13 @@ const AuthPage = () => {
       );
 
       console.log("Google login success", res.data);
+      toast.success("Google login success");
       window.location.href = "/"; // redirect user
     } catch (err) {
       console.error("Google auth error", err);
+      toast.error("Google auth error");
     }
   };
-
 
   let buttonText;
 

@@ -436,7 +436,7 @@ const CheckOut = () => {
                           })
                         }
                         className="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#DBB737]"
-                        placeholder="+91 98765 43210"
+                        placeholder="98765 43210"
                       />
                     </div>
                   </div>

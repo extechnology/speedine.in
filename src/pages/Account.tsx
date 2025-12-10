@@ -39,7 +39,6 @@ interface RecentProduct {
   viewedAt: string;
 }
 
-
 const Account = () => {
   const [activeTab, setActiveTab] = useState("orders");
   const { userAddress: addresses } = useUserAddress();
@@ -50,7 +49,7 @@ const Account = () => {
   console.log(user, "userdata");
   console.log(currentUser, "currentuserdata");
   const navigate = useNavigate();
-  console.log(orders,"orders from hook");
+  console.log(orders, "orders from hook");
 
   const isLoggedIn = localStorage.getItem("accessToken") ? true : false;
 
@@ -67,8 +66,6 @@ const Account = () => {
       year: "numeric",
     });
   }
-
- 
 
   // Mock payment methods
   const [paymentMethods] = useState<PaymentMethod[]>([
@@ -121,8 +118,6 @@ const Account = () => {
       viewedAt: "5 days ago",
     },
   ];
-
-  
 
   const tabs = [
     { id: "orders", label: "Orders", icon: ShoppingBag },
@@ -248,7 +243,10 @@ const Account = () => {
                                   className="flex items-center gap-2 bg-gray-50 rounded-lg p-2"
                                 >
                                   <img
-                                    src={item.product.images[0].image}
+                                    src={
+                                      item?.product?.images?.[0]?.image ||
+                                      "/fallback-image.png"
+                                    }
                                     alt={item.product.name}
                                     className="w-12 h-12 rounded object-cover"
                                     onError={(e) => {
@@ -280,7 +278,7 @@ const Account = () => {
                             </div>
                             <div className="flex gap-3">
                               <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                                View Details
+                                View Invoice
                               </button>
                               {order.status === "delivered" && (
                                 <button className="px-4 py-2 bg-[#DBB737] text-white rounded-lg hover:bg-[#D1A837] transition-colors">

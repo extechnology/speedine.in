@@ -27,7 +27,7 @@ const Terms = lazy(() => import("./pages/Terms"));
 
 function App() {
   return (
-    <div>
+    <div >
       <BrowserRouter>
         <GoogleOAuthProvider clientId={import.meta.env.GOOGLE_CLIENT_ID}>
           <Navbar />

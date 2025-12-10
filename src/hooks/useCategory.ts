@@ -1,11 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../api/axiosInstance"; 
+import type { Category } from "../types";
 
-interface Category {
-  id: number;
-  unique_id: string;
-  name: string;
-}
 
 const fetchCategories = async (): Promise<Category[]> => {
   const res = await axiosInstance.get("/categories/category-list/");
