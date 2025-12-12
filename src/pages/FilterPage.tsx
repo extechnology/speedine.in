@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useProducts from "../hooks/useProducts";
@@ -8,7 +8,8 @@ import useCartActions from "../hooks/useCartApi";
 const FilterPage = () => {
   const navigate = useNavigate();
   const { products: ProductData } = useProducts();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const { addToCart } = useCartActions();
   console.log(ProductData, "products");
   const { categories } = useCategories();
@@ -26,17 +27,34 @@ const FilterPage = () => {
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedWeight, setSelectedWeight] = useState("");
-  const filterCategory = categories.map((cat) => cat?.name);
+  const filterCategory = categories.map((cat) => ({
+    id: cat.unique_id,
+    name: cat.name,
+  }));
+
   const filterWeight = ProductData?.map((prod) => prod?.weight);
   console.log(filterWeight, "filter weight");
   console.log(selectedCategories, "selected categories");
-  const toggleCategory = (categoryId: string) => {
+  // const toggleCategory = (categoryId: string) => {
+  //   setSelectedCategories((prev) =>
+  //     prev.includes(categoryId)
+  //       ? prev.filter((c) => c !== categoryId)
+  //       : [...prev, categoryId]
+  //   );
+  // };
+
+  const toggleCategory = (id:string) => {
+    // Remove ?category=... whenever user switches to manual filters
+    if (categoryId) {
+      setSearchParams({});
+    }
+
     setSelectedCategories((prev) =>
-      prev.includes(categoryId)
-        ? prev.filter((c) => c !== categoryId)
-        : [...prev, categoryId]
+      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
     );
   };
+
+
 
   const normalize = (v: any) => v?.toString().trim().toLowerCase() ?? "";
 
@@ -46,7 +64,7 @@ const FilterPage = () => {
 
   let filteredProducts = ProductData.filter((product) => {
     const pName = normalize(product.name);
-    const pCatName = normalize(product.category_name);
+    // const pCatName = normalize(product.category_name);
     const pCatId = normalize(product.category_id);
     const pWeight = normalize(product.weight);
     const pPrice = Number(product.price);
@@ -56,11 +74,10 @@ const FilterPage = () => {
     const urlCategoryMatch = urlCategory ? pCatId === urlCategory : true;
 
     /* --------------------- CATEGORY CHECKBOX ---------------------- */
-    const selectedCatNormalized = selectedCategories.map((c) => normalize(c));
-    const checkboxCategoryMatch =
-      selectedCatNormalized.length > 0
-        ? selectedCatNormalized.includes(pCatName)
-        : true;
+   const checkboxCategoryMatch =
+     selectedCategories.length > 0 ? selectedCategories.includes(pCatId) : true;
+
+
 
     /* --------------------- SEARCH ---------------------- */
     const searchTerm = normalize(searchQuery);
@@ -90,6 +107,23 @@ const FilterPage = () => {
     );
   });
 
+ useEffect(() => {
+   if (!categoryId) return; // only reset when a real category is selected
+
+   // Reset filters every time user selects category from navbar
+   setSelectedCategories([]);
+   setSelectedWeight("");
+   setSearchQuery("");
+   setSelectedRating(null);
+   setSortBy("featured");
+
+   // Wait for ProductData to load before applying price range
+   setPriceRange([minPriceGlobal, maxPriceGlobal]);
+ }, [categoryId]);
+
+
+
+
   filteredProducts = [...filteredProducts].sort((a, b) => {
     const pa = Number(a.price);
     const pb = Number(b.price);
@@ -109,18 +143,16 @@ const FilterPage = () => {
         <div className="space-y-2">
           {filterCategory.map((category) => (
             <label
-              key={category}
+              key={category.id}
               className="flex items-center gap-3 cursor-pointer group"
             >
               <input
                 type="checkbox"
-                checked={selectedCategories.includes(category)}
-                onChange={() => toggleCategory(category)}
+                checked={selectedCategories.includes(category.id)}
+                onChange={() => toggleCategory(category.id)}
                 className="w-4 h-4 accent-[#DBB737] cursor-pointer"
               />
-              <span className="text-gray-700 group-hover:text-[#DBB737] transition">
-                {category}
-              </span>
+              <span>{category.name}</span>
             </label>
           ))}
         </div>

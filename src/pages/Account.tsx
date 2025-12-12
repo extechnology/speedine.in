@@ -277,9 +277,15 @@ const Account = () => {
                               </p>
                             </div>
                             <div className="flex gap-3">
-                              <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                              <button
+                                onClick={() =>
+                                  window.open(order?.invoice, "_blank")
+                                }
+                                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                              >
                                 View Invoice
                               </button>
+
                               {order.status === "delivered" && (
                                 <button className="px-4 py-2 bg-[#DBB737] text-white rounded-lg hover:bg-[#D1A837] transition-colors">
                                   Reorder

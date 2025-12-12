@@ -27,9 +27,13 @@ const Terms = lazy(() => import("./pages/Terms"));
 
 function App() {
   return (
-    <div >
+    <div>
       <BrowserRouter>
-        <GoogleOAuthProvider clientId={import.meta.env.GOOGLE_CLIENT_ID}>
+        <GoogleOAuthProvider
+          clientId={
+            "933629412968-6ap8h0f5repil5akr2reubfnl5qmbt3m.apps.googleusercontent.com"
+          }
+        >
           <Navbar />
           <Toaster richColors position="top-right" />
           <ScrollToTop />

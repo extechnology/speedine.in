@@ -76,7 +76,6 @@ const AuthPage = () => {
         "/auth/google-auth/",
         { token: credentialResponse.credential },
         {
-          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
           },
@@ -84,8 +83,10 @@ const AuthPage = () => {
       );
 
       console.log("Google login success", res.data);
+      localStorage.setItem("accessToken", res.data.access_token);
+      localStorage.setItem("refreshToken", res.data.refresh_token);
       toast.success("Google login success");
-      window.location.href = "/"; // redirect user
+      window.location.href = "/"; 
     } catch (err) {
       console.error("Google auth error", err);
       toast.error("Google auth error");

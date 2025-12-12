@@ -69,9 +69,9 @@ const Hero = () => {
                   alt={category.name}
                   className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <h3 className="text-white text-xl text-center drop-shadow-2xl font-semibold">
+                <div className="absolute inset-0 bg-black/40 opacity-10 group-hover:opacity-100 transition-all"></div>
+                <div className="absolute inset-0 flex items-end content-end justify-center">
+                  <h3 className="text-white  pb-5 md:text-xl text-sm text-center drop-shadow-2xl drop-shadow-black font-semibold">
                     {" "}
                     {category.display_name}
                   </h3>

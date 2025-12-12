@@ -244,23 +244,24 @@ export interface RazorpayOrderResponse {
 
 export interface UserOrder {
   id: number;
-  order_id: string;
   user: number;
-  shipping_address: string;
+  invoice: string;
+  order_id: string;
   total_amount: number;
-  discount_amount: number;
   final_amount: number;
+  discount_amount: number;
+  shipping_address: string;
+  created: string;
   is_paid: boolean;
-  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   items: {
     id: number;
     product: Products;
     quantity: number;
     sub_total: number;
   }[];
-  razorpay_payment_id: string | null;
   razorpay_order_id: string | null;
   razorpay_signature: string | null;
-  created: string;
+  razorpay_payment_id: string | null;
   updated: string;
+  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
 }
