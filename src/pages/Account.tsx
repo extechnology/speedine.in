@@ -1,6 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import type {
+  AddressResponse,
+  AddressPayload,
+} from "../services/addressService";
+import {
+  addAddress,
+  updateAddress,
+  deleteAddress,
+  getAddresses,
+} from "../services/addressService";
+import { toast } from "sonner";
 import {
   User,
   ShoppingBag,
@@ -12,15 +22,15 @@ import {
   Trash2,
   LogOut,
   Phone,
-  Calendar,
   ArrowRight,
   Star,
+  LockKeyhole,
 } from "lucide-react";
-import useUserAddress from "../hooks/useUserAddress";
+// import useUserAddress from "../hooks/useUserAddress";
 import { useSetDefaultAddress } from "../hooks/useSetDefaultAddress";
 import useUserOrders from "../hooks/useUserOrders";
-import useCheckLoggedIn from "../hooks/useAuthCheck";
 import { useCurrentUser } from "../hooks/useCurrentUser";
+import AddressModal from "../components/Account/AddressModal";
 
 interface PaymentMethod {
   id: string;
@@ -41,15 +51,65 @@ interface RecentProduct {
 
 const Account = () => {
   const [activeTab, setActiveTab] = useState("orders");
-  const { userAddress: addresses } = useUserAddress();
+  // const { userAddress: addresses } = useUserAddress();
   const { mutate: setDefaultAddress } = useSetDefaultAddress();
   const { userOrders: orders } = useUserOrders();
-  const { user } = useCheckLoggedIn();
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const [editingAddress, setEditingAddress] = useState<AddressResponse | null>(
+    null
+  );
+
+  const [addresses, setAddresses] = useState<AddressResponse[]>([]);
+
+  useEffect(() => {
+    getAddresses().then(setAddresses);
+  }, []);
+
   const { user: currentUser } = useCurrentUser();
-  console.log(user, "userdata");
-  console.log(currentUser, "currentuserdata");
   const navigate = useNavigate();
-  console.log(orders, "orders from hook");
+
+  const handleSetDefaultAddress = async (addressId: number) => {
+    // 1. Optimistic update
+    setAddresses((prev) =>
+      prev.map((addr) => ({
+        ...addr,
+        is_default: addr.id === addressId,
+      }))
+    );
+
+    try {
+      // 2. Backend update
+      await setDefaultAddress(addressId);
+      toast.success("Address set as default");
+    } catch (error) {
+      // 3. Rollback on failure (optional but recommended)
+      await getAddresses().then(setAddresses);
+      toast.error("Failed to set default address");
+    }
+  };
+
+  const handleEditAddress = async (id: number, data: AddressPayload) => {
+    const updated = await updateAddress(id, data);
+    toast.success("Address updated successfully");
+
+    setAddresses((prev) =>
+      prev.map((addr) => (addr.id === id ? updated : addr))
+    );
+  };
+
+  const handleAddAddress = async (data: AddressPayload) => {
+    const newAddress = await addAddress(data);
+    toast.success("Address added successfully");
+    setAddresses((prev) => [newAddress, ...prev]);
+  };
+
+  const handleDeleteAddress = async (id: number) => {
+    if (!confirm("Delete this address?")) return;
+
+    await deleteAddress(id);
+    toast.success("Address deleted successfully");
+    setAddresses((prev) => prev.filter((addr) => addr.id !== id));
+  };
 
   const isLoggedIn = localStorage.getItem("accessToken") ? true : false;
 
@@ -123,6 +183,7 @@ const Account = () => {
     { id: "orders", label: "Orders", icon: ShoppingBag },
     // { id: "recent", label: "Recently Viewed", icon: Eye },
     { id: "addresses", label: "Addresses", icon: MapPin },
+    { id: "password", label: "Password", icon: LockKeyhole },
   ];
 
   return (
@@ -167,6 +228,7 @@ const Account = () => {
                     const Icon = tab.icon;
                     return (
                       <button
+                        title="{tab.label}"
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
@@ -184,6 +246,7 @@ const Account = () => {
 
                 {/* Logout Button */}
                 <button
+                  title="Logout"
                   className="w-full mt-6 flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all duration-200"
                   onClick={handleLogout}
                 >
@@ -201,101 +264,181 @@ const Account = () => {
               {activeTab === "orders" && (
                 <div className="space-y-6">
                   <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-                    <h2 className="text-2xl font-medium text-[#640000] mb-6">
+                    <h2 className="text-2xl font-medium text-[#640000] mb-3">
                       Order History
                     </h2>
 
-                    <div className="space-y-6">
-                      {orders.map((order) => (
-                        <div
-                          key={order.id}
-                          className="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all"
-                        >
-                          <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 pb-4 border-b border-gray-200">
-                            <div>
-                              <p className="font-semibold text-lg text-[#640000]">
-                                Order {order.id}
-                              </p>
-                              <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
-                                <Calendar size={14} />
-                                Placed on {formatDate(order.created)}
-                              </p>
-                            </div>
-                            {/* <span
-                              className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 mt-2 md:mt-0 ${getStatusColor(
-                                order.status
-                              )}`}
-                            >
-                              {getStatusIcon(order.status)}
-                              {order.status.charAt(0).toUpperCase() +
-                                order.status.slice(1)}
-                            </span> */}
-                          </div>
-
-                          <div className="mb-4">
-                            <p className="text-sm font-medium text-gray-700 mb-3">
-                              Items:
-                            </p>
-                            <div className="flex flex-wrap gap-3">
-                              {order.items.map((item, idx) => (
-                                <div
-                                  key={`${order.id}-item-${idx}-${item.product}`}
-                                  className="flex items-center gap-2 bg-gray-50 rounded-lg p-2"
-                                >
-                                  <img
-                                    src={
-                                      item?.product?.images?.[0]?.image ||
-                                      "/fallback-image.png"
-                                    }
-                                    alt={item.product.name}
-                                    className="w-12 h-12 rounded object-cover"
-                                    onError={(e) => {
-                                      e.currentTarget.src =
-                                        "https://images.unsplash.com/photo-1599639957043-f3aa5c986398?w=100&h=100&fit=crop";
-                                    }}
-                                  />
-                                  <div>
-                                    <p className="text-sm font-medium text-gray-800">
-                                      {item.product.name}
-                                    </p>
-                                    <p className="text-xs text-gray-500">
-                                      Qty: {item.quantity}
-                                    </p>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                            <div>
-                              <p className="text-sm text-gray-600">
-                                Total Amount
-                              </p>
-                              <p className="text-xl font-bold text-[#640000]">
-                                ₹{order.total_amount.toFixed(2)}
-                              </p>
-                            </div>
-                            <div className="flex gap-3">
-                              <button
-                                onClick={() =>
-                                  window.open(order?.invoice, "_blank")
-                                }
-                                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                              >
-                                View Invoice
-                              </button>
-
-                              {order.status === "delivered" && (
-                                <button className="px-4 py-2 bg-[#DBB737] text-white rounded-lg hover:bg-[#D1A837] transition-colors">
-                                  Reorder
-                                </button>
-                              )}
-                            </div>
-                          </div>
+                    {orders.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center text-center">
+                        <div className="w-30 h-30 rounded-full bg-linear-to-br from-amber-100 to-red-100 flex items-center justify-center mb-2 shadow-inner">
+                          <svg
+                            className="w-20 h-20 text-[#640000]"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={1.5}
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M6 8h12l-1.5 12a2 2 0 0 1-2 1.8H9.5a2 2 0 0 1-2-1.8L6 8Z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M9 8V6a3 3 0 0 1 6 0v2"
+                            />
+                          </svg>
                         </div>
-                      ))}
-                    </div>
+
+                        <h3 className="text-2xl font-semibold text-[#640000] my-4">
+                          No orders yet
+                        </h3>
+
+                        <p className="text-gray-600 max-w-md mb-6">
+                          Looks like you haven’t placed any orders yet. Once you
+                          do, your order history will appear here.
+                        </p>
+
+                        <button
+                          title="Browse Products"
+                          onClick={() => navigate("/products")}
+                          className="px-6 py-3 my-2 bg-linear-to-r from-[#640000] to-amber-700 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition"
+                        >
+                          Browse Products
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="space-y-6">
+                                               {" "}
+                        {orders.map((order) => (
+                          <div
+                            key={order.id}
+                            className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all"
+                          >
+                                                        {/* Header */}         
+                                             {" "}
+                            <div className="flex flex-col md:flex-row md:items-center justify-between px-6 py-5 border-b">
+                                                           {" "}
+                              <div>
+                                {/*                                 <p className="text-lg font-semibold text-[#640000]">
+                                  Order #{order.id}
+                                </p> */}
+                                                               {" "}
+                                <p className="text-sm text-gray-500 mt-1">
+                                                                    Placed on{" "}
+                                  {formatDate(order.created)}                   
+                                             {" "}
+                                </p>
+                                                             {" "}
+                              </div>
+                                                           {" "}
+                              <span className="mt-3 md:mt-0 inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-amber-50 text-amber-700">
+                                                               {" "}
+                                {order.status.charAt(0).toUpperCase() +
+                                  order.status.slice(1)}
+                                                             {" "}
+                              </span>
+                                                         {" "}
+                            </div>
+                                                        {/* Items */}           
+                                           {" "}
+                            <div className="px-6 py-5">
+                                                           {" "}
+                              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                               {" "}
+                                {order.items.map((item, idx) => (
+                                  <div
+                                    key={`${order.id}-${idx}`}
+                                    className="flex gap-3 p-3 bg-gray-50 rounded-xl"
+                                  >
+                                                                       {" "}
+                                    <img
+                                      src={item?.product?.images?.[0]?.image}
+                                      alt={item.product.name}
+                                      className="w-16 h-16 rounded-lg object-cover"
+                                      onError={(e) => {
+                                        e.currentTarget.src =
+                                          "https://images.unsplash.com/photo-1599639957043-f3aa5c986398?w=100&h=100&fit=crop";
+                                      }}
+                                    />
+                                                                       {" "}
+                                    <div>
+                                                                           {" "}
+                                      <p className="font-medium text-gray-900 text-sm">
+                                                                               {" "}
+                                        {item.product.name}                     
+                                                       {" "}
+                                      </p>
+                                                                           {" "}
+                                      <p className="text-xs text-gray-500">
+                                                                               
+                                        Quantity: {item.quantity}               
+                                                             {" "}
+                                      </p>
+                                                                         {" "}
+                                    </div>
+                                                                     {" "}
+                                  </div>
+                                ))}
+                                                             {" "}
+                              </div>
+                                                         {" "}
+                            </div>
+                                                        {/* Footer */}         
+                                             {" "}
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-5 border-t gap-4">
+                                                           {" "}
+                              <div>
+                                                               {" "}
+                                <p className="text-sm text-gray-500">
+                                                                    Total Amount
+                                                                 {" "}
+                                </p>
+                                                               {" "}
+                                <p className="text-2xl font-semibold text-[#640000]">
+                                                                    ₹
+                                  {Number(order.total_amount).toFixed(0)}       
+                                                         {" "}
+                                </p>
+                                                             {" "}
+                              </div>
+                                                           {" "}
+                              <div className="flex gap-3">
+                                                               {" "}
+                                {order.invoice && (
+                                  <button
+                                    type="button"
+                                    title="View Invoice"
+                                    onClick={() =>
+                                      window.open(order.invoice, "_blank")
+                                    }
+                                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
+                                  >
+                                                                        View
+                                    Invoice                                  {" "}
+                                  </button>
+                                )}
+                                                               {" "}
+                                {order.status === "delivered" && (
+                                  <button
+                                    title="Reorder"
+                                    className="px-5 py-2 bg-linear-to-r from-[#DBB737] to-amber-600 text-white rounded-lg font-medium hover:opacity-90 transition"
+                                  >
+                                                                        Reorder
+                                                                     {" "}
+                                  </button>
+                                )}
+                                                             {" "}
+                              </div>
+                                                         {" "}
+                            </div>
+                                                     {" "}
+                          </div>
+                        ))}
+                                             {" "}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -373,19 +516,53 @@ const Account = () => {
                     <h2 className="text-2xl font-medium text-[#640000]">
                       Saved Addresses
                     </h2>
-                    {/* <button
-                      onClick={() => setActiveTab("addresses")}
+                    <button
+                      type="button"
+                      title="Add New Address"
+                      onClick={() => {
+                        setEditingAddress(null);
+                        setIsAddressModalOpen(true);
+                      }}
                       className="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-[#DBB737] to-[#D1A837] text-white rounded-lg hover:shadow-lg transition-all"
-                      aria-label="Add new address"
                     >
                       <Plus size={18} />
                       Add New Address
-                    </button> */}
+                    </button>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {Array.isArray(addresses) &&
-                      addresses.map((address) => (
+                  {/* ✅ Fallback */}
+                  {!addresses || addresses.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-4 text-center">
+                      <div className="w-24 h-24 rounded-full bg-linear-to-br from-amber-100 to-orange-100 flex items-center justify-center mb-6 shadow-inner">
+                        <MapPin size={40} className="text-[#640000]" />
+                      </div>
+
+                      <h3 className="text-xl font-semibold text-[#640000] mb-2">
+                        No addresses saved yet
+                      </h3>
+
+                      <p className="text-gray-600 max-w-md mb-6">
+                        Add a delivery address to make checkout faster and
+                        smoother.
+                      </p>
+
+                      <button
+                        type="button"
+                        title="Add New Address"
+                        onClick={() => {
+                          setEditingAddress(null);
+                          setIsAddressModalOpen(true);
+                        }}
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-[#640000] to-amber-700 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition"
+                      >
+                        <Plus size={18} />
+                        Add Your First Address
+                      </button>
+                    </div>
+                  ) : (
+                    /* ✅ Existing Address Grid */
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {addresses.map((address) => (
                         <div
                           key={address.id}
                           className={`border-2 rounded-xl p-5 relative hover:shadow-lg transition-all ${
@@ -395,10 +572,11 @@ const Account = () => {
                           }`}
                         >
                           {address.is_default && (
-                            <span className="absolute top-3 right-3 bg-[#DBB737] text-white text-xs px-2 py-1 rounded-full font-semibold">
+                            <span className="absolute top-4 left-[12%] bg-[#DBB737] text-white text-xs px-2 py-1 rounded-full font-semibold">
                               Default
                             </span>
                           )}
+
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex items-center gap-2">
                               <MapPin size={20} className="text-[#DBB737]" />
@@ -406,23 +584,30 @@ const Account = () => {
                                 {address.type}
                               </span>
                             </div>
+
                             <div className="flex gap-2">
                               <button
-                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                                aria-label="Edit address"
-                                title="Edit address"
+                                type="button"
+                                title="Edit Address"
+                                className="p-2 hover:bg-gray-100 rounded-lg"
+                                onClick={() => {
+                                  setEditingAddress(address);
+                                  setIsAddressModalOpen(true);
+                                }}
                               >
                                 <Edit2 size={16} className="text-gray-600" />
                               </button>
                               <button
-                                className="p-2 hover:bg-red-50 rounded-lg transition-colors"
-                                aria-label="Delete address"
-                                title="Delete address"
+                                type="button"
+                                title="Delete Address"
+                                className="p-2 hover:bg-red-50 rounded-lg"
+                                onClick={() => handleDeleteAddress(address.id)}
                               >
                                 <Trash2 size={16} className="text-red-600" />
                               </button>
                             </div>
                           </div>
+
                           <p className="font-medium text-gray-800 mb-1">
                             {address.name}
                           </p>
@@ -436,16 +621,66 @@ const Account = () => {
                             <Phone size={14} />
                             {address.phone}
                           </p>
+
                           {!address.is_default && (
                             <button
+                              type="button"
+                              title="Set as Default Address"
                               className="mt-4 text-sm text-[#DBB737] hover:underline"
-                              onClick={() => setDefaultAddress(address.id)}
+                              onClick={() =>
+                                handleSetDefaultAddress(address.id)
+                              }
                             >
                               Set as Default
                             </button>
                           )}
                         </div>
                       ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeTab === "password" && (
+                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 md:p-8">
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h2 className="text-xl font-semibold text-[#640000]">
+                        Password & Security
+                      </h2>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Manage and reset your account password
+                      </p>
+                    </div>
+
+                    <span className="px-3 py-1 text-xs font-medium rounded-full bg-green-50 text-green-700">
+                      Secure
+                    </span>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="border-t border-gray-100 my-5" />
+
+                  {/* Content */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                      <p className="text-[#640000] font-medium">
+                        Reset your password
+                      </p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        For security reasons, we recommend updating your
+                        password regularly.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => navigate("/forgot-password")}
+                      className="inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-[#640000] text-white font-medium hover:bg-gray-900 transition shadow-sm"
+                    >
+                      Reset Password
+                    </button>
                   </div>
                 </div>
               )}
@@ -458,6 +693,8 @@ const Account = () => {
                       Payment Methods
                     </h2>
                     <button
+                      type="button"
+                      title="Add Payment Method"
                       onClick={() => setActiveTab("payments")}
                       className="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-[#DBB737] to-[#D1A837] text-white rounded-lg hover:shadow-lg transition-all"
                       aria-label="Add new payment method"
@@ -733,6 +970,21 @@ const Account = () => {
           </div>
         )}
       </div>
+
+      {isAddressModalOpen && (
+        <AddressModal
+          open={isAddressModalOpen}
+          initialData={editingAddress}
+          onClose={() => setIsAddressModalOpen(false)}
+          onSubmit={async (data) => {
+            if (editingAddress) {
+              await handleEditAddress(editingAddress.id, data);
+            } else {
+              await handleAddAddress(data);
+            }
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useProducts from "../hooks/useProducts";
@@ -9,42 +9,37 @@ const FilterPage = () => {
   const navigate = useNavigate();
   const { products: ProductData } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const { addToCart } = useCartActions();
   console.log(ProductData, "products");
+  const { addToCart } = useCartActions();
   const { categories } = useCategories();
-  console.log(categories, "categories");
   const categoryId = searchParams.get("category");
-  console.log(categoryId, "category id");
   const [searchQuery, setSearchQuery] = useState("");
-  const prices = ProductData.map((p) => Number(p.price));
-  const maxPrice = prices.length ? Math.max(...prices) : 200;
+  const prices = ProductData.map((p) => Number(p.price)).filter(Boolean);
 
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, maxPrice]);
-  const [isWeightOpen, setIsWeightOpen] = useState(false);
+  const minPriceGlobal = prices.length ? Math.min(...prices) : 0;
+  const maxPriceGlobal = prices.length ? Math.max(...prices) : 500;
+
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    minPriceGlobal,
+    maxPriceGlobal,
+  ]);
+
+  const [selectedWeights, setSelectedWeights] = useState<string[]>([]);
+
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState("featured");
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedWeight, setSelectedWeight] = useState("");
-  const filterCategory = categories.map((cat) => ({
-    id: cat.unique_id,
-    name: cat.name,
-  }));
+  const filterCategory = useMemo(
+    () =>
+      categories.map((cat) => ({
+        id: cat.unique_id,
+        name: cat.name,
+      })),
+    [categories]
+  );
 
-  const filterWeight = ProductData?.map((prod) => prod?.weight);
-  console.log(filterWeight, "filter weight");
-  console.log(selectedCategories, "selected categories");
-  // const toggleCategory = (categoryId: string) => {
-  //   setSelectedCategories((prev) =>
-  //     prev.includes(categoryId)
-  //       ? prev.filter((c) => c !== categoryId)
-  //       : [...prev, categoryId]
-  //   );
-  // };
-
-  const toggleCategory = (id:string) => {
-    // Remove ?category=... whenever user switches to manual filters
+  const toggleCategory = (id: string) => {
     if (categoryId) {
       setSearchParams({});
     }
@@ -54,75 +49,113 @@ const FilterPage = () => {
     );
   };
 
+  const toggleAllCategories = () => {
+    if (isAllCategoriesSelected) {
+      setSelectedCategories([]);
+    } else {
+      setSelectedCategories(allCategoryIds);
+    }
+  };
 
+  const toggleAllWeights = () => {
+    if (isAllWeightsSelected) {
+      setSelectedWeights([]);
+    } else {
+      setSelectedWeights(allWeights);
+    }
+  };
+
+  const toGrams = (weight: string) => {
+    const value = parseFloat(weight);
+
+    if (weight.toLowerCase().includes("kg")) {
+      return value * 1000;
+    }
+
+    return value;
+  };
 
   const normalize = (v: any) => v?.toString().trim().toLowerCase() ?? "";
 
-  const pricesList = ProductData.map((p) => Number(p.price));
-  const minPriceGlobal = pricesList.length ? Math.min(...pricesList) : 0;
-  const maxPriceGlobal = pricesList.length ? Math.max(...pricesList) : 500;
+  const uniqueWeights = Array.from(
+    new Set(
+      ProductData.map((p) => p.weight)
+        .filter((w): w is string => Boolean(w))
+        .map((w) => normalize(w))
+    )
+  ).sort((a, b) => toGrams(a) - toGrams(b));
+
+  const allWeights = uniqueWeights;
+
+  const isAllWeightsSelected =
+    allWeights.length > 0 && selectedWeights.length === allWeights.length;
+
+  const allCategoryIds = filterCategory.map((c) => c.id);
+
+  const isAllCategoriesSelected =
+    filterCategory.length > 0 &&
+    selectedCategories.length === filterCategory.length;
 
   let filteredProducts = ProductData.filter((product) => {
     const pName = normalize(product.name);
-    // const pCatName = normalize(product.category_name);
     const pCatId = normalize(product.category_id);
     const pWeight = normalize(product.weight);
     const pPrice = Number(product.price);
 
-    /* --------------------- CATEGORY FROM URL ---------------------- */
+    /* URL CATEGORY */
     const urlCategory = normalize(categoryId);
     const urlCategoryMatch = urlCategory ? pCatId === urlCategory : true;
 
-    /* --------------------- CATEGORY CHECKBOX ---------------------- */
-   const checkboxCategoryMatch =
-     selectedCategories.length > 0 ? selectedCategories.includes(pCatId) : true;
+    /* CATEGORY CHECKBOX */
+    const checkboxCategoryMatch =
+      selectedCategories.length > 0
+        ? selectedCategories.includes(pCatId)
+        : true;
 
+    /* SEARCH */
+    const searchMatch = searchQuery
+      ? pName.includes(normalize(searchQuery))
+      : true;
 
+    /* WEIGHT (optional) */
+    const weightMatch =
+      selectedWeights.length > 0 ? selectedWeights.includes(pWeight) : true;
 
-    /* --------------------- SEARCH ---------------------- */
-    const searchTerm = normalize(searchQuery);
-    const searchMatch = searchTerm ? pName.includes(searchTerm) : true;
-
-    /* --------------------- PRICE ---------------------- */
+    /* PRICE */
     const priceMatch = pPrice >= priceRange[0] && pPrice <= priceRange[1];
 
-    /* --------------------- RATING ---------------------- */
+    /* RATING */
     const ratingMatch =
       selectedRating !== null ? (product.rating || 0) >= selectedRating : true;
 
-    /* --------------------- WEIGHT ---------------------- */
-    const selectedWeightNorm = normalize(selectedWeight);
-    const weightMatch = selectedWeightNorm
-      ? pWeight === selectedWeightNorm
-      : true;
-
-    /* --------------------- FINAL ---------------------- */
     return (
       urlCategoryMatch &&
       checkboxCategoryMatch &&
       searchMatch &&
+      weightMatch &&
       priceMatch &&
-      ratingMatch &&
-      weightMatch
+      ratingMatch
     );
   });
 
- useEffect(() => {
-   if (!categoryId) return; // only reset when a real category is selected
+  useEffect(() => {
+    if (!filterCategory.length) return;
 
-   // Reset filters every time user selects category from navbar
-   setSelectedCategories([]);
-   setSelectedWeight("");
-   setSearchQuery("");
-   setSelectedRating(null);
-   setSortBy("featured");
+    // URL-based navigation
+    if (categoryId) {
+      setSelectedCategories((prev) =>
+        prev.length === 1 && prev[0] === categoryId ? prev : [categoryId]
+      );
+      return;
+    }
 
-   // Wait for ProductData to load before applying price range
-   setPriceRange([minPriceGlobal, maxPriceGlobal]);
- }, [categoryId]);
-
-
-
+    // All Products
+    setSelectedCategories((prev) =>
+      prev.length === filterCategory.length
+        ? prev
+        : filterCategory.map((c) => c.id)
+    );
+  }, [categoryId, filterCategory]);
 
   filteredProducts = [...filteredProducts].sort((a, b) => {
     const pa = Number(a.price);
@@ -140,17 +173,29 @@ const FilterPage = () => {
       {/* Category Filter */}
       <div>
         <h3 className="text-lg font-semibold mb-3 text-[#640000]">Category</h3>
+
+        {/* All Categories */}
+        <label className="flex items-center gap-3 mb-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={isAllCategoriesSelected}
+            onChange={toggleAllCategories}
+            className="w-4 h-4 accent-[#DBB737]"
+          />
+          <span className="font-medium">All Categories</span>
+        </label>
+
         <div className="space-y-2">
           {filterCategory.map((category) => (
             <label
               key={category.id}
-              className="flex items-center gap-3 cursor-pointer group"
+              className="flex items-center gap-3 cursor-pointer"
             >
               <input
                 type="checkbox"
                 checked={selectedCategories.includes(category.id)}
                 onChange={() => toggleCategory(category.id)}
-                className="w-4 h-4 accent-[#DBB737] cursor-pointer"
+                className="w-4 h-4 accent-[#DBB737]"
               />
               <span>{category.name}</span>
             </label>
@@ -159,101 +204,42 @@ const FilterPage = () => {
       </div>
 
       {/* Weight Filter */}
-      <div className="w-full">
-        <h3 className="text-lg font-semibold mb-4 text-[#640000] tracking-tight">
-          Weight
-        </h3>
+      {/* Weight Filter */}
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-[#640000]">Weight</h3>
 
-        <div className="relative">
-          {/* Custom Dropdown Trigger */}
-          <button
-            type="button"
-            className={`
-        w-full flex items-center justify-between px-3 py-3.5 
-        border-2 border-gray-100 rounded-2xl text-gray-800 
-        bg-linear-to-r from-white to-gray-50/80 
-        hover:border-[#DBB737]/60 hover:shadow-lg 
-        hover:shadow-[#DBB737]/10 focus:outline-none focus:ring-4 
-        focus:ring-[#DBB737]/20 focus:shadow-xl transition-all 
-        duration-300 ease-out group text-left font-medium
-        ${selectedWeight ? "text-[#640000]" : "text-gray-500"}
-      `}
-            onClick={() => setIsWeightOpen(!isWeightOpen)}
-          >
-            {selectedWeight || "Select Weight"}
+        {/* Select All */}
+        <label className="flex items-center gap-3 mb-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={isAllWeightsSelected}
+            onChange={toggleAllWeights}
+            className="w-4 h-4 accent-[#DBB737]"
+          />
+          <span className="font-medium">All Weights</span>
+        </label>
 
-            <svg
-              className={`
-          w-5 h-5 transition-transform duration-300 ease-out 
-          ${isWeightOpen ? "rotate-180" : ""}
-        `}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        <div className="space-y-2 max-h-56 overflow-y-auto">
+          {uniqueWeights.map((weight) => (
+            <label
+              key={weight}
+              className="flex items-center gap-3 cursor-pointer"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
+              <input
+                type="checkbox"
+                checked={selectedWeights.includes(weight)}
+                onChange={() =>
+                  setSelectedWeights((prev) =>
+                    prev.includes(weight)
+                      ? prev.filter((w) => w !== weight)
+                      : [...prev, weight]
+                  )
+                }
+                className="w-4 h-4 accent-[#DBB737]"
               />
-            </svg>
-          </button>
-
-          {/* Custom Dropdown Menu */}
-          {isWeightOpen && (
-            <div
-              className="
-        absolute w-full mt-2 bg-white/95 backdrop-blur-xl 
-        border border-gray-100 shadow-2xl rounded-2xl 
-        py-2 z-50 origin-top-right transition-all duration-300 
-        ease-out scale-100 opacity-100
-        max-h-72 overflow-y-auto
-      "
-            >
-              {(() => {
-                const uniqueWeights = [...new Set(filterWeight)];
-                const sortedWeights = uniqueWeights.sort((a, b) =>
-                  a.localeCompare(b)
-                );
-
-                return (
-                  <>
-                    {sortedWeights.map((weight, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        className={`
-                    w-full px-4 py-3 text-left hover:bg-[#DBB737]/10 
-                    hover:text-[#640000] transition-all duration-200 
-                    text-sm font-medium rounded-xl mx-1
-                    ${
-                      selectedWeight === weight
-                        ? "bg-[#DBB737]/20 text-[#640000] border-r-4 border-[#DBB737]"
-                        : "text-gray-700 hover:shadow-sm"
-                    }
-                  `}
-                        onClick={() => {
-                          setSelectedWeight(weight);
-                          setIsWeightOpen(false);
-                        }}
-                      >
-                        {weight}
-                      </button>
-                    ))}
-                  </>
-                );
-              })()}
-            </div>
-          )}
-
-          {/* Backdrop */}
-          {isWeightOpen && (
-            <div
-              className="fixed inset-0 z-40"
-              onClick={() => setIsWeightOpen(false)}
-            />
-          )}
+              <span className="capitalize">{weight}</span>
+            </label>
+          ))}
         </div>
       </div>
 
@@ -298,10 +284,10 @@ const FilterPage = () => {
           setSearchQuery("");
           setSelectedRating(null);
           setSortBy("featured");
-          setSelectedCategories([]);
-          setSelectedWeight("");
+          setSelectedWeights([]);
           setPriceRange([minPriceGlobal, maxPriceGlobal]);
-          navigate("/products"); // IMPORTANT: removes ?category=value
+          setSelectedCategories(filterCategory.map((c) => c.id));
+          navigate("/products");
         }}
         className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-[#640000] rounded-xl transition font-semibold"
       >
@@ -415,18 +401,35 @@ const FilterPage = () => {
                       className="block cursor-pointer w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#DBB737]"
                     >
                       <img
-                        src={product.images[0]?.image}
+                        src={
+                          product.images?.[0]?.image ||
+                          "/images/placeholder-product.png"
+                        }
                         alt={product.name}
-                        className="w-full  aspect-square  cursor-pointer object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="w-full aspect-square cursor-pointer object-cover
+             group-hover:scale-110 transition-transform duration-500"
                         onError={(e) => {
+                          e.currentTarget.onerror = null; // prevent infinite loop
                           e.currentTarget.src =
-                            "https://images.unsplash.com/photo-1599639957043-f3aa5c986398?w=400&h=400&fit=crop";
+                            "/images/placeholder-product.png";
                         }}
                       />
                     </button>
-                    <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full shadow-md">
+                    <div className="absolute top-4 right-4 bg-white  rounded-full shadow-md">
+                      {product.old_price > product.price && (
+                        <span className="text-sm font-semibold px-3 py-1 text-red-600">
+                          {Math.round(
+                            ((product.old_price - product.price) /
+                              product.old_price) *
+                              100
+                          )}
+                          % off
+                        </span>
+                      )}
+                    </div>
+                    <div className="absolute bottom-4 right-4 bg-white px-3 py-1 rounded-full shadow-md">
                       <span className="text-sm font-semibold text-red-600">
-                        -20%
+                        {product.weight}
                       </span>
                     </div>
                   </div>
@@ -457,7 +460,7 @@ const FilterPage = () => {
                           ₹{product.price}
                         </span>
                         <span className="text-sm text-gray-400 line-through ml-2">
-                          ₹{product.price + 20}
+                          ₹{product?.old_price}
                         </span>
                       </div>
                     </div>

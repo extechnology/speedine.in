@@ -6,6 +6,7 @@ import Footer from "./components/common/Footer";
 import ScrollToTop from "./components/common/ScrollToTop";
 import { Toaster } from "sonner";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import Loader from "./components/common/Loader";
 
 const Home = lazy(() => import("./pages/Home"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -24,6 +25,7 @@ const OrderConfirm = lazy(() => import("./pages/OrderConfirm"));
 const ReturnAndRefund = lazy(() => import("./pages/ReturnAndRefund"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 
 function App() {
   return (
@@ -37,7 +39,7 @@ function App() {
           <Navbar />
           <Toaster richColors position="top-right" />
           <ScrollToTop />
-          <Suspense>
+          <Suspense fallback={<Loader />}>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="*" element={<NotFound />} />
@@ -56,6 +58,7 @@ function App() {
               <Route path="/return" element={<ReturnAndRefund />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
             </Routes>
           </Suspense>
           <Footer />

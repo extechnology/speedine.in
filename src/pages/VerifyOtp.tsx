@@ -41,11 +41,11 @@ const OtpVerify = () => {
         password: password,
         otp: Number(otp),
       });
-      console.log(res,"response");
+      console.log(res, "response");
 
       if (res?.message.includes("verified successfully")) {
         console.log(res, "otp verification response");
-        navigate("/");
+        navigate("/products");
       } else {
         setErrorMsg(res?.message || "Invalid OTP. Try again.");
       }

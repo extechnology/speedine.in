@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 const Hero = () => {
   const { carousel } = useHeroCarousel();
   const { categories } = useCategories();
-  console.log(categories, "categories");
 
   const [index, setIndex] = useState(0);
 
@@ -41,6 +40,10 @@ const Hero = () => {
                   <BlurFade delay={0.25} duration={0.5} inView>
                     <img
                       src={slide.image}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "/images/video-fallback.jpg";
+                      }}
                       alt="carousel images"
                       className="aspect-square w-full object-cover transition-transform duration-700 hover:scale-110"
                     />
@@ -67,13 +70,18 @@ const Hero = () => {
                 <img
                   src={category.image}
                   alt={category.name}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = "/images/video-fallback.jpg";
+                  }}
                   className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-10 group-hover:opacity-100 transition-all"></div>
                 <div className="absolute inset-0 flex items-end content-end justify-center">
                   <h3 className="text-white  pb-5 md:text-xl text-sm text-center drop-shadow-2xl drop-shadow-black font-semibold">
                     {" "}
-                    {category.display_name}
+                    {category.display_name1} <br />
+                    {category.display_name2}
                   </h3>
                 </div>
               </div>

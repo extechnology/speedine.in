@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import useCart from "../hooks/useUserCart";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
+import CartSkeleton from "../components/skeletons/CartSkeleton";
 
 type LocalCartItem = {
   id: string | number;
@@ -31,7 +32,6 @@ type LocalCartItem = {
 const Cart = () => {
   const navigate = useNavigate();
   const { cart, refreshCart, loading } = useCart();
-  console.log(cart, "caartttttt");
   const [localItems, setLocalItems] = useState<LocalCartItem[]>([]);
 
   useEffect(() => {
@@ -133,11 +133,7 @@ const Cart = () => {
     return (
       <div className="min-h-screen p-10">
         {/* ADD skeleton loader */}
-        <div className="animate-pulse space-y-6">
-          <div className="h-24 bg-gray-200 rounded-xl"></div>
-          <div className="h-24 bg-gray-200 rounded-xl"></div>
-          <div className="h-24 bg-gray-200 rounded-xl"></div>
-        </div>
+        <CartSkeleton />
       </div>
     );
   }
@@ -220,7 +216,7 @@ const Cart = () => {
                           "https://images.unsplash.com/photo-1599639957043-f3aa5c986398?w=400&h=400&fit=crop";
                       }}
                     />
-                    {item.originalPrice && (
+                    {item.originalPrice && item.originalPrice > item.price && (
                       <div className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
                         {Math.round(
                           ((item.originalPrice - item.price) /

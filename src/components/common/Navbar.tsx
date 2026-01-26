@@ -1,9 +1,10 @@
 import { memo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ShoppingBag, Search, User, Menu, X } from "lucide-react";
 import { useCategories } from "../../hooks/useCategory";
 import useProducts from "../../hooks/useProducts";
 import { useProductSearch } from "../../hooks/useProductSearch";
+import useCart from "../../hooks/useUserCart";
 
 const NavItems = [
   { name: "Home", href: "/" },
@@ -19,17 +20,34 @@ const NavItems = [
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { categories, loading } = useCategories();
   const { products } = useProducts();
   const { query, setQuery, results } = useProductSearch(products);
+  const { cart } = useCart();
+
   const isLoggedIn = localStorage.getItem("accessToken") ? true : false;
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-  const handleLogout =  () => {
-    localStorage.clear();
+  const handleNavbarLogin = () => {
+    const loginContext = {
+      from: location.pathname + location.search,
+      source: "navbar",
+    };
 
+    // Persist for OAuth / refresh safety
+    sessionStorage.setItem("login_context", JSON.stringify(loginContext));
+
+    navigate("/auth", {
+      state: loginContext,
+    });
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    setIsMobileMenuOpen(false);
     navigate("/");
   };
 
@@ -213,15 +231,47 @@ const Navbar = () => {
           {/* Icons */}
           <Link
             to="/cart"
-            className="p-2 hover:bg-[#DBB737] rounded-full transition-colors"
+            aria-label="View cart"
+            className="
+    relative inline-flex items-center justify-center
+    w-10 h-10 rounded-full
+    transition-all
+    hover:bg-[#DBB737]/90
+    focus-visible:ring-2 focus-visible:ring-[#DBB737]
+  "
           >
+            {/* Badge */}
+            {(cart?.total_items || 0) > 0 && (
+              <span
+                className="
+        absolute -top-1 -right-1
+        min-w-[18px] h-[18px]
+        px-1
+        flex items-center justify-center
+        rounded-full
+        bg-red-500 text-white
+        text-[11px] font-semibold
+        leading-none
+        shadow-sm
+      "
+              >
+                {cart?.total_items}
+              </span>
+            )}
+
+            {/* Icon */}
             <ShoppingBag
               size={22}
               strokeWidth={2}
-              className="text-gray-600 hover:text-gray-100"
+              className="
+      text-gray-600
+      transition-colors
+      group-hover:text-white
+    "
             />
           </Link>
 
+          {/* Desktop Account Dropdown */}
           <div className="relative group hidden md:block">
             <button
               onClick={() => navigate("/account")}
@@ -269,18 +319,19 @@ const Navbar = () => {
       transition-all duration-300 z-30
     "
                 >
-                  <Link
-                    to="/auth"
-                    className="block px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737] rounded-t-xl"
+                  <button
+                    onClick={handleNavbarLogin}
+                    className="block w-full text-left px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737] rounded-t-xl"
                   >
                     🔐 Login
-                  </Link>
-                  <Link
-                    to="/auth"
-                    className="block px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737] rounded-b-xl border-t border-gray-100"
+                  </button>
+
+                  <button
+                    onClick={handleNavbarLogin}
+                    className="block w-full text-left px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737] rounded-b-xl border-t border-gray-100"
                   >
                     ✨ Signup
-                  </Link>
+                  </button>
                 </div>
               </div>
             )}
@@ -310,18 +361,69 @@ const Navbar = () => {
 
       {/* Mobile Search Bar */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          isSearchOpen ? "max-h-20 opacity-100 mt-4" : "max-h-0 opacity-0"
+        className={`md:hidden transition-all duration-300 ease-in-out ${
+          isSearchOpen ? "max-h-[500px] opacity-100 mt-4" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="px-4">
-          <div className="flex items-center gap-3 px-3 py-2 border border-gray-300 rounded-xl bg-white shadow-sm">
-            <Search size={18} className="text-gray-500" />
-            <input
-              type="text"
-              placeholder="Search products..."
-              className="outline-none text-sm bg-transparent w-full"
-            />
+        <div className="px-4 pb-4">
+          <div className="relative z-50">
+            <div className="flex items-center gap-3 px-3 py-2 border border-gray-300 rounded-xl bg-white shadow-sm">
+              <Search size={18} className="text-gray-500" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search products..."
+                className="outline-none text-sm bg-transparent w-full"
+              />
+              {query && (
+                <button title="clear search" onClick={() => setQuery("")}>
+                  <X size={18} className="text-gray-500" />
+                </button>
+              )}
+            </div>
+
+            {/* Mobile Search Results */}
+            {query && (
+              <ul className="absolute left-4 right-4 mt-2 rounded-xl border border-gray-100 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] z-50 max-h-72 overflow-y-auto">
+                {results.length === 0 && (
+                  <li className="p-4 text-sm text-gray-500 text-center">
+                    No results found
+                  </li>
+                )}
+
+                {results.map((r) => (
+                  <li key={r.id}>
+                    <Link
+                      to={`/detail/${r.unique_id}`}
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition rounded-lg"
+                      onClick={() => {
+                        setQuery("");
+                        setIsSearchOpen(false);
+                      }}
+                    >
+                      <img
+                        src={
+                          r.image || r.images?.[0].image || "/placeholder.png"
+                        }
+                        alt={r.name}
+                        className="w-10 h-10 rounded-lg object-cover"
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-gray-800">
+                          {r.name}
+                        </span>
+                        {r.price && (
+                          <span className="text-xs text-gray-500">
+                            ₹{r.price}
+                          </span>
+                        )}
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
       </div>
@@ -329,35 +431,32 @@ const Navbar = () => {
       {/* Mobile Menu */}
       <div
         className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          isMobileMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <ul className="px-4 py-4 space-y-3 bg-white/80 backdrop-blur-sm">
           {NavItems.map((item) => (
             <li key={item.name} className="transition-all">
-              {/* Normal item without dropdown */}
+              {/* Products dropdown */}
               {item.name === "Products" ? (
                 <>
-                  {/* Dropdown parent */}
                   <button
                     onClick={() =>
                       setOpenDropdown(
                         openDropdown === item.name ? null : item.name
                       )
                     }
-                    className="w-full flex justify-between items-center py-2 px-4 text-gray-700 font-bold hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg"
+                    className="w-full flex justify-between items-center py-2 px-4 text-gray-700 font-medium hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg"
                   >
                     Products
                     <span>{openDropdown === item.name ? "▲" : "▼"}</span>
                   </button>
 
-                  {/* Dropdown content */}
                   <div
                     className={`overflow-hidden transition-all duration-300 ${
                       openDropdown === "Products" ? "max-h-80" : "max-h-0"
                     }`}
                   >
-                    {/* All Products */}
                     <Link
                       to="/products"
                       onClick={() => setIsMobileMenuOpen(false)}
@@ -366,7 +465,6 @@ const Navbar = () => {
                       All Products
                     </Link>
 
-                    {/* Dynamic category list */}
                     {!loading &&
                       categories.map((cat) => (
                         <Link
@@ -386,65 +484,64 @@ const Navbar = () => {
                     )}
                   </div>
                 </>
-              ) : (
-                // Default mobile item
-                <button
-                  title="name"
-                  type="button"
-                  // to={item.href}
+              ) : item.href ? (
+                <Link
+                  to={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-2 px-4 text-gray-700 font-bold hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg"
+                  className="block py-2 px-4 text-gray-700 font-medium hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg"
                 >
                   {item.name}
-                </button>
+                </Link>
+              ) : (
+                <span className="block py-2 px-4 text-gray-700 font-medium hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg">
+                  {item.name}
+                </span>
               )}
             </li>
           ))}
 
-          <li
-            className="transform transition-all duration-300 ease-out"
-            style={{
-              animation: isMobileMenuOpen
-                ? `slideDown 0.3s ease-out ${NavItems.length * 0.05}s both`
-                : "none",
-            }}
-          >
-            <div className="relative group hidden md:block">
-              <button
-                onClick={() => navigate("/account")}
-                title="account"
-                className="p-2 hover:bg-[#DBB737] rounded-full transition-colors"
-              >
-                <User
-                  strokeWidth={2}
-                  size={22}
-                  className="text-gray-700 hover:text-gray-100"
-                />
-              </button>
-
-              {/* Dropdown */}
-              <div
-                className="
-      absolute right-0 mt-2 w-44 bg-white shadow-xl rounded-xl
-      border border-gray-100 opacity-0 invisible
-      group-hover:opacity-100 group-hover:visible group-hover:translate-y-1
-      transition-all duration-300 z-30
-    "
-              >
+          {/* Account Section for Mobile */}
+          <li className="border-t border-gray-200 pt-3 mt-3">
+            {isLoggedIn ? (
+              <>
                 <Link
-                  to="/auth"
-                  className="block px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737] rounded-t-xl"
+                  to="/account"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-2 py-2 px-4 text-gray-700 font-medium hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg mb-2"
+                >
+                  <User size={18} />
+                  My Account
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-2 py-2 px-4 text-gray-700 font-medium hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg"
+                >
+                  🔐 Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleNavbarLogin();
+                  }}
+                  className="w-full flex items-center gap-2 py-2 px-4 text-gray-700 font-medium hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg"
                 >
                   🔐 Login
-                </Link>
-                <Link
-                  to="/auth"
-                  className="block px-5 py-3 text-gray-700 hover:bg-[#DBB737]/20 hover:text-[#DBB737] rounded-b-xl border-t border-gray-100"
+                </button>
+
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleNavbarLogin();
+                  }}
+                  className="flex items-center gap-2 py-2 px-4 text-gray-700 font-medium hover:bg-[#DBB737]/10 hover:text-[#DBB737] rounded-lg"
                 >
                   ✨ Signup
-                </Link>
-              </div>
-            </div>
+                </button>
+              </>
+            )}
           </li>
         </ul>
       </div>

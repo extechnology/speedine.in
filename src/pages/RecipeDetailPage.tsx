@@ -1,10 +1,9 @@
 import RecipeVideoPreview from "../components/recipe/ThumbNailVideo";
 import useRecipes from "../hooks/useRecipes";
 import useProducts from "../hooks/useProducts";
-import { Link, useParams,useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import useRecipeDetail from "../hooks/useRecipeDetail";
 import SearchBar from "../components/recipe/SearchBar";
-
 
 const RecipeDetailPage = () => {
   const { recipes } = useRecipes();
@@ -21,33 +20,11 @@ const RecipeDetailPage = () => {
     ingredients.slice(midpoint),
   ];
 
-  
-
   const featuredRecipes = recipes?.filter((recipe) => recipe?.is_featured);
 
   return (
     <section className="min-h-screen bg-stone-50 pt-10  text-[#640000]">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 pb-8">
-        <header className="flex flex-col gap-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm shadow-stone-200 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-amber-700">
-              Find Your Recipe
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold text-[#640000]">
-              SpeeDine
-            </h1>
-            <p className="text-sm text-stone-500">
-              Shop curated recipes & cook-along media drops.
-            </p>
-          </div>
-          <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-1/2">
-            <SearchBar recipes={recipes} />
-            <button className="rounded-2xl bg-[#640000] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg shadow-stone-300">
-              Explore
-            </button>
-          </div>
-        </header>
-
         <section className="grid gap-6 rounded-2xl bg-white p-6 shadow-sm shadow-stone-200 lg:grid-cols-3">
           {featuredRecipes.map((recipe) => (
             <article
@@ -57,6 +34,10 @@ const RecipeDetailPage = () => {
               <img
                 src={recipe.image}
                 alt={recipe.title}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = "/images/video-fallback.jpg";
+                }}
                 className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
               />
               <div className="relative z-10 flex w-full flex-col gap-2 bg-linear-to-t from-black/80 via-black/50 to-transparent p-5">
@@ -76,6 +57,26 @@ const RecipeDetailPage = () => {
             </article>
           ))}
         </section>
+
+        <header className="flex flex-col gap-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm shadow-stone-200 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-amber-700">
+              Find Your Recipe
+            </p>
+            <h1 className="mt-2 text-3xl font-semibold text-[#640000]">
+              SpeeDine
+            </h1>
+            <p className="text-sm text-stone-500">
+              Shop curated recipes & cook-along media drops.
+            </p>
+          </div>
+          <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-1/2">
+            <SearchBar recipes={recipes} />
+            <button className="rounded-2xl bg-[#640000] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg shadow-stone-300">
+              Explore
+            </button>
+          </div>
+        </header>
 
         <section className="grid gap-8 lg:grid-cols-[2fr,1fr]">
           <div className="overflow-hidden rounded-3xl border border-stone-200 bg-white p-6 shadow-sm shadow-stone-200">
@@ -97,6 +98,10 @@ const RecipeDetailPage = () => {
                     <img
                       src={recipeDetail?.image}
                       alt={recipeDetail?.title || "Recipe Image"}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "/images/video-fallback.jpg";
+                      }}
                       className="h-full w-full object-cover object-center rounded-xl"
                       loading="lazy"
                       decoding="async"
@@ -150,16 +155,13 @@ const RecipeDetailPage = () => {
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#DBB737]">
               Only {recipeDetail?.steps.length} Steps
             </p>
-            <h1 className="mt-3 text-3xl font-semibold text-[#640000] md:text-4xl">
+            <h1 className="mt-3 text-3xl w-full font-semibold text-[#640000] md:text-4xl">
               Preparation Procedure
             </h1>
-            <p className="mt-6 max-w-3xl text-base leading-relaxed text-slate-600">
+            <p className="mt-6 text-base max-w-5xl leading-relaxed text-slate-600">
               {recipeDetail?.description}
             </p>
-            <p className="mt-4 text-base leading-relaxed text-slate-600">
-              Enjoy the thick, delicious Malabar chicken curry crafted for
-              modern kitchens.
-            </p>
+            
             <div className="mt-8 grid gap-6 md:grid-cols-3">
               {recipeDetail?.steps?.map((step) => (
                 <article
@@ -262,7 +264,7 @@ const RecipeDetailPage = () => {
               </span>
             </div>
             <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {products?.slice(0,4).map((product) => (
+              {products?.slice(0, 4).map((product) => (
                 <div
                   key={product.unique_id}
                   className="flex flex-col rounded-2xl border border-slate-100 p-5 transition hover:-translate-y-1 hover:border-[#640000] hover:shadow-lg"
@@ -272,9 +274,12 @@ const RecipeDetailPage = () => {
                     {product.name}
                   </h3>
                   <p className="mt-4 text-2xl font-semibold text-slate-900">
-                    {product.price}
+                    ₹{product.price}
                   </p>
-                  <button onClick={()=> navigate(`/product/${product.unique_id}`)} className="mt-4 inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800">
+                  <button
+                    onClick={() => navigate(`/detail/${product.unique_id}`)}
+                    className="mt-4 inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+                  >
                     View details
                   </button>
                 </div>

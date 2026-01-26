@@ -6,6 +6,7 @@ import useCartActions from "../hooks/useCartApi";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import ImageMagnifier from "../components/products/ImageMagnifier";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 const ratingStarLabels = ["first", "second", "third", "fourth", "fifth"];
 
@@ -13,7 +14,8 @@ const DetailPage = () => {
   const { unique_id } = useParams();
   const { products } = useProducts();
   const navigate = useNavigate();
-
+  const { user } = useCurrentUser();
+  const isLoggedIn = !!user;
   const { addToCart } = useCartActions();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -22,11 +24,49 @@ const DetailPage = () => {
     (product) => product?.unique_id == unique_id
   );
 
-  console.log(filteredProduct, "filtered product");
+  // const toGrams = (weight: string) => {
+  //   const value = parseFloat(weight);
+
+  //   if (weight.toLowerCase().includes("kg")) {
+  //     return value * 1000;
+  //   }
+
+  //   return value;
+  // };
 
   const handleQuantityChange = (delta: number) => {
     setQuantity(Math.max(1, quantity + delta));
   };
+
+  const checkoutState = {
+    source: "single",
+    items: [
+      {
+        id: filteredProduct?.unique_id,
+        name: filteredProduct?.name,
+        price: Number(filteredProduct?.price),
+        originalPrice: Number(filteredProduct?.old_price),
+        image: filteredProduct?.images?.[0]?.image,
+        quantity,
+        category: filteredProduct?.category_name,
+      },
+    ],
+  };
+
+  const handleCheckoutClick = () => {
+    if (isLoggedIn) {
+      navigate("/checkout", {
+        state: checkoutState,
+      });
+    } else {
+      sessionStorage.setItem("pending_checkout", JSON.stringify(checkoutState));
+
+      navigate("/auth", {
+        state: { from: "/checkout" },
+      });
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-linear-to-br from-orange-50 via-white to-red-50">
@@ -68,7 +108,7 @@ const DetailPage = () => {
           </div>
 
           {/* Product Info */}
-          <div className="space-y-6 px-2 sm:px-4 lg:px-0">
+          <div className="space-y-6  sm:px-2 lg:px-0">
             <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg">
               <h1 className="text-lg sm:text-xl font-medium text-[#640000] mb-3">
                 {filteredProduct?.name}
@@ -93,16 +133,22 @@ const DetailPage = () => {
               {/* Price */}
               <div className="flex items-baseline gap-3 mb-2">
                 <span className="text-xl sm:text-2xl font-medium text-[#640000]">
-                  {filteredProduct?.price}
+                  ₹{Number(filteredProduct?.price).toFixed(0)}
                 </span>
                 <span className="text-lg sm:text-xl text-gray-400 line-through">
-                  {filteredProduct?.old_price}
+                  ₹{Number(filteredProduct?.old_price).toFixed(0)}
                 </span>
               </div>
 
               {/* Weight */}
-              <div className="pb-3 text-sm sm:text-base">
-                <p>weight : {filteredProduct?.weight}</p>
+              <div className="pb-3 text-sm sm:text-base flex items-center gap-3">
+                <span className="font-medium text-gray-700">Weight:</span>
+
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-gray-700 hover:bg-gray-100 hover:border-amber-600">
+                    {filteredProduct?.weight}
+                  </span>
+                </div>
               </div>
 
               {/* Description */}
@@ -182,7 +228,7 @@ const DetailPage = () => {
                       return;
                     }
 
-                    addToCart(filteredProduct?.unique_id);
+                    addToCart(filteredProduct?.unique_id, quantity);
                   }}
                   className="w-full sm:flex-1 bg-linear-to-r from-amber-800 to-[#640000] text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-[1.03] shadow-lg flex items-center justify-center gap-2 text-sm sm:text-base"
                 >
@@ -193,24 +239,7 @@ const DetailPage = () => {
                 {/* Buy Now */}
                 <button
                   type="button"
-                  onClick={() =>
-                    navigate("/checkout", {
-                      state: {
-                        source: "single",
-                        items: [
-                          {
-                            id: filteredProduct?.unique_id,
-                            name: filteredProduct?.name,
-                            price: Number(filteredProduct?.price),
-                            originalPrice: Number(filteredProduct?.old_price),
-                            image: filteredProduct?.images?.[0]?.image,
-                            quantity,
-                            category: filteredProduct?.category_name,
-                          },
-                        ],
-                      },
-                    })
-                  }
+                  onClick={handleCheckoutClick}
                   className="w-full sm:flex-1 bg-linear-to-r from-amber-800 to-[#640000] text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-[1.03] shadow-lg flex items-center justify-center gap-2 text-sm sm:text-base"
                 >
                   <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -222,7 +251,7 @@ const DetailPage = () => {
         </div>
 
         {/* Tabs Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-12">
+        <div className="bg-white rounded-2xl shadow-lg p-4 mb-12">
           <div className="flex gap-4 border-b border-gray-200 mb-6">
             <button
               type="button"
@@ -254,16 +283,11 @@ const DetailPage = () => {
                 Ingredients
               </h3>
 
-              <ul className="bg-stone-50 rounded-2xl p-4 space-y-3">
+              <ul className="bg-stone-50 rounded-2xl p-4 grid grid-cols-2 gap-x-8 gap-y-3">
                 {filteredProduct?.ingredients?.map((item, index) => (
-                  <li
-                    key={item.id}
-                    className="flex justify-between text-stone-700"
-                  >
-                    <span>{index + 1}.</span>
-                    <span className="flex-1 pl-3">
-                      {item.name} — {item.quantity}
-                    </span>
+                  <li key={item.id} className="flex items-start text-stone-700">
+                    <span className="mr-2 font-medium">{index + 1}.</span>
+                    <span>{item.name}</span>
                   </li>
                 ))}
               </ul>
@@ -296,44 +320,69 @@ const DetailPage = () => {
         </div>
 
         {/* Most Selling Products */}
-        <div className="mb-12">
-          <h3 className="relative inline-block text-2xl font-medium text-gray-800 mb-6">
+        <div className="mb-5">
+          <h3 className="relative inline-block text-2xl ml-5 font-medium text-gray-800 mb-6">
             <span className="relative z-10">Most Selling Products</span>
 
             {/* Color splash */}
             <span className="absolute -inset-1 rounded-lg bg-[linear-gradient(115deg,#ffe7a3,#ffce47,#ffc100)] opacity-40 blur-md -z-0"></span>
           </h3>
 
-          <div className="max-h-[400px] overflow-y-auto pr-1">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div className="rounded-xl md:p-5 p-0">
+            {/* MOBILE: Horizontal Scroll | DESKTOP: Grid */}
+            <div
+              className="
+      flex gap-4 overflow-x-auto pb-4
+      md:grid md:grid-cols-4 md:gap-4 md:overflow-x-visible
+      scrollbar-hide
+    "
+            >
               {products?.slice(0, 4).map((product) => (
                 <div
                   key={product.id}
-                  className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all hover:scale-105 cursor-pointer group"
+                  className="
+          min-w-[260px] md:min-w-0
+          bg-white rounded-xl p-3 shadow-md
+          hover:shadow-2xl transition-all hover:scale-105
+          cursor-pointer group
+        "
                 >
-                  <div className="relative overflow-hidden">
+                  {/* Image */}
+                  <div className="relative overflow-hidden rounded-lg">
                     <Link to={`/detail/${product?.unique_id}`}>
                       <img
                         src={product.images[0]?.image}
                         alt={product.name}
-                        className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                        className="w-full h-44 object-cover transition-transform duration-500 group-hover:scale-110"
                       />
-                      <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-20 transition-all" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all" />
                     </Link>
                   </div>
-                  <div className="p-4">
-                    <h4 className="font-semibold text-gray-800 mb-2">
+
+                  {/* Content */}
+                  <div className="p-3">
+                    <h4 className="font-semibold text-gray-800 truncate">
                       {product.name}
                     </h4>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xl font-semibold text-amber-900">
-                        {product.price}
+
+                    <div className="mt-2 flex items-center justify-between">
+                      <span className="text-lg font-semibold text-amber-900">
+                        ₹{Number(product.price).toFixed(0)}
+                        <span className="ml-1 text-sm text-gray-500 font-medium">
+                          ({product.weight})
+                        </span>
                       </span>
+
                       <button
                         type="button"
-                        onClick={() => addToCart(product.unique_id)}
+                        onClick={() => addToCart(product.unique_id, quantity)}
                         aria-label={`Add ${product.name} to cart`}
-                        className="text-amber-900 hover:text-white hover:rounded-full p-2 transition-all hover:bg-amber-500"
+                        className="
+                p-2 rounded-full
+                text-amber-900
+                hover:bg-amber-500 hover:text-white
+                transition-all
+              "
                       >
                         <ShoppingCart className="w-5 h-5" />
                       </button>

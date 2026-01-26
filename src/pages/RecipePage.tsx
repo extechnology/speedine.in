@@ -3,9 +3,10 @@ import useRecipes from "../hooks/useRecipes";
 import useProducts from "../hooks/useProducts";
 import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "../components/recipe/SearchBar";
+import RecipeSkeleton from "../components/skeletons/RecipeSkeleton";
 
 const RecipePage = () => {
-  const { recipes } = useRecipes();
+  const { recipes, loading } = useRecipes();
   const { products } = useProducts();
   const navigate = useNavigate();
   const mainRecipe = recipes?.find((recipe) => recipe?.is_main);
@@ -19,29 +20,13 @@ const RecipePage = () => {
 
   const featuredRecipes = recipes?.filter((recipe) => recipe?.is_featured);
 
+  if (loading) {
+    return <RecipeSkeleton />;
+  }
+
   return (
     <section className="min-h-screen bg-stone-50 pt-10  text-[#640000]">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 pb-8">
-        <header className="flex flex-col gap-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm shadow-stone-200 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-amber-700">
-              Find Your Recipe
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold text-[#640000]">
-              SpeeDine
-            </h1>
-            <p className="text-sm text-stone-500">
-              Shop curated recipes & cook-along media drops.
-            </p>
-          </div>
-          <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-1/2">
-            <SearchBar recipes={recipes} />
-            <button className="rounded-2xl bg-[#640000] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg shadow-stone-300">
-              Explore
-            </button>
-          </div>
-        </header>
-
         <section className="grid gap-6 rounded-2xl bg-white p-6 shadow-sm shadow-stone-200 lg:grid-cols-3">
           {featuredRecipes.map((recipe) => (
             <article
@@ -51,6 +36,10 @@ const RecipePage = () => {
               <img
                 src={recipe.image}
                 alt={recipe.title}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = "/images/video-fallback.jpg";
+                }}
                 className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
               />
               <div className="relative z-10 flex w-full flex-col gap-2 bg-linear-to-t from-black/80 via-black/50 to-transparent p-5">
@@ -70,6 +59,26 @@ const RecipePage = () => {
             </article>
           ))}
         </section>
+
+        <header className="flex flex-col gap-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm shadow-stone-200 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-amber-700">
+              Find Your Recipe
+            </p>
+            <h1 className="mt-2 text-3xl font-semibold text-[#640000]">
+              SpeeDine
+            </h1>
+            <p className="text-sm text-stone-500">
+              Shop curated recipes & cook-along media drops.
+            </p>
+          </div>
+          <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-1/2">
+            <SearchBar recipes={recipes} />
+            <button className="rounded-2xl bg-[#640000] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg shadow-stone-300">
+              Explore
+            </button>
+          </div>
+        </header>
 
         <section className="grid gap-8 lg:grid-cols-[2fr,1fr]">
           <div className="overflow-hidden rounded-3xl border border-stone-200 bg-white p-6 shadow-sm shadow-stone-200">
@@ -91,6 +100,10 @@ const RecipePage = () => {
                     <img
                       src={mainRecipe?.image}
                       alt={mainRecipe?.title || "Recipe Image"}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "/images/video-fallback.jpg";
+                      }}
                       className="h-full w-full object-cover object-center rounded-xl"
                       loading="lazy"
                       decoding="async"
@@ -264,7 +277,7 @@ const RecipePage = () => {
                     {product.name}
                   </h3>
                   <p className="mt-4 text-2xl font-semibold text-slate-900">
-                    {product.price}
+                    ₹{product.price}
                   </p>
                   <button
                     onClick={() => navigate(`/detail/${product.unique_id}`)}
@@ -276,32 +289,6 @@ const RecipePage = () => {
               ))}
             </div>
           </div>
-
-          {/* <div className="rounded-3xl bg-linear-to-r from-slate-900 via-slate-800 to-slate-900 p-10 text-white shadow-2xl shadow-[#640000]/40">
-            <div className="flex flex-col items-start gap-6 text-left md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-orange-300">
-                  Order Now
-                </p>
-                <h2 className="mt-2 text-3xl font-semibold">
-                  Bring Malabar Home Tonight
-                </h2>
-                <p className="mt-3 max-w-xl text-sm text-slate-300">
-                  Fresh batches ship every morning. Enjoy free delivery on
-                  orders above ₹50 and complimentary tasting notes with each
-                  pack.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <button className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100">
-                  Add to cart
-                </button>
-                <button className="rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition hover:border-white">
-                  View store
-                </button>
-              </div>
-            </div>
-          </div> */}
         </div>
       </section>
     </section>

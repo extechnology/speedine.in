@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { loginUser, registerUser } from "../services/authService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import axiosInstance from "../api/axiosInstance";
 import { toast } from "sonner";
@@ -19,6 +19,14 @@ const AuthPage = () => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
+  // const storedCheckout = sessionStorage.getItem("pending_checkout");
+
+  const loginContext =
+    location.state ||
+    JSON.parse(sessionStorage.getItem("login_context") || "null");
+
+  const redirectTo = loginContext?.from || "/";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -54,11 +62,27 @@ const AuthPage = () => {
           password: form.password,
         });
 
-        if (res.access_token) navigate("/");
-        toast.success("Login successful");
-        console.log(res, "login response");
-        localStorage.setItem("accessToken", res.access_token);
-        localStorage.setItem("refreshToken", res.refresh_token);
+        if (res.access_token) {
+          localStorage.setItem("accessToken", res.access_token);
+          localStorage.setItem("refreshToken", res.refresh_token);
+
+          toast.success("Login successful");
+
+          const pendingCheckout = sessionStorage.getItem("pending_checkout");
+
+          if (pendingCheckout) {
+            navigate("/checkout", {
+              replace: true,
+              state: JSON.parse(pendingCheckout),
+            });
+            sessionStorage.removeItem("pending_checkout");
+            sessionStorage.removeItem("login_context");
+          } else {
+            navigate(redirectTo.startsWith("/") ? redirectTo : "/", {
+              replace: true,
+            });
+          }
+        }
       }
     } catch (error) {
       console.log(error);
@@ -82,11 +106,25 @@ const AuthPage = () => {
         }
       );
 
-      console.log("Google login success", res.data);
       localStorage.setItem("accessToken", res.data.access_token);
       localStorage.setItem("refreshToken", res.data.refresh_token);
       toast.success("Google login success");
-      window.location.href = "/"; 
+
+      const pendingCheckout = sessionStorage.getItem("pending_checkout");
+
+      if (pendingCheckout) {
+        navigate("/checkout", {
+          replace: true,
+          state: JSON.parse(pendingCheckout),
+        });
+        sessionStorage.removeItem("pending_checkout");
+      } else {
+        navigate(redirectTo.startsWith("/") ? redirectTo : "/", {
+          replace: true,
+        });
+      }
+
+      sessionStorage.removeItem("login_context");
     } catch (err) {
       console.error("Google auth error", err);
       toast.error("Google auth error");
@@ -230,6 +268,17 @@ const AuthPage = () => {
             onClick={() => setMode(mode === "login" ? "register" : "login")}
           >
             {mode === "login" ? "Register" : "Login"}
+          </button>
+        </p>
+        <p className="text-center mt-6  text-gray-600">
+          Forgot Password?
+          <button
+            type="button"
+            disabled={loading}
+            className="ml-1 text-[#D1A837] font-light underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D1A837] inline-flex bg-transparent border-0 p-0"
+            onClick={() => navigate("/forgot-password")}
+          >
+            Reset Password
           </button>
         </p>
       </div>

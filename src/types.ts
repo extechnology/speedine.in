@@ -70,7 +70,8 @@ export interface Category {
   priority: number;
   unique_id: string;
   description: string;
-  display_name: string;
+  display_name1: string;
+  display_name2: string;
   is_available: boolean;
   special_tags: string;
   special_offer: string;
@@ -104,6 +105,16 @@ export interface Preparation {
   overview: string;
 }
 
+export interface Weight {
+  id: number;
+  weight: string;
+  price: number;
+  old_price: number;
+  offer_price: number;
+  serving_count: number;
+  is_available: boolean;
+}
+
 export interface Products {
   id: number;
   name: string;
@@ -114,6 +125,7 @@ export interface Products {
   images: ProductImages[];
   category: number;
   old_price: number;
+  weights: Weight[];
   unique_id: string;
   is_offered: boolean;
   updated_at: string;
@@ -216,6 +228,7 @@ export interface CheckoutItem {
 export interface PaymentPayload {
   amount: number;
   address_id: string;
+  shipping_charge: number;
   order_items: {
     product: { unique_id: number | string };
     quantity: number;
@@ -251,10 +264,12 @@ export interface UserOrder {
   final_amount: number;
   discount_amount: number;
   shipping_address: string;
+  shipping_charge: number;
   created: string;
   is_paid: boolean;
   items: {
     id: number;
+    price: number;
     product: Products;
     quantity: number;
     sub_total: number;

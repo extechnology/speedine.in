@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   ArrowLeft,
@@ -12,12 +12,14 @@ import {
   Shield,
   AlertCircle,
 } from "lucide-react";
+import Loader from "../components/common/Loader";
 import useUserAddress from "../hooks/useUserAddress";
 import { useAddAddress } from "../hooks/useAddressActions";
 import { loadRazorpayScript } from "../utils/loadRazorpay";
 import { createOrder, verifyPayment } from "../services/orderService";
 import type { PaymentPayload } from "../types";
 import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useShippingCharge } from "../hooks/useShippingCharge";
 import { toast } from "sonner";
 
 interface CartItem {
@@ -35,15 +37,26 @@ const CheckOut = () => {
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const { user } = useCurrentUser();
-
-  const { mutate: addAddress } = useAddAddress();
-  console.log(user, "user from hook");
-  const { userAddress } = useUserAddress();
-  console.log(userAddress, "user address from hook");
+  const { shippingCharge } = useShippingCharge();
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  const { mutate: addAddress } = useAddAddress();
+  const { userAddress } = useUserAddress();
+
   const location = useLocation();
+  const checkoutState =
+    location.state ||
+    JSON.parse(sessionStorage.getItem("pending_checkout") || "null");
   const rawItems = location.state?.items || [];
+
+  useEffect(() => {
+    if (!checkoutState?.items || checkoutState.items.length === 0) {
+      navigate("/cart", { replace: true });
+    }
+  }, [checkoutState, navigate]);
+  console.log(rawItems, "rawItems");
 
   const cartItems: CartItem[] = rawItems.map((item: any) => {
     if (item.product) {
@@ -69,8 +82,6 @@ const CheckOut = () => {
     };
   });
 
-  console.log("Checkout items:", cartItems);
-
   const [newAddress, setNewAddress] = useState({
     type: "home" as "home" | "work" | "other",
     name: "",
@@ -79,7 +90,7 @@ const CheckOut = () => {
     city: "",
     email: "",
     state: "",
-    country: "India", // default value
+    country: "India",
     pincode: "",
     landmark: "",
     is_default: false,
@@ -89,17 +100,19 @@ const CheckOut = () => {
     (sum: number, item: CartItem) => sum + item.price * item.quantity,
     0
   );
-  const discount = cartItems.reduce(
-    (sum: number, item: CartItem) =>
-      sum +
-      (item.originalPrice
-        ? (item.originalPrice - item.price) * item.quantity
-        : 0),
-    0
-  );
 
-  const shipping = subtotal > 500 ? 0 : 50;
-  const total = subtotal - discount + shipping;
+  const discount = cartItems.reduce((sum, item) => {
+    if (!item.originalPrice) return sum;
+
+    return sum + (item.originalPrice - item.price) * item.quantity;
+  }, 0);
+
+  const hasAddress = Array.isArray(userAddress) && userAddress.length > 0;
+
+  const shipping = subtotal > 500 ? 0 : shippingCharge || 0;
+
+  const total = subtotal + shipping;
+  console.log(total, "total amount");
 
   const handleAddressSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -155,10 +168,10 @@ const CheckOut = () => {
       return;
     }
 
-    // Step 2: Build payload for backend
     const checkoutPayload: PaymentPayload = {
       amount: total,
       address_id: selectedAddress!,
+      shipping_charge: shipping,
       order_items: cartItems.map((item) => ({
         product: { unique_id: item.id },
         quantity: item.quantity,
@@ -169,7 +182,6 @@ const CheckOut = () => {
     try {
       // Step 3: Create backend order (returns razorpay order object)
       const backendOrder = await createOrder(checkoutPayload);
-      console.log(backendOrder, "backend order response");
 
       // Step 4: Configure Razorpay checkout UI
       const options = {
@@ -186,6 +198,7 @@ const CheckOut = () => {
         image: `${window.location.origin}/speedine_logo.png`,
         handler: async function (response: any) {
           try {
+            setIsRedirecting(true);
             const verifyRes = await verifyPayment({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
@@ -219,6 +232,7 @@ const CheckOut = () => {
       });
 
       // Step 6: Show Razorpay UI
+      setIsProcessing(false);
       rzp.open();
     } catch (err) {
       console.error(err);
@@ -307,8 +321,8 @@ const CheckOut = () => {
               {/* Saved Addresses */}
               {!showAddressForm && (
                 <div className="m-4 space-y-3">
-                  {Array.isArray(userAddress) &&
-                    userAddress?.map((address) => (
+                  {hasAddress ? (
+                    userAddress.map((address) => (
                       <button
                         key={address.id}
                         type="button"
@@ -324,6 +338,7 @@ const CheckOut = () => {
                             <div className="p-2 bg-[#DBB737]/10 rounded-lg text-[#DBB737]">
                               {getAddressIcon(address.type)}
                             </div>
+
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
                                 <span className="font-semibold text-gray-800">
@@ -335,6 +350,7 @@ const CheckOut = () => {
                                   </span>
                                 )}
                               </div>
+
                               <p className="text-gray-600 text-sm mb-1">
                                 {address.address}
                               </p>
@@ -347,6 +363,7 @@ const CheckOut = () => {
                               </p>
                             </div>
                           </div>
+
                           {selectedAddress === address.id && (
                             <div className="p-1 bg-[#DBB737] rounded-full">
                               <Check size={16} className="text-white" />
@@ -354,7 +371,29 @@ const CheckOut = () => {
                           )}
                         </div>
                       </button>
-                    ))}
+                    ))
+                  ) : (
+                    /* Empty State Fallback */
+                    <div className="flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50">
+                      <div className="mb-3 p-3 rounded-full bg-[#DBB737]/10 text-[#DBB737]">
+                        <MapPin size={28} />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        No address added
+                      </h3>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Please add a delivery address to continue
+                      </p>
+
+                      <button
+                        type="button"
+                        onClick={() => setShowAddressForm(true)}
+                        className="mt-4 px-5 py-2 rounded-xl bg-[#DBB737] text-white font-medium hover:bg-[#caa72f] transition"
+                      >
+                        Add New Address
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -676,6 +715,9 @@ const CheckOut = () => {
                   </>
                 )}
               </button>
+              <p className="text-red-500 text-center pt-2">
+                {!selectedAddress && "Please select an address to proceed"}
+              </p>
 
               {/* Trust Badges */}
               <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
@@ -696,6 +738,18 @@ const CheckOut = () => {
           </div>
         </div>
       </div>
+      {isProcessing && <Loader />}
+
+      {isRedirecting && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+          <div className="flex flex-col items-center gap-4">
+            <Loader />
+            <p className="text-sm text-gray-600 font-medium">
+              Confirming your order…
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

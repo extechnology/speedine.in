@@ -84,6 +84,10 @@ const StepTellsStory = () => {
               <div className="flex items-center justify-center">
                 <img
                   src={imageOneSrc}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = "/images/video-fallback.jpg";
+                  }}
                   alt="Story moment 1"
                   className="w-full aspect-square object-cover rounded-2xl shadow-lg transform hover:scale-105 transition-transform duration-300"
                 />
@@ -93,6 +97,10 @@ const StepTellsStory = () => {
               <div className="flex items-center justify-center">
                 <img
                   src={imageTwoSrc}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = "/images/video-fallback.jpg";
+                  }}
                   alt="Story moment 2"
                   className="w-full aspect-square object-cover rounded-2xl shadow-lg transform hover:scale-105 transition-transform duration-300"
                 />

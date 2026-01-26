@@ -54,6 +54,14 @@ const Footer = () => {
                   Contact
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/account"
+                  className="hover:text-indigo-400 transition-colors"
+                >
+                  Account
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -66,7 +74,7 @@ const Footer = () => {
                 Malappuram, <br />
                 Kerala 673633 India
               </p>
-              <p>+91 9991707787</p>
+              <p>+91 81368 97787</p>
               <p>speedine.in@gmail.com</p>
             </div>
           </div>
@@ -98,21 +106,21 @@ const Footer = () => {
               </a>
               <a
                 title="pinterest"
-                href="https://www.linkedin.com/company/speedine/"
+                href="https://in.pinterest.com/speedinein/"
                 className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
               >
                 <PiPinterestLogo size={20} />
               </a>
               <a
                 title="youtube"
-                href="https://www.linkedin.com/company/speedine/"
+                href="https://www.youtube.com/@speedine"
                 className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
               >
                 <FaYoutube size={20} />
               </a>
               <a
                 title="linkedin"
-                href="https://in.pinterest.com/speedinein/"
+                href="https://www.linkedin.com/company/speedine/"
                 className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
               >
                 <FaLinkedinIn size={20} />
@@ -126,14 +134,6 @@ const Footer = () => {
           {/* Policy Links */}
           <div className="flex flex-wrap justify-center gap-4 text-xs md:text-sm">
             <Link
-              to="/return"
-              className="hover:text-indigo-400 transition-colors"
-            >
-              Return & Refund Policy
-            </Link>
-            <span className="opacity-50">|</span>
-
-            <Link
               to="/privacy"
               className="hover:text-indigo-400 transition-colors"
             >
@@ -146,6 +146,14 @@ const Footer = () => {
               className="hover:text-indigo-400 transition-colors"
             >
               Terms & Conditions
+            </Link>
+            <span className="opacity-50">|</span>
+
+            <Link
+              to="/return"
+              className="hover:text-indigo-400 transition-colors"
+            >
+              Return & Refund Policy
             </Link>
           </div>
 
@@ -163,7 +171,7 @@ const Footer = () => {
               rel="noopener noreferrer"
               className="text-indigo-500 font-medium hover:underline"
             >
-              ExTechnology
+              extechnology
             </a>
           </p>
         </div>

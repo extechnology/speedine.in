@@ -18,6 +18,10 @@ const AboutIntro = () => {
             <img
               src={data?.image}
               alt={data?.title}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "/images/video-fallback.jpg";
+              }}
               className="rounded-2xl shadow-lg w-full object-cover"
             />
           </div>

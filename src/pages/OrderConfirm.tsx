@@ -1,98 +1,106 @@
-import { useState, useEffect } from "react";
-import { Check } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, ArrowRight } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const OrderConfirmation = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const orderId = state?.orderId;
-  console.log(orderId, "order id");
-  const [confetti, setConfetti] = useState<
-    Array<{ id: number; left: number; delay: number; duration: number }>
+
+  const [particles, setParticles] = useState<
+    Array<{ id: number; left: number; delay: number; size: number }>
   >([]);
 
   useEffect(() => {
-    const pieces = Array.from({ length: 50 }, (_, i) => ({
+    const items = Array.from({ length: 25 }, (_, i) => ({
       id: i,
       left: Math.random() * 100,
-      delay: Math.random() * 0.5,
-      duration: 2 + Math.random() * 2,
+      delay: Math.random() * 0.6,
+      size: 6 + Math.random() * 6,
     }));
-    setConfetti(pieces);
+    setParticles(items);
   }, []);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-amber-900 via-amber-800 to-amber-900 flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Confetti */}
-      {confetti.map((piece) => (
-        <div
-          key={piece.id}
-          className="absolute top-0 w-2 h-2 rounded-full animate-confetti"
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-linear-to-br from-[#640000] via-[#5a0000] to-[#640000] px-4">
+      {/* Soft floating particles */}
+      {particles.map((p) => (
+        <span
+          key={p.id}
+          className="absolute top-0 rounded-full bg-[#DBB737]/80 animate-float"
           style={{
-            left: `${piece.left}%`,
-            backgroundColor: [
-              "#fbbf24",
-              "#f59e0b",
-              "#d97706",
-              "#b45309",
-              "#92400e",
-            ][Math.floor(Math.random() * 5)],
-            animationDelay: `${piece.delay}s`,
-            animationDuration: `${piece.duration}s`,
+            left: `${p.left}%`,
+            width: p.size,
+            height: p.size,
+            animationDelay: `${p.delay}s`,
           }}
         />
       ))}
 
       {/* Main Card */}
-      <div className="bg-amber-950 rounded-3xl shadow-2xl p-8 sm:p-12 max-w-lg w-full text-center relative z-10 border border-amber-800">
+      <div className="relative z-10 w-full max-w-xl rounded-3xl bg-white/95 backdrop-blur-xl shadow-2xl border border-[#DBB737]/30 p-8 sm:p-12 text-center">
         {/* Success Icon */}
-        <div className="inline-flex items-center justify-center w-20 h-20 bg-green-600 rounded-full mb-6 animate-bounce">
-          <Check className="w-12 h-12 text-white" strokeWidth={3} />
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#DBB737]/15">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#DBB737] shadow-lg">
+            <Check className="h-8 w-8 text-[#640000]" strokeWidth={3} />
+          </div>
         </div>
 
-        {/* Heading */}
-        <h1 className="text-3xl sm:text-4xl font-bold text-amber-100 mb-3">
-          Order Confirmed!
+        {/* Title */}
+        <h1 className="text-3xl sm:text-4xl font-semibold text-[#640000] mb-2">
+          Order Confirmed
         </h1>
 
-        {/* Thank You Message */}
-        <p className="text-lg sm:text-xl text-amber-200 mb-8">
-          Thank you for your purchase
+        <p className="text-gray-600 mb-8">
+          Your payment was successful. We’re preparing your order.
         </p>
 
         {/* Order ID */}
-        <div className="bg-amber-900 border border-amber-700 rounded-xl p-6 mb-8">
-          <p className="text-sm text-amber-300 mb-2 uppercase tracking-wide">
+        <div className="mb-8 rounded-2xl border border-[#DBB737]/30 bg-[#DBB737]/10 px-6 py-5">
+          <p className="text-xs uppercase tracking-widest text-[#640000]/70 mb-2">
             Order ID
           </p>
-          <p className="text-xl font-bold text-amber-100 font-mono tracking-wider">
-            {orderId ?? "---"}
+          <p className="font-mono text-lg font-semibold text-[#640000] break-all">
+            {orderId ?? "—"}
           </p>
         </div>
 
-        {/* Additional Info */}
-        <button
-          onClick={() => navigate("/")}
-          className="px-6 py-3 bg-linear-to-r from-amber-600 to-amber-500 text-white font-semibold 
-             rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
-        >
-          Go to Home
-        </button>
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            onClick={() => navigate("/account")}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#640000] px-6 py-3 text-[#640000] font-medium hover:bg-[#640000] hover:text-white transition"
+          >
+            View Orders
+          </button>
+
+          <button
+            onClick={() => navigate("/")}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-[#DBB737] to-[#c9aa2f] px-6 py-3 font-semibold text-[#640000] shadow-lg hover:shadow-xl transition"
+          >
+            Continue Shopping
+            <ArrowRight size={18} />
+          </button>
+        </div>
       </div>
 
+      {/* Animations */}
       <style>{`
-        @keyframes confetti {
+        @keyframes float {
           0% {
-            transform: translateY(0) rotate(0deg);
+            transform: translateY(0);
+            opacity: 0;
+          }
+          10% {
             opacity: 1;
           }
           100% {
-            transform: translateY(100vh) rotate(720deg);
+            transform: translateY(100vh);
             opacity: 0;
           }
         }
-        .animate-confetti {
-          animation: confetti linear infinite;
+        .animate-float {
+          animation: float 5s linear infinite;
         }
       `}</style>
     </div>

@@ -12,12 +12,12 @@ const SearchBar = ({ recipes }: SearchBarProps) => {
     <div className="relative w-full sm:w-auto flex-1">
       {/* Search Box */}
       <div className="flex items-center rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-500 focus-within:border-amber-500">
-        <span className="mr-2 text-xs uppercase tracking-[0.2em]">Search</span>
+        {/* <span className="mr-2 text-xs uppercase tracking-[0.2em]">Search</span> */}
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Spicy fish curry, festive menu..."
+          placeholder="Search for Spicy fish curry, festive menu..."
           className="w-full bg-transparent text-sm text-[#640000] placeholder:text-stone-400 focus:outline-none"
         />
       </div>

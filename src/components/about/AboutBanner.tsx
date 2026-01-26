@@ -2,7 +2,7 @@ import useAboutBanners from "../../hooks/useAboutBanners";
 
 const AboutBanner = () => {
   const { aboutBanner } = useAboutBanners();
-  const bannerUrl = aboutBanner?.[0]?.banner; // safely get the first banner
+  const bannerUrl = aboutBanner?.[0]?.banner; 
 
   return (
     <div>

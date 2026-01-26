@@ -26,7 +26,6 @@ const StarRating = ({ rating }: { rating: number }) => {
 
 const Testimonials = () => {
   const { review } = useCustomerReview();
-  console.log(review, "reivew from customer");
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-14">
       {/* Section Heading */}
