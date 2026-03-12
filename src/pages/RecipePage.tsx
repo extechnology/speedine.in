@@ -18,6 +18,8 @@ const RecipePage = () => {
     ingredients.slice(midpoint),
   ];
 
+
+  console.log(mainRecipe,"main")
   const featuredRecipes = recipes?.filter((recipe) => recipe?.is_featured);
 
   if (loading) {

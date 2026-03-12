@@ -325,7 +325,7 @@ const DetailPage = () => {
             <span className="relative z-10">Most Selling Products</span>
 
             {/* Color splash */}
-            <span className="absolute -inset-1 rounded-lg bg-[linear-gradient(115deg,#ffe7a3,#ffce47,#ffc100)] opacity-40 blur-md -z-0"></span>
+            <span className="absolute -inset-1 rounded-lg bg-[linear-gradient(115deg,#ffe7a3,#ffce47,#ffc100)] opacity-40 blur-md z-0"></span>
           </h3>
 
           <div className="rounded-xl md:p-5 p-0">
