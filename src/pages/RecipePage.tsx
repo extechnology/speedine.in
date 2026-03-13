@@ -184,7 +184,11 @@ const RecipePage = () => {
                     </span>
                   </div>
                   <p className="mt-4 text-sm leading-relaxed text-slate-600">
-                    {step.instruction}
+                    {step.instruction.split("#").map((line, index) => (
+                      <span key={index} className="block mt-2">
+                        {line}
+                      </span>
+                    ))}
                   </p>
                 </article>
               ))}
