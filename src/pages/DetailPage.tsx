@@ -21,7 +21,7 @@ const DetailPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("preparation");
   const filteredProduct = products?.find(
-    (product) => product?.unique_id == unique_id
+    (product) => product?.unique_id == unique_id,
   );
 
   // const toGrams = (weight: string) => {
@@ -66,7 +66,6 @@ const DetailPage = () => {
       });
     }
   };
-
 
   return (
     <div className="min-h-screen bg-linear-to-br from-orange-50 via-white to-red-50">
@@ -135,9 +134,11 @@ const DetailPage = () => {
                 <span className="text-xl sm:text-2xl font-medium text-[#640000]">
                   ₹{Number(filteredProduct?.price).toFixed(0)}
                 </span>
-                <span className="text-lg sm:text-xl text-gray-400 line-through">
-                  ₹{Number(filteredProduct?.old_price).toFixed(0)}
-                </span>
+                {filteredProduct?.old_price && (
+                  <span className="text-lg sm:text-xl text-gray-400 line-through">
+                    ₹{Number(filteredProduct?.old_price).toFixed(0)}
+                  </span>
+                )}
               </div>
 
               {/* Weight */}

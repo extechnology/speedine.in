@@ -114,11 +114,13 @@ const NewArrival = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-baseline gap-2">
                     <span className="text-xl font-bold text-[#640000]">
-                      ₹{product.price}
+                      ₹{product?.price}
                     </span>
-                    <span className="text-sm text-gray-400 line-through">
-                      ₹{product.old_price}
-                    </span>
+                    {product?.old_price && (
+                      <span className="text-sm text-gray-400 line-through">
+                        ₹{product?.old_price}
+                      </span>
+                    )}
                   </div>
 
                   <button

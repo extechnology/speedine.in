@@ -457,11 +457,13 @@ const FilterPage = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <span className="md:text-xl text-sm font-medium text-gray-900">
-                          ₹{product.price}
+                          ₹{product?.price}
                         </span>
-                        <span className="text-sm text-gray-400 line-through ml-2">
-                          ₹{product?.old_price}
-                        </span>
+                        {product?.old_price && (
+                          <span className="text-sm text-gray-400 line-through ml-2">
+                            ₹{product?.old_price}
+                          </span>
+                        )}
                       </div>
                     </div>
                     <button
