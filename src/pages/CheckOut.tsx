@@ -300,40 +300,40 @@ const CheckOut = () => {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-orange-50 via-white to-red-50 py-8 px-3">
+    <div className="min-h-screen bg-linear-to-br from-orange-50 via-white to-red-50 py-4 md:py-6 px-3">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-4">
           <Link
             to="/cart"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-[#DBB737] transition-colors mb-4"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-[#DBB737] transition-colors mb-2 text-sm"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={18} />
             <span>Back</span>
           </Link>
-          <h1 className="text-4xl font-medium text-[#640000] flex items-center gap-3">
-            <Lock className="text-[#DBB737]" size={40} />
+          <h1 className="text-2xl md:text-3xl font-medium text-[#640000] flex items-center gap-2">
+            <Lock className="text-[#DBB737]" size={32} />
             Checkout
           </h1>
-          <p className="text-gray-600 mt-2">Complete your order securely</p>
+          <p className="text-gray-600 text-xs md:text-sm mt-1">Complete your order securely</p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8 ">
+        <div className="grid lg:grid-cols-3 gap-5">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4">
             {/* Delivery Address Section */}
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 ">
-              <div className="flex items-center justify-between mb-6 p-6">
-                <h2 className="text-sm md:text-xl font-medium text-[#640000] flex items-center gap-2">
-                  <MapPin className="text-[#DBB737]" size={24} />
+              <div className="flex items-center justify-between mb-2 p-4">
+                <h2 className="text-sm md:text-lg font-medium text-[#640000] flex items-center gap-2">
+                  <MapPin className="text-[#DBB737]" size={20} />
                   Delivery Address
                 </h2>
                 {!showAddressForm && (
                   <button
                     onClick={() => setShowAddressForm(true)}
-                    className="flex text-sm items-center gap-2 text-[#DBB737] hover:text-[#D1A837] transition-colors font-medium"
+                    className="flex text-xs md:text-sm items-center gap-1 text-[#DBB737] hover:text-[#D1A837] transition-colors font-medium"
                   >
-                    <Plus size={16} />
+                    <Plus size={14} />
                     Add New Address
                   </button>
                 )}
@@ -657,16 +657,16 @@ const CheckOut = () => {
 
           {/* Order Summary Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sticky top-8">
-              <h2 className="text-2xl font-medium text-[#640000] mb-6">
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 sticky top-6">
+              <h2 className="text-xl font-medium text-[#640000] mb-4">
                 Order Summary
               </h2>
 
               {/* Cart Items */}
-              <div className="space-y-4 mb-6 max-h-64 overflow-y-auto">
+              <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
                 {cartItems.map((item: CartItem) => (
                   <div key={item.id} className="flex gap-3">
-                    <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-linear-to-br from-red-50 to-orange-50 shrink-0">
+                    <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-linear-to-br from-red-50 to-orange-50 shrink-0">
                       <img
                         src={item.image}
                         alt={item.name}
@@ -684,7 +684,7 @@ const CheckOut = () => {
                       <p className="text-xs text-gray-500">
                         Qty: {item.quantity}
                       </p>
-                      <p className="text-sm font-semibold text-[#640000] mt-1">
+                      <p className="text-sm font-semibold text-[#640000] mt-0.5">
                         ₹{(item.price * item.quantity).toFixed(2)}
                       </p>
                     </div>
@@ -693,7 +693,7 @@ const CheckOut = () => {
               </div>
 
               {/* Price Breakdown */}
-              <div className="space-y-3 mb-6 pt-6 border-t border-gray-200">
+              <div className="space-y-2 mb-4 pt-4 border-t border-gray-200 text-sm">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
                   <span className="font-semibold">₹{subtotal.toFixed(2)}</span>
@@ -721,8 +721,8 @@ const CheckOut = () => {
                     Add ₹{(500 - subtotal).toFixed(2)} more for free shipping!
                   </p>
                 )}
-                <div className="border-t border-gray-200 pt-3">
-                  <div className="flex justify-between text-xl font-semibold text-gray-800">
+                <div className="border-t border-gray-200 pt-2.5">
+                  <div className="flex justify-between text-lg font-semibold text-gray-800">
                     <span>Total</span>
                     <span className="text-[#640000]">₹{total.toFixed(2)}</span>
                   </div>
@@ -733,7 +733,7 @@ const CheckOut = () => {
               <button
                 onClick={handlePlaceOrder}
                 disabled={!selectedAddress || isProcessing || showAddressForm}
-                className={`w-full py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${
+                className={`w-full py-3 rounded-xl font-semibold text-base transition-all duration-300 flex items-center justify-center gap-2 ${
                   !selectedAddress || showAddressForm
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-linear-to-r from-amber-800 to-[#640000] text-white hover:shadow-lg hover:scale-105"

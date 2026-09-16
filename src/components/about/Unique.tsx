@@ -55,21 +55,21 @@ const UniqueData = [
 
 const Unique = () => {
   return (
-    <div className="max-w-7xl mx-auto pb-12 px-4">
-      <h1 className="text-3xl font-semibold text-[#640000] mb-7 text-center">
+    <div className="max-w-7xl mx-auto py-4 md:py-6 px-4">
+      <h1 className="text-3xl font-semibold text-[#640000] mb-4 text-center">
         What Makes Us Unique
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 md:gap-8 gap-4 ">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
         {UniqueData.map((data) => (
           <div
             key={data.id}
-            className="border border-amber-100 relative group bg-white rounded-xl shadow-lg p-6 flex flex-col items-center transition hover:scale-105 hover:shadow-2xl"
+            className="border border-amber-100 relative group bg-white rounded-xl shadow-lg p-4 flex flex-col items-center transition hover:scale-105 hover:shadow-2xl"
           >
-            <div className="mb-4">{data.icon}</div>
-            <h3 className="text-lg font-semibold text-[#640000] mb-2 text-center">
+            <div className="mb-2">{data.icon}</div>
+            <h3 className="text-lg font-semibold text-[#640000] mb-1 text-center">
               {data.title}
             </h3>
-            <p className="text-gray-500 text-center">{data.description}</p>
+            <p className="text-gray-500 text-center text-sm">{data.description}</p>
           </div>
         ))}
       </div>

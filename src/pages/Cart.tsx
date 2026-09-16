@@ -185,30 +185,30 @@ const Cart = () => {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-orange-50 via-white to-red-50 py-8 px-4">
+    <div className="min-h-screen bg-linear-to-br from-orange-50 via-white to-red-50 py-4 md:py-6 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-4">
           <Link
             to="/products"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-[#DBB737] transition-colors mb-4"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-[#DBB737] transition-colors mb-2 text-sm"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={18} />
             <span>Continue Shopping</span>
           </Link>
-          <h1 className="text-4xl font-medium text-[#640000] flex items-center gap-3">
-            <ShoppingBag className="text-[#DBB737]" size={40} />
+          <h1 className="text-2xl md:text-3xl font-medium text-[#640000] flex items-center gap-2">
+            <ShoppingBag className="text-[#DBB737]" size={32} />
             Shopping Cart
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 text-xs md:text-sm mt-1">
             {cart?.total_items || 0}{" "}
             {cart?.total_items === 1 ? "item" : "items"} in your cart
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-5">
           {/* Cart Items */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-3">
             {localItems.map((item) => (
               <div
                 key={item.id}
@@ -216,7 +216,7 @@ const Cart = () => {
               >
                 <div className="flex flex-col sm:flex-row">
                   {/* Product Image */}
-                  <div className="relative sm:w-48 h-48 sm:h-auto bg-linear-to-br from-red-50 to-orange-50 shrink-0">
+                  <div className="relative sm:w-44 h-44 sm:h-auto bg-linear-to-br from-red-50 to-orange-50 shrink-0">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -239,7 +239,7 @@ const Cart = () => {
                   </div>
 
                   {/* Product Details */}
-                  <div className="flex-1 p-6 flex flex-col justify-between">
+                  <div className="flex-1 p-4 flex flex-col justify-between">
                     <div>
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex-1">

@@ -9,14 +9,14 @@ const NewArrival = () => {
   const featuredProducts = products?.filter((product) => product?.is_offered);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4 md:pb-16 pb-8 pt-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4 md:py-8 py-5">
       {/* Header */}
-      <div className="text-center mb-10">
-        <span className="inline-flex items-center gap-2 px-4 py-1.5 text-[#640000] bg-[#DBB737]/20 rounded-full text-sm font-semibold mb-4">
+      <div className="text-center mb-5">
+        <span className="inline-flex items-center gap-2 px-4 py-1.5 text-[#640000] bg-[#DBB737]/20 rounded-full text-sm font-semibold mb-2">
           Fresh Collections
         </span>
 
-        <h2 className="text-2xl md:text-4xl font-bold text-[#640000] mb-3">
+        <h2 className="text-2xl md:text-4xl font-bold text-[#640000] mb-1.5">
           Fast Moving Products
         </h2>
 
@@ -34,12 +34,12 @@ const NewArrival = () => {
         auto-cols-[85%]
         sm:auto-cols-[45%]
         lg:auto-cols-[calc((100%-2rem)/3)]
-        gap-6
+        gap-4
         overflow-x-auto
         scroll-smooth
         snap-x snap-mandatory
         scrollbar-hide
-        pb-4
+        pb-2
       "
         >
           {featuredProducts?.map((product) => (
@@ -101,12 +101,12 @@ const NewArrival = () => {
               </div>
 
               {/* Content */}
-              <div className="p-5">
+              <div className="p-3.5">
                 <h3 className="text-lg font-semibold text-[#640000] mb-1 line-clamp-1">
                   {product.name}
                 </h3>
 
-                <p className="text-sm text-gray-500 line-clamp-2 mb-3">
+                <p className="text-sm text-gray-500 line-clamp-2 mb-2">
                   {product.description}
                 </p>
 
@@ -130,7 +130,7 @@ const NewArrival = () => {
                     }}
                     className="
                   bg-[#640000] text-white
-                  p-2.5 rounded-lg
+                  p-2 rounded-lg
                   hover:bg-red-900
                   transition transform hover:scale-105
                 "
@@ -153,7 +153,7 @@ const NewArrival = () => {
                 </div>
 
                 {/* Rating */}
-                <div className="flex items-center gap-1 mt-3">
+                <div className="flex items-center gap-1 mt-2">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <svg
                       key={i}
@@ -172,7 +172,7 @@ const NewArrival = () => {
       </div>
 
       {/* View All */}
-      <div className="text-center mt-10">
+      <div className="text-center mt-6">
         <button
           onClick={() => navigate(`/products`)}
           className="

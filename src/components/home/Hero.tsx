@@ -25,8 +25,8 @@ const Hero = () => {
   }, [activeSlides.length]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:py-12 pt-6 pb-5">
-      <div className="flex flex-col md:flex-row gap-6">
+    <div className="max-w-7xl mx-auto px-4 md:py-6 pt-3 pb-3">
+      <div className="flex flex-col md:flex-row gap-4">
         {/* LEFT BIG SLIDER */}
         <div className="md:w-1/2 w-full overflow-hidden rounded-3xl shadow-lg relative h-[300px] sm:h-[380px] md:h-auto">
           <div className="relative w-full h-full">
@@ -55,7 +55,7 @@ const Hero = () => {
                     {/* If slide has a product_id, wrap in Link */}
                     {slide.product_id ? (
                       <Link
-                        to={`/detail/${slide.product_id}`}
+                        to={`/products`}
                         className="block w-full h-full cursor-pointer"
                       >
                         {slideContent}
@@ -74,7 +74,7 @@ const Hero = () => {
         </div>
 
         {/* RIGHT GRID — all 4 slots are categories */}
-        <div className="grid grid-cols-2 md:gap-6 gap-4 md:w-1/2 w-full">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 md:w-1/2 w-full">
           {categories?.slice(0, 4).map((category) => (
             <Link key={category.id} to={`/products?category=${category.unique_id}`}>
               <div className="relative overflow-hidden rounded-3xl shadow-md group">

@@ -13,12 +13,12 @@ const Footer = () => {
   return (
     <footer className="relative bg-[url('/footer.webp')] bg-cover text-white">
       {/* <div className="absolute inset-0 bg-amber-900/70"></div> */}
-      <div className="max-w-7xl mx-auto px-6 pt-12 pb-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 pt-8 pb-4 relative z-10">
         {/* TOP CONTENT */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {/* QUICK LINKS */}
           <div>
-            <h2 className="text-lg font-semibold mb-4 text-white">
+            <h2 className="text-base md:text-lg font-semibold mb-2.5 text-white">
               Quick Links
             </h2>
             <ul className="space-y-1">
@@ -67,70 +67,70 @@ const Footer = () => {
 
           {/* ADDRESS */}
           <div>
-            <h2 className="text-lg font-semibold mb-4 text-white">Address</h2>
+            <h2 className="text-base md:text-lg font-semibold mb-2.5 text-white">Address</h2>
             <div className="space-y-1">
               <p className="text-white font-medium">SpeeDine</p>
-              <p className="leading-relaxed">
+              <p className="leading-relaxed text-sm">
                 Malappuram, <br />
                 Kerala 673633 India
               </p>
-              <p>+91 81368 97787</p>
-              <p>speedine.in@gmail.com</p>
+              <p className="text-sm">+91 81368 97787</p>
+              <p className="text-sm">speedine.in@gmail.com</p>
             </div>
           </div>
 
           {/* SOCIAL ICONS */}
           <div>
-            <h2 className="text-lg font-semibold mb-4 text-white">Follow Us</h2>
-            <div className="flex gap-4">
+            <h2 className="text-base md:text-lg font-semibold mb-2.5 text-white">Follow Us</h2>
+            <div className="flex gap-3">
               <a
                 title="instagram"
                 href="https://www.instagram.com/speedine.in/"
                 className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
               >
-                <FaInstagram size={20} />
+                <FaInstagram size={18} />
               </a>
               <a
                 title="facebook"
                 href="https://www.facebook.com/speedine.in/"
                 className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
               >
-                <FaFacebookF size={20} />
+                <FaFacebookF size={18} />
               </a>
               <a
                 title="twitter"
                 href="https://x.com/speedinein"
                 className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
               >
-                <FaXTwitter size={20} />
+                <FaXTwitter size={18} />
               </a>
               <a
                 title="pinterest"
                 href="https://in.pinterest.com/speedinein/"
                 className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
               >
-                <PiPinterestLogo size={20} />
+                <PiPinterestLogo size={18} />
               </a>
               <a
                 title="youtube"
                 href="https://www.youtube.com/@speedine"
                 className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
               >
-                <FaYoutube size={20} />
+                <FaYoutube size={18} />
               </a>
               <a
                 title="linkedin"
                 href="https://www.linkedin.com/company/speedine/"
                 className="p-2 rounded-full bg-white/10 hover:bg-indigo-500 transition-colors"
               >
-                <FaLinkedinIn size={20} />
+                <FaLinkedinIn size={18} />
               </a>
             </div>
           </div>
         </div>
 
         {/* DIVIDER */}
-        <div className="border-t border-white border-dashed mt-10 pt-6 text-center text-sm text-white space-y-2">
+        <div className="border-t border-white border-dashed mt-6 pt-4 text-center text-xs md:text-sm text-white space-y-1.5">
           {/* Policy Links */}
           <div className="flex flex-wrap justify-center gap-4 text-xs md:text-sm">
             <Link

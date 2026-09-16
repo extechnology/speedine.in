@@ -10,9 +10,9 @@ const AboutIntro = () => {
 
   return (
     <div>
-      <div className="max-w-7xl mx-auto px-4 pt-16 pb-1">
+      <div className="max-w-7xl mx-auto px-4 pt-6 pb-1">
         {/* About Section */}
-        <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-center mb-8">
           {/* LEFT — IMAGE */}
           <div className="relative flex items-center justify-center">
             <img
@@ -28,7 +28,7 @@ const AboutIntro = () => {
 
           {/* RIGHT — TEXT */}
           <div>
-            <h2 className="text-3xl font-semibold text-center md:text-start text-[#640000] mb-3">
+            <h2 className="text-3xl font-semibold text-center md:text-start text-[#640000] mb-2">
               {data?.title}
             </h2>
 
@@ -36,9 +36,9 @@ const AboutIntro = () => {
             {data?.description?.split("\r\n\r\n").map((para, idx) => (
               <p
                 key={idx}
-                className={`text-neutral-900 mb-4 text-justify leading-relaxed ${
+                className={`text-neutral-900 mb-2.5 text-justify leading-relaxed ${
                   idx === data.description.split("\r\n\r\n").length - 1
-                    ? "border-b border-dashed border-[#640000] pb-5"
+                    ? "border-b border-dashed border-[#640000] pb-3"
                     : ""
                 }`}
               >
@@ -47,7 +47,7 @@ const AboutIntro = () => {
             ))}
 
             {/* Social Icons */}
-            <div className="flex justify-center text-white gap-4 pt-5">
+            <div className="flex justify-center text-white gap-4 pt-3">
               <a
                 href="https://www.instagram.com/speedine.in/"
                 title="Instagram"

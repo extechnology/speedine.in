@@ -27,20 +27,20 @@ const StarRating = ({ rating }: { rating: number }) => {
 const Testimonials = () => {
   const { review } = useCustomerReview();
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-14">
+    <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-5 md:py-8">
       {/* Section Heading */}
-      <div className="text-center mb-6 ">
-        <h1 className="text-3xl font-semibold mb-4 bg-[#640000] bg-clip-text text-transparent">
+      <div className="text-center mb-4">
+        <h1 className="text-3xl font-semibold mb-2 bg-[#640000] bg-clip-text text-transparent">
           What Our Customers Say
         </h1>
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+        <p className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto">
           Discover what our valued customers have to say about their experience
           with Speedine
         </p>
       </div>
 
       {/* Testimonials Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
         {review.map((data, index) => {
           // Varied card designs for visual interest
           const cardVariants = [
@@ -55,7 +55,7 @@ const Testimonials = () => {
           return (
             <div
               key={index}
-              className={`group relative p-6 md:p-8 rounded-3xl ${cardVariants[index]} border border-amber-100/50 shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:border-amber-200/80 overflow-hidden`}
+              className={`group relative p-4 md:p-5 rounded-3xl ${cardVariants[index]} border border-amber-100/50 shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:border-amber-200/80 overflow-hidden`}
             >
               {/* Decorative gradient overlay on hover */}
               <div className="absolute inset-0 bg-linear-to-br from-amber-50/0 to-amber-100/0 group-hover:from-amber-50/30 group-hover:to-transparent transition-all duration-500 pointer-events-none rounded-3xl" />
@@ -74,7 +74,7 @@ const Testimonials = () => {
               {/* Content */}
               <div className="relative z-10">
                 {/* User Info */}
-                <div className="flex items-center gap-4 mb-5">
+                <div className="flex items-center gap-3 mb-3">
                   <div className="relative">
                     <div className="absolute inset-0 bg-linear-to-br from-amber-400 to-amber-600 rounded-full blur-sm opacity-50 group-hover:opacity-75 transition-opacity duration-500" />
                     {data.image ? (

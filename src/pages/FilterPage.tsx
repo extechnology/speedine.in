@@ -169,27 +169,27 @@ const FilterPage = () => {
   });
 
   const FilterSection = () => (
-    <div className="space-y-8  p-2 rounded-2xl  border-gray-200">
+    <div className="space-y-4 p-1 rounded-2xl border-gray-200">
       {/* Category Filter */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-[#640000]">Category</h3>
+        <h3 className="text-base md:text-lg font-semibold mb-1.5 text-[#640000]">Category</h3>
 
         {/* All Categories */}
-        <label className="flex items-center gap-3 mb-3 cursor-pointer">
+        <label className="flex items-center gap-3 mb-1.5 cursor-pointer">
           <input
             type="checkbox"
             checked={isAllCategoriesSelected}
             onChange={toggleAllCategories}
             className="w-4 h-4 accent-[#DBB737]"
           />
-          <span className="font-medium">All Categories</span>
+          <span className="font-medium text-sm">All Categories</span>
         </label>
 
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {filterCategory.map((category) => (
             <label
               key={category.id}
-              className="flex items-center gap-3 cursor-pointer"
+              className="flex items-center gap-3 cursor-pointer text-sm"
             >
               <input
                 type="checkbox"
@@ -204,26 +204,25 @@ const FilterPage = () => {
       </div>
 
       {/* Weight Filter */}
-      {/* Weight Filter */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-[#640000]">Weight</h3>
+        <h3 className="text-base md:text-lg font-semibold mb-1.5 text-[#640000]">Weight</h3>
 
         {/* Select All */}
-        <label className="flex items-center gap-3 mb-3 cursor-pointer">
+        <label className="flex items-center gap-3 mb-1.5 cursor-pointer">
           <input
             type="checkbox"
             checked={isAllWeightsSelected}
             onChange={toggleAllWeights}
             className="w-4 h-4 accent-[#DBB737]"
           />
-          <span className="font-medium">All Weights</span>
+          <span className="font-medium text-sm">All Weights</span>
         </label>
 
-        <div className="space-y-2 max-h-56 overflow-y-auto">
+        <div className="space-y-1.5 max-h-48 overflow-y-auto">
           {uniqueWeights.map((weight) => (
             <label
               key={weight}
-              className="flex items-center gap-3 cursor-pointer"
+              className="flex items-center gap-3 cursor-pointer text-sm"
             >
               <input
                 type="checkbox"
@@ -245,7 +244,7 @@ const FilterPage = () => {
 
       {/* Price Range */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-[#640000]">
+        <h3 className="text-base md:text-lg font-semibold mb-1.5 text-[#640000]">
           Price Range
         </h3>
 
@@ -255,7 +254,7 @@ const FilterPage = () => {
           const maxPrice = Math.max(...prices);
 
           return (
-            <div className="space-y-3">
+            <div className="space-y-2">
               <input
                 title="select price"
                 type="range"
@@ -268,7 +267,7 @@ const FilterPage = () => {
                 className="w-full"
               />
 
-              <div className="flex justify-between text-sm text-gray-600 font-medium">
+              <div className="flex justify-between text-xs text-gray-600 font-medium">
                 <span>₹{priceRange[0]}</span>
                 <span>₹{priceRange[1]}</span>
               </div>
@@ -289,7 +288,7 @@ const FilterPage = () => {
           setSelectedCategories(filterCategory.map((c) => c.id));
           navigate("/products");
         }}
-        className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-[#640000] rounded-xl transition font-semibold"
+        className="w-full py-2 bg-gray-100 hover:bg-gray-200 text-[#640000] text-sm rounded-xl transition font-semibold"
       >
         Clear All Filters
       </button>
@@ -298,30 +297,30 @@ const FilterPage = () => {
 
   return (
     <div className="bg-linear-to-br from-orange-50 via-white to-red-50">
-      <div className="max-w-7xl mx-auto md:px-4 px-2 py-8">
+      <div className="max-w-7xl mx-auto md:px-4 px-2 py-4 md:py-6">
         {/* Header */}
-        <div className="md:mb-8 mb-4 pl-2">
-          <h1 className="md:text-4xl text-2xl font-medium text-[#640000] mb-2">
+        <div className="mb-3 pl-2">
+          <h1 className="md:text-4xl text-2xl font-medium text-[#640000] mb-1">
             Our Products
           </h1>
-          <p className="text-sm text-gray-600">
+          <p className="text-xs md:text-sm text-gray-600">
             Discover premium quality spices for your kitchen
           </p>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-8">
+        <div className="flex flex-col md:flex-row gap-5">
           {/* Mobile Filter Button */}
           <button
             title="mobile filter"
             onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
-            className="md:hidden fixed bottom-6 right-6 bg-red-600 text-white p-4 rounded-full shadow-lg z-50 hover:bg-red-700 transition-colors"
+            className="md:hidden fixed bottom-6 right-6 bg-red-600 text-white p-3.5 rounded-full shadow-lg z-50 hover:bg-red-700 transition-colors"
           >
-            <SlidersHorizontal className="w-6 h-6" />
+            <SlidersHorizontal className="w-5 h-5" />
           </button>
 
           {/* Filter Section - Desktop */}
-          <div className="hidden md:block w-80 shrink-0">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-8">
+          <div className="hidden md:block w-72 shrink-0">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sticky top-6">
               <FilterSection />
             </div>
           </div>
@@ -343,15 +342,15 @@ const FilterPage = () => {
       ${mobileFilterOpen ? "translate-x-0" : "translate-x-full"}
     `}
             >
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-900">Filters</h2>
+              <div className="p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-bold text-gray-900">Filters</h2>
                   <button
                     title="mobile filter"
                     onClick={() => setMobileFilterOpen(false)}
-                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
                   >
-                    <X className="w-6 h-6" />
+                    <X className="w-5 h-5" />
                   </button>
                 </div>
 
@@ -364,10 +363,10 @@ const FilterPage = () => {
           <div className="flex-1">
             {/* Sort Bar */}
             <div
-              className="bg-white px-2 rounded-xl shadow-sm border border-gray-100 p-4 mb-6
+              className="bg-white px-2 rounded-xl shadow-sm border border-gray-100 p-2.5 mb-3
      flex flex-row justify-between items-center gap-2"
             >
-              <p className="text-gray-600 text-xs pl-5">
+              <p className="text-gray-600 text-xs pl-3">
                 <span className="font-semibold text-xs text-gray-900">
                   {filteredProducts.length}
                 </span>{" "}
@@ -378,7 +377,7 @@ const FilterPage = () => {
                 title="sort by"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 mr-2 text-xs py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DBB737] bg-white"
+                className="px-3 mr-1 text-xs py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DBB737] bg-white"
               >
                 <option value="featured">Featured</option>
                 <option value="price-low">Price: Low to High</option>
@@ -388,7 +387,7 @@ const FilterPage = () => {
             </div>
 
             {/* Product Grid */}
-            <div className="grid grid-cols-2  lg:grid-cols-3 md:gap-6 gap-2">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
               {filteredProducts.map((product) => (
                 <div
                   key={product.id}

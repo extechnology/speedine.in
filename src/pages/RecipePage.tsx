@@ -27,13 +27,13 @@ const RecipePage = () => {
   }
 
   return (
-    <section className="min-h-screen bg-stone-50 pt-10  text-[#640000]">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 pb-8">
-        <section className="grid gap-6 rounded-2xl bg-white p-6 shadow-sm shadow-stone-200 lg:grid-cols-3">
+    <section className="min-h-screen bg-stone-50 pt-4 md:pt-6 text-[#640000]">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 md:gap-5 px-4 pb-5">
+        <section className="grid gap-4 rounded-2xl bg-white p-4 shadow-sm shadow-stone-200 lg:grid-cols-3">
           {featuredRecipes.map((recipe) => (
             <article
               key={recipe.title}
-              className="group relative flex h-60 items-end overflow-hidden rounded-2xl bg-[#640000] text-white"
+              className="group relative flex h-52 items-end overflow-hidden rounded-2xl bg-[#640000] text-white"
             >
               <img
                 src={recipe.image}
@@ -44,16 +44,16 @@ const RecipePage = () => {
                 }}
                 className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
               />
-              <div className="relative z-10 flex w-full flex-col gap-2 bg-linear-to-t from-black/80 via-black/50 to-transparent p-5">
+              <div className="relative z-10 flex w-full flex-col gap-1.5 bg-linear-to-t from-black/80 via-black/50 to-transparent p-4">
                 {/* <span className="w-fit rounded-full bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.25em]">
                   {recipe.badge}
                 </span> */}
-                <h3 className="text-lg font-semibold tracking-wide">
+                <h3 className="text-base font-semibold tracking-wide">
                   {recipe.title}
                 </h3>
                 <Link
                   to={`/recipe/${recipe.id}`}
-                  className="w-fit rounded-full bg-white/90 px-4 py-2 text-xs font-semibold uppercase text-[#640000] transition group-hover:bg-white"
+                  className="w-fit rounded-full bg-white/90 px-3.5 py-1.5 text-xs font-semibold uppercase text-[#640000] transition group-hover:bg-white"
                 >
                   View Recipe
                 </Link>
@@ -62,37 +62,37 @@ const RecipePage = () => {
           ))}
         </section>
 
-        <header className="flex flex-col gap-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm shadow-stone-200 lg:flex-row lg:items-center lg:justify-between">
+        <header className="flex flex-col gap-3 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm shadow-stone-200 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-amber-700">
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-700">
               Find Your Recipe
             </p>
-            <h1 className="mt-2 text-3xl font-semibold text-[#640000]">
+            <h1 className="mt-1 text-2xl md:text-3xl font-semibold text-[#640000]">
               SpeeDine
             </h1>
-            <p className="text-sm text-stone-500">
+            <p className="text-xs md:text-sm text-stone-500">
               Shop curated recipes & cook-along media drops.
             </p>
           </div>
           <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-1/2">
             <SearchBar recipes={recipes} />
-            <button className="rounded-2xl bg-[#640000] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg shadow-stone-300">
+            <button className="rounded-2xl bg-[#640000] px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-lg shadow-stone-300">
               Explore
             </button>
           </div>
         </header>
 
-        <section className="grid gap-8 lg:grid-cols-[2fr,1fr]">
-          <div className="overflow-hidden rounded-3xl border border-stone-200 bg-white p-6 shadow-sm shadow-stone-200">
+        <section className="grid gap-4 md:gap-5 lg:grid-cols-[2fr,1fr]">
+          <div className="overflow-hidden rounded-3xl border border-stone-200 bg-white p-4 shadow-sm shadow-stone-200">
             <p className="text-xs font-semibold uppercase tracking-[0.4em] text-stone-400">
               Featured
             </p>
-            <h2 className="mt-2 text-2xl font-semibold text-[#640000]">
+            <h2 className="mt-1 text-xl md:text-2xl font-semibold text-[#640000]">
               {mainRecipe?.title}
             </h2>
-            <p className="text-sm text-stone-500">{mainRecipe?.subtitle}</p>
+            <p className="text-xs md:text-sm text-stone-500">{mainRecipe?.subtitle}</p>
 
-            <div className="mt-6 grid gap-6 md:grid-cols-2">
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
               <div className="rounded-2xl bg-slate-900/10 p-4 text-white">
                 <div className="h-72 rounded-xl overflow-hidden relative">
                   {/* Background gradient */}

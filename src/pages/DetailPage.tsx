@@ -80,10 +80,10 @@ const DetailPage = () => {
         />
       )}
       {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-3 py-8">
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
+      <div className="max-w-7xl mx-auto px-3 py-4 md:py-6">
+        <div className="grid md:grid-cols-2 gap-6 mb-6">
           {/* Image Gallery */}
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-3">
             {/* Main Image - Show first on mobile */}
             <div className="relative flex-1 bg-white rounded-2xl shadow-xl overflow-hidden group order-1 md:order-2">
               <ImageMagnifier
@@ -94,7 +94,7 @@ const DetailPage = () => {
             </div>
 
             {/* Thumbnails - Move below on mobile */}
-            <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-visible gap-3 order-2 md:order-1">
+            <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-visible gap-2.5 order-2 md:order-1">
               {filteredProduct?.images?.map((img, idx) => (
                 <button
                   key={img.id}
@@ -109,7 +109,7 @@ const DetailPage = () => {
                   <img
                     src={img.image}
                     alt={`Thumbnail ${idx + 1}`}
-                    className="w-24 h-24 object-cover"
+                    className="w-20 h-20 md:w-24 md:h-24 object-cover"
                   />
                 </button>
               ))}
@@ -117,14 +117,14 @@ const DetailPage = () => {
           </div>
 
           {/* Product Info */}
-          <div className="space-y-6  sm:px-2 lg:px-0">
-            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg">
-              <h1 className="text-lg sm:text-xl font-medium text-[#640000] mb-3">
+          <div className="space-y-4 sm:px-2 lg:px-0">
+            <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-lg">
+              <h1 className="text-lg sm:text-xl font-medium text-[#640000] mb-2">
                 {filteredProduct?.name}
               </h1>
 
               {/* Rating */}
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-2">
                 <div className="flex items-center gap-1">
                   {ratingStarLabels.map((label, i) => (
                     <Star
@@ -262,12 +262,12 @@ const DetailPage = () => {
         </div>
 
         {/* Tabs Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-4 mb-12">
-          <div className="flex gap-4 border-b border-gray-200 mb-6">
+        <div className="bg-white rounded-2xl shadow-lg p-4 mb-6">
+          <div className="flex gap-4 border-b border-gray-200 mb-4">
             <button
               type="button"
               onClick={() => setActiveTab("preparation")}
-              className={`pb-3 px-4 font-semibold transition-all ${
+              className={`pb-2.5 px-3 font-semibold text-sm sm:text-base transition-all ${
                 activeTab === "preparation"
                   ? "text-orange-600 border-b-2 border-orange-600"
                   : "text-gray-500 hover:text-gray-700"
@@ -278,7 +278,7 @@ const DetailPage = () => {
             <button
               type="button"
               onClick={() => setActiveTab("ingredients")}
-              className={`pb-3 px-4 font-semibold transition-all ${
+              className={`pb-2.5 px-3 font-semibold text-sm sm:text-base transition-all ${
                 activeTab === "ingredients"
                   ? "text-orange-600 border-b-2 border-orange-600"
                   : "text-gray-500 hover:text-gray-700"
@@ -290,13 +290,13 @@ const DetailPage = () => {
 
           {activeTab === "ingredients" && (
             <div className="animate-fadeIn">
-              <h3 className="text-xl font-medium text-gray-800 mb-4">
+              <h3 className="text-lg font-medium text-gray-800 mb-3">
                 Ingredients
               </h3>
 
-              <ul className="bg-stone-50 rounded-2xl p-4 grid grid-cols-2 gap-x-8 gap-y-3">
+              <ul className="bg-stone-50 rounded-2xl p-3.5 grid grid-cols-2 gap-x-6 gap-y-2">
                 {filteredProduct?.ingredients?.map((item, index) => (
-                  <li key={item.id} className="flex items-start text-stone-700">
+                  <li key={item.id} className="flex items-start text-stone-700 text-sm">
                     <span className="mr-2 font-medium">{index + 1}.</span>
                     <span>{item.name}</span>
                   </li>
@@ -307,23 +307,23 @@ const DetailPage = () => {
 
           {activeTab === "preparation" && (
             <div className="animate-fadeIn">
-              <h3 className="text-xl font-medium text-gray-800 mb-4">
+              <h3 className="text-lg font-medium text-gray-800 mb-2">
                 How to Prepare
               </h3>
 
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 text-sm mb-4">
                 {filteredProduct?.preparations?.[0]?.overview}
               </p>
 
               {filteredProduct?.preparations?.[0]?.steps?.map((step) => (
                 <div
                   key={step.id}
-                  className="bg-linear-to-r from-orange-50 to-transparent p-6 rounded-xl border-l-4 border-orange-500 mb-4"
+                  className="bg-linear-to-r from-orange-50 to-transparent p-4 rounded-xl border-l-4 border-orange-500 mb-3"
                 >
-                  <h4 className="text-xl font-medium mb-2">
+                  <h4 className="text-base font-medium mb-1">
                     Step {step.step_number}: {step.heading}
                   </h4>
-                  <p className="text-gray-600">{step.details}</p>
+                  <p className="text-gray-600 text-sm">{step.details}</p>
                 </div>
               ))}
             </div>
@@ -331,8 +331,8 @@ const DetailPage = () => {
         </div>
 
         {/* Most Selling Products */}
-        <div className="mb-5">
-          <h3 className="relative inline-block text-2xl ml-5 font-medium text-gray-800 mb-6">
+        <div className="mb-4">
+          <h3 className="relative inline-block text-xl ml-2 font-medium text-gray-800 mb-3">
             <span className="relative z-10">Most Selling Products</span>
 
             {/* Color splash */}

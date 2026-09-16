@@ -201,43 +201,43 @@ const Account = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-orange-50 via-white to-red-50 py-8 px-4">
+    <div className="min-h-screen bg-linear-to-br from-orange-50 via-white to-red-50 py-4 md:py-6 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-medium text-[#640000] flex items-center gap-3">
-            <User className="text-[#DBB737]" size={40} />
+        <div className="mb-4">
+          <h1 className="text-2xl md:text-3xl font-medium text-[#640000] flex items-center gap-2">
+            <User className="text-[#DBB737]" size={32} />
             My Account
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 text-xs md:text-sm mt-1">
             Manage your account settings and preferences
           </p>
         </div>
 
         {isLoggedIn ? (
-          <div className="grid lg:grid-cols-4 gap-6">
+          <div className="grid lg:grid-cols-4 gap-4">
             {/* Sidebar Navigation */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sticky top-8">
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sticky top-6">
                 {/* User Profile Card */}
-                <div className="text-center mb-6 pb-6 border-b border-gray-200">
+                <div className="text-center mb-4 pb-4 border-b border-gray-200">
                   <div
-                    className="w-20 h-20 mx-auto mb-4 bg-linear-to-r from-white via-gray-50 to-gray-100 rounded-full bg-white/30 backdrop-blur-xl shadow-md 
+                    className="w-16 h-16 mx-auto mb-3 bg-linear-to-r from-white via-gray-50 to-gray-100 rounded-full bg-white/30 backdrop-blur-xl shadow-md 
                 border border-white/40 flex items-center justify-center"
                   >
-                    <span className="text-3xl font-extrabold bg-clip-text text-transparent bg-linear-to-r from-[#DBB737] to-amber-600">
+                    <span className="text-2xl font-extrabold bg-clip-text text-transparent bg-linear-to-r from-[#DBB737] to-amber-600">
                       {currentUser?.email.charAt(0).toUpperCase()}
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-semibold text-[#640000]">
+                  <h3 className="text-base font-semibold text-[#640000]">
                     Logged in as
                   </h3>
-                  <p className="text-sm text-gray-500">{currentUser?.email}</p>
+                  <p className="text-xs text-gray-500 truncate">{currentUser?.email}</p>
                 </div>
 
                 {/* Navigation Tabs */}
-                <nav className="space-y-2">
+                <nav className="space-y-1.5">
                   {tabs.map((tab) => {
                     const Icon = tab.icon;
                     return (
@@ -245,13 +245,13 @@ const Account = () => {
                         title="{tab.label}"
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${
                           activeTab === tab.id
-                            ? "bg-linear-to-r from-[#DBB737] to-[#D1A837] text-white shadow-lg"
+                            ? "bg-linear-to-r from-[#DBB737] to-[#D1A837] text-white shadow-md"
                             : "text-gray-600 hover:bg-gray-50 hover:text-[#DBB737]"
                         }`}
                       >
-                        <Icon size={20} />
+                        <Icon size={18} />
                         <span className="font-medium">{tab.label}</span>
                       </button>
                     );
@@ -261,10 +261,10 @@ const Account = () => {
                 {/* Logout Button */}
                 <button
                   title="Logout"
-                  className="w-full mt-6 flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all duration-200"
+                  className="w-full mt-4 flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-red-600 hover:bg-red-50 transition-all duration-200"
                   onClick={handleLogout}
                 >
-                  <LogOut size={20} />
+                  <LogOut size={18} />
                   <span className="font-medium">Logout</span>
                 </button>
               </div>
@@ -276,8 +276,8 @@ const Account = () => {
 
               {/* Orders Tab */}
               {activeTab === "orders" && (
-                <div className="space-y-6">
-                  <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                <div className="space-y-4">
+                  <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 md:p-5">
                     <h2 className="text-2xl font-medium text-[#640000] mb-3">
                       Order History
                     </h2>

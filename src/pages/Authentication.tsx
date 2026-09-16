@@ -3,7 +3,10 @@ import { loginUser, registerUser } from "../services/authService";
 import { useNavigate, useLocation } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import axiosInstance from "../api/axiosInstance";
+import { addCartItem } from "../api/cartApi";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { CART_QUERY_KEY } from "../hooks/useUserCart";
 
 const AuthPage = () => {
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -20,6 +23,7 @@ const AuthPage = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
   // const storedCheckout = sessionStorage.getItem("pending_checkout");
 
   const loginContext =
@@ -27,6 +31,45 @@ const AuthPage = () => {
     JSON.parse(sessionStorage.getItem("login_context") || "null");
 
   const redirectTo = loginContext?.from || "/";
+
+  const handlePostLogin = async () => {
+    // 1. Check for pending cart action
+    const pendingCartActionStr = sessionStorage.getItem("pending_cart_action");
+    if (pendingCartActionStr) {
+      try {
+        const pendingCartAction = JSON.parse(pendingCartActionStr);
+        sessionStorage.removeItem("pending_cart_action");
+        if (pendingCartAction?.productId) {
+          await addCartItem(
+            pendingCartAction.productId,
+            pendingCartAction.quantity || 1
+          );
+          toast.success("Product added to your cart! 🛒");
+        }
+      } catch (err) {
+        console.error("Failed to add pending cart item:", err);
+      }
+    }
+
+    // 2. Invalidate cart queries so navbar updates immediately
+    await queryClient.invalidateQueries({ queryKey: CART_QUERY_KEY });
+
+    // 3. Handle pending checkout or redirect
+    const pendingCheckout = sessionStorage.getItem("pending_checkout");
+    if (pendingCheckout) {
+      navigate("/checkout", {
+        replace: true,
+        state: JSON.parse(pendingCheckout),
+      });
+      sessionStorage.removeItem("pending_checkout");
+      sessionStorage.removeItem("login_context");
+    } else {
+      navigate(redirectTo.startsWith("/") ? redirectTo : "/", {
+        replace: true,
+      });
+      sessionStorage.removeItem("login_context");
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -65,23 +108,8 @@ const AuthPage = () => {
         if (res.access_token) {
           localStorage.setItem("accessToken", res.access_token);
           localStorage.setItem("refreshToken", res.refresh_token);
-
           toast.success("Login successful");
-
-          const pendingCheckout = sessionStorage.getItem("pending_checkout");
-
-          if (pendingCheckout) {
-            navigate("/checkout", {
-              replace: true,
-              state: JSON.parse(pendingCheckout),
-            });
-            sessionStorage.removeItem("pending_checkout");
-            sessionStorage.removeItem("login_context");
-          } else {
-            navigate(redirectTo.startsWith("/") ? redirectTo : "/", {
-              replace: true,
-            });
-          }
+          await handlePostLogin();
         }
       }
     } catch (error) {
@@ -109,22 +137,7 @@ const AuthPage = () => {
       localStorage.setItem("accessToken", res.data.access_token);
       localStorage.setItem("refreshToken", res.data.refresh_token);
       toast.success("Google login success");
-
-      const pendingCheckout = sessionStorage.getItem("pending_checkout");
-
-      if (pendingCheckout) {
-        navigate("/checkout", {
-          replace: true,
-          state: JSON.parse(pendingCheckout),
-        });
-        sessionStorage.removeItem("pending_checkout");
-      } else {
-        navigate(redirectTo.startsWith("/") ? redirectTo : "/", {
-          replace: true,
-        });
-      }
-
-      sessionStorage.removeItem("login_context");
+      await handlePostLogin();
     } catch (err) {
       console.error("Google auth error", err);
       toast.error("Google auth error");

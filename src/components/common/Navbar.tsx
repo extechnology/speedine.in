@@ -4,7 +4,8 @@ import { ShoppingBag, Search, User, Menu, X } from "lucide-react";
 import { useCategories } from "../../hooks/useCategory";
 import useProducts from "../../hooks/useProducts";
 import { useProductSearch } from "../../hooks/useProductSearch";
-import useCart from "../../hooks/useUserCart";
+import useCart, { CART_QUERY_KEY } from "../../hooks/useUserCart";
+import { useQueryClient } from "@tanstack/react-query";
 
 const NavItems = [
   { name: "Home", href: "/" },
@@ -21,10 +22,11 @@ const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
   const { categories, loading } = useCategories();
   const { products } = useProducts();
   const { query, setQuery, results } = useProductSearch(products);
-  const { cart } = useCart();
+  const { totalItems } = useCart();
 
   const isLoggedIn = localStorage.getItem("accessToken") ? true : false;
 
@@ -47,6 +49,8 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.clear();
+    queryClient.setQueryData(CART_QUERY_KEY, null);
+    queryClient.invalidateQueries({ queryKey: CART_QUERY_KEY });
     setIsMobileMenuOpen(false);
     navigate("/");
   };
@@ -242,7 +246,7 @@ const Navbar = () => {
   "
           >
             {/* Badge */}
-            {(cart?.total_items || 0) > 0 && (
+            {totalItems > 0 && (
               <span
                 className="
         absolute -top-1 -right-1
@@ -254,9 +258,11 @@ const Navbar = () => {
         text-[11px] font-semibold
         leading-none
         shadow-sm
+        transition-transform duration-200
+        scale-100
       "
               >
-                {cart?.total_items}
+                {totalItems}
               </span>
             )}
 

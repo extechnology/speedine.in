@@ -25,11 +25,11 @@ const StepTellsStory = () => {
 
   if (loading) {
     return (
-      <div className="md:py-16 py-8 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-slate-50 to-slate-100">
-        <div className="max-w-7xl mx-auto animate-pulse space-y-6">
+      <div className="md:py-8 py-5 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-slate-50 to-slate-100">
+        <div className="max-w-7xl mx-auto animate-pulse space-y-4">
           <div className="h-6 bg-slate-200 rounded w-1/3" />
           <div className="h-4 bg-slate-200 rounded w-2/3" />
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div className="aspect-square bg-slate-200 rounded-2xl" />
             <div className="aspect-square bg-slate-200 rounded-2xl" />
             <div className="aspect-square bg-slate-200 rounded-2xl" />
@@ -41,11 +41,11 @@ const StepTellsStory = () => {
   }
 
   return (
-    <div className="md:py-16 py-8 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-slate-50 to-slate-100">
+    <div className="md:py-8 py-5 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-slate-50 to-slate-100">
       <div className="max-w-7xl mx-auto mb-0">
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-16 items-center">
+        <div className="flex flex-col lg:flex-row gap-5 lg:gap-8 items-center">
           {/* Text Content */}
-          <div className="w-full lg:w-1/2 space-y-6">
+          <div className="w-full lg:w-1/2 space-y-3">
             <h1 className="text-2xl lg:text-4xl font-semibold text-slate-900 leading-tight">
               Every Step Tells a{" "}
               <span className="text-transparent bg-clip-text bg-linear-to-r from-amber-700 to-[#640000]">
@@ -57,7 +57,7 @@ const StepTellsStory = () => {
               We brings the rich, authentic taste of traditional cooking straight to your kitchen with our Instant Ready Mix Masala. No complicated preparation—just mix, cook, and enjoy delicious homemade flavors in minutes. Crafted with premium spices, Speedline makes every meal quick, convenient, and irresistibly tasty for your family.
             </p>
             <Link to="/about">
-              <button className="mt-2 md:px-8 md:py-3 px-4 py-2 md:text-sm text-xs bg-linear-to-r from-amber-700 to-[#640000] text-white font-semibold rounded-full hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
+              <button className="mt-1 md:px-7 md:py-2.5 px-4 py-2 md:text-sm text-xs bg-linear-to-r from-amber-700 to-[#640000] text-white font-semibold rounded-full hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
                 Learn More
               </button>
             </Link>
@@ -65,7 +65,7 @@ const StepTellsStory = () => {
 
           {/* Image Grid */}
           <div className="w-full lg:w-1/2">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               {/* Top Left - Empty decorative box */}
               <div className="flex items-center justify-center">
                 <div className="w-full aspect-square ">
